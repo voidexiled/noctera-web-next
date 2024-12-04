@@ -51,10 +51,10 @@ export const positions = [
 ]
 
 async function seed() {
-	await prisma.accounts.createMany({
-		data: [{ id: 1, name: 'god', email: 'jhondoe@example.com', key, email_verified: true, password, type: 6, create_date: dayjs().unix() }],
-		skipDuplicates: true,
-	});
+	// await prisma.accounts.createMany({
+	// 	data: [{ id: 1, name: 'god', email: 'jhondoe@example.com', key, email_verified: true, password, type: 6, create_date: dayjs().unix() }],
+	// 	skipDuplicates: true,
+	// });
 
 	// await prisma.players.createMany({ data: samplePlayer, skipDuplicates: true });
 	// await prisma.towns.createMany({ data: positions, skipDuplicates: true });
