@@ -104,6 +104,7 @@ export async function POST(req: Request) {
     NextResponse.json({}, { status: 200 });
 
   } catch (error) {
+    console.log(error);
     if (error instanceof ZodError) {
       return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
     }
