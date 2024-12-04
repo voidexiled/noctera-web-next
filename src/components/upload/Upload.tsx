@@ -1,4 +1,4 @@
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, type FileRejection } from 'react-dropzone';
 
 import { UploadProps } from './types';
 import RejectionFiles from './errors/RejectionFiles';
@@ -52,7 +52,7 @@ export default function Upload({
 
       {helperText && helperText}
 
-      <RejectionFiles fileRejections={fileRejections} />
+      <RejectionFiles fileRejections={fileRejections } />
 
       {hasFile && onDelete && !disabled && (
         <Button

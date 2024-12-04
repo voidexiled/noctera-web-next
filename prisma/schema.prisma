@@ -7,6 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model posts {
+  id         Int           @id @default(autoincrement())
+  account_id Int           @db.UnsignedInt
+  title      String        @db.VarChar(255)
+  published  Boolean       @default(true)
+  content    String        @db.LongText
+  cover      String?
+  slug       String?       @unique
+  category   CATEGORY_POST @default(BLOG)
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime?     @updatedAt @map("updated_at")
+  accounts   accounts      @relation(fields: [account_id], references: [id])
+
+  @@index([account_id], map: "wp_posts_account_id_fkey")
+  @@map("wp_posts")
+}
+
+model social_medias {
+  id         Int       @id @default(autoincrement())
+  account_id Int       @unique @db.UnsignedInt
+  instagram  String?
+  youtube    String?
+  twitch     String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
+  account    accounts  @relation(fields: [account_id], references: [id])
+
+  @@map("wp-social_medias")
+}
+
 model products_categories {
   id       Int        @id @default(autoincrement())
   name     String
@@ -154,9 +184,9 @@ model accounts {
   recruiter              Int?                     @default(0)
   vote                   Int                      @default(0)
   secret_status          Boolean                  @default(false)
-  secret                 String?               @db.Char(16)
-  gamesecret             String?               @db.Char(16) 
-    authToken                String                @default("") @db.VarChar(100)
+  secret                 String?                  @db.Char(16)
+  gamesecret             String?                  @db.Char(16)
+  authToken              String                   @default("") @db.VarChar(100)
   account_ban_history    account_ban_history[]
   account_bans           account_bans?
   account_viplist        account_viplist[]
@@ -166,6 +196,8 @@ model accounts {
   players                players[]
   store_history          store_history[]
   tokens                 Tokens[]
+  social_medias          social_medias?
+  posts                  posts[]
 }
 
 model Tokens {
@@ -175,7 +207,7 @@ model Tokens {
   expired_at DateTime
   created_at DateTime  @default(now())
   isValid    Boolean   @default(false)
-  account_id Int?
+  account_id Int?      @db.UnsignedInt
   accounts   accounts? @relation(fields: [account_id], references: [id])
 
   @@index([account_id], map: "wp_tokens_account_id_fkey")
@@ -1091,6 +1123,7 @@ model players {
   player_wheeldata                                         player_wheeldata?
   accounts                                                 accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "players_account_fk")
   roulette_plays                                           roulette_plays[]
+  cast_on                                                  Int                    @default(0) @db.TinyInt
 
   @@index([account_id], map: "account_id")
   @@index([vocation], map: "vocation")
@@ -1098,6 +1131,18 @@ model players {
 
 model players_online {
   player_id Int @id
+}
+
+model character_market {
+  id         Int    @id @default(autoincrement())
+  world_id   Int    @default(1)
+  name       String @db.VarChar(40)
+  level      Int
+  vocation   Int    @default(1) @db.TinyInt
+  price      Int
+  player_id  Int
+  account_id Int
+  status     Int    @db.TinyInt
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1203,4 +1248,10 @@ enum ORDER_STATUS {
   PENDING
   CANCELED
   DELIVERED
+}
+
+enum CATEGORY_POST {
+  BLOG
+  TICKER
+  ROADMAP
 }

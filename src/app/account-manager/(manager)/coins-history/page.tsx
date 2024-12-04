@@ -55,14 +55,15 @@ export default async function CoinsHistory() {
                 {history.map((store, i) =>
                 (<TableRow key={i.toString()}>
                   <TableCell className="whitespace-nowrap">{dayjs.unix(Number(store.time)).format('D-M-YYYY H:mm')}</TableCell>
-                  <TableCell className="whitespace-nowrap"><Badge variant="secondary" className="w-full justify-end" >{store.amount}</Badge></TableCell>
+                  <TableCell className="whitespace-nowrap"><Badge variant="secondary" className="w-full justify-end" >{store.coins}</Badge></TableCell>
                   <TableCell className="whitespace-nowrap">
                     <div className="flex items-center gap-1">
-                      <Badge variant={store.cust < 0 ? 'destructive' : 'success'} className="w-full justify-end">{store.cust > 0 && '+'}{store.cust.toLocaleString()}</Badge>
+                      <Badge variant={store.coin_amount < 0 ? 'destructive' : 'success'} className="w-full justify-end">{store.coin_amount > 0 && '+'}{store.coin_amount.toLocaleString()}</Badge>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Image src={`/icons/${COIN_TYPE[store.coin_type]}`} width={12} height={12} alt="" />
+                    {/* TODO: FIX COIN ICON */}
+                    <Image src={`/icons/${COIN_TYPE[store.coin_type ? 1 : 2]}`} width={12} height={12} alt="" />
                   </TableCell>
                   <TableCell className="w-full">{store.description}</TableCell>
                 </TableRow>)

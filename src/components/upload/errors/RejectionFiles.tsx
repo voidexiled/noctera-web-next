@@ -7,7 +7,7 @@ import { FileRejection } from 'react-dropzone';
 // ----------------------------------------------------------------------
 
 type Props = {
-  fileRejections: FileRejection[];
+  fileRejections: readonly FileRejection[];
 };
 
 export default function RejectionFiles({ fileRejections }: Props) {

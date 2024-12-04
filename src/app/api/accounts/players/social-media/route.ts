@@ -25,7 +25,7 @@ const handleCreate = async (req: Request) => {
     if (!session?.user || !acc || !comparePassword(password, acc?.password)) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
 
-    await prisma.socialMedias.upsert({
+    await prisma.social_medias.upsert({
       where: { account_id: acc.id },
       update: { instagram, twitch, youtube },
       create: {

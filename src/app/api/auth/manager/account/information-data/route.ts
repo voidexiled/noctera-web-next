@@ -48,44 +48,44 @@ const update = async (request: Request) => {
     await prisma.accounts.update({
       where: { id: account.id },
       data: {
-        profile: {
-          upsert: {
-            create: {
-              fisrt_name: body.firstName,
-              last_name: body.lastName,
-              phone_number: body.phoneNumber,
-              gender: body.gender,
-            },
-            update: {
-              fisrt_name: body.firstName,
-              last_name: body.lastName,
-              phone_number: body.phoneNumber,
-              gender: body.gender,
-            }
-          }
-        },
-        address: {
-          upsert: {
-            create: {
-              country: body.address?.country,
-              state_province: body.address?.state,
-              city: body.address?.city,
-              street: body.address?.street,
-              house_number: body.address?.houseNumber,
-              comment: body.address?.comment,
-              zip_code: body.address?.zipCode
-            },
-            update: {
-              country: body.address?.country,
-              state_province: body.address?.state,
-              city: body.address?.city,
-              street: body.address?.street,
-              house_number: body.address?.houseNumber,
-              comment: body.address?.comment,
-              zip_code: body.address?.zipCode
-            }
-          }
-        }
+        // profile: {
+        //   upsert: {
+        //     create: {
+        //       fisrt_name: body.firstName,
+        //       last_name: body.lastName,
+        //       phone_number: body.phoneNumber,
+        //       gender: body.gender,
+        //     },
+        //     update: {
+        //       fisrt_name: body.firstName,
+        //       last_name: body.lastName,
+        //       phone_number: body.phoneNumber,
+        //       gender: body.gender,
+        //     }
+        //   }
+        // },
+        // address: {
+        //   upsert: {
+        //     create: {
+        //       country: body.address?.country,
+        //       state_province: body.address?.state,
+        //       city: body.address?.city,
+        //       street: body.address?.street,
+        //       house_number: body.address?.houseNumber,
+        //       comment: body.address?.comment,
+        //       zip_code: body.address?.zipCode
+        //     },
+        //     update: {
+        //       country: body.address?.country,
+        //       state_province: body.address?.state,
+        //       city: body.address?.city,
+        //       street: body.address?.street,
+        //       house_number: body.address?.houseNumber,
+        //       comment: body.address?.comment,
+        //       zip_code: body.address?.zipCode
+        //     }
+        //   }
+        // }
       }
     })
 

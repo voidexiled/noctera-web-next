@@ -28,7 +28,7 @@ export default async function Character({ params }: { params: { name: string } }
       accounts: {
         select: {
           id: true,
-          create_date: true,
+          created: true,
           premdays: true,
           account_bans: true,
           players: {
@@ -42,7 +42,7 @@ export default async function Character({ params }: { params: { name: string } }
               hidden: true,
             },
             orderBy: {
-              create_date: 'asc'
+              created: 'asc'
             }
           }
         }
@@ -192,7 +192,7 @@ export default async function Character({ params }: { params: { name: string } }
               <TableBody>
                 <TableRow>
                   <TableCell className="w-[140px]">Created:</TableCell>
-                  <TableCell>{fUnixToDate(Number(player?.accounts.create_date))}</TableCell>
+                  <TableCell>{fUnixToDate(Number(player?.accounts.created))}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -202,13 +202,13 @@ export default async function Character({ params }: { params: { name: string } }
             </div>
             <Table>
               <TableBody>
-                <TableRow>
+                {/* <TableRow>
                   <TableCell className="w-[140px]">Loyalty Title:</TableCell>
                   <TableCell>{LoyaltRaking(player.loyalt_store)}</TableCell>
-                </TableRow>
+                </TableRow> */}
                 <TableRow>
                   <TableCell>Created:</TableCell>
-                  <TableCell>{fUnixToDate(Number(player?.create_date))}</TableCell>
+                  <TableCell>{fUnixToDate(Number(player?.created))}</TableCell>
                 </TableRow>
 
               </TableBody>

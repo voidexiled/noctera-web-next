@@ -35,11 +35,11 @@ const create = async (request: Request) => {
     await prisma.players.create({
       data: {
         ...restInitialPlayer,
-        world_id: world_id ?? 1,
+        //world_id: world_id ?? 1,
         account_id: Number(session?.user?.id),
         name,
         sex,
-        create_date: dayjs().unix(),
+        created: dayjs().unix(),
         comment: ''
       }
     })

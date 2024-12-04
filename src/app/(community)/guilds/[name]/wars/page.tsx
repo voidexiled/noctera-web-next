@@ -44,11 +44,11 @@ export default async function War({ params }: { params: { name: string } }) {
                 {guildWar.map((war) => {
                   return (
                     <TableRow key={war.id}>
-                      <TableCell>{war.guild1}</TableCell>
-                      <TableCell>{Number(war.duration)}</TableCell>
-                      <TableCell>{Number(war.kills)}</TableCell>
-                      <TableCell>{Number(war.price)}</TableCell>
-                      <TableCell>{Number(war.kills)}</TableCell>
+                      <TableCell>{war.name1}</TableCell>
+                      <TableCell>{Number(war.duration_days)}</TableCell>
+                      <TableCell>{Number(war.guild1)}</TableCell>
+                      <TableCell>{Number(war.payment)}</TableCell>
+                      <TableCell>{Number(war.guild2)}</TableCell>
                     </TableRow>
                   )
                 })}

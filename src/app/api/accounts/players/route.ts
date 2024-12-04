@@ -39,8 +39,8 @@ const handleCreate = async (req: Request) => {
         account_id: Number(session?.user?.id),
         name,
         sex,
-        world_id: world_id ?? 1,
-        create_date: dayjs().unix(),
+        //world_id: world_id ?? 1,
+        created: dayjs().unix(),
         conditions: Buffer.alloc(1024),
         comment: ''
       }
