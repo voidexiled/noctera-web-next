@@ -29,7 +29,7 @@ export default function DownloadPage() {
                     <Link href={process.env.DOWNLOAD_TAB1_LINK1 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
 
                 <div className="border rounded-sm shadow-md">
@@ -41,12 +41,12 @@ export default function DownloadPage() {
 				    <Link href={process.env.DOWNLOAD_TAB1_LINK2 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
               </div>
 
               <div className="flex flex-col rounded-sm border">
-                <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+                <div className='flex p-2 items-start justify-start  bg-background text-sm'>
                   Minimum Requirements
                 </div>
                 <div className="p-2">
@@ -60,7 +60,7 @@ export default function DownloadPage() {
                   </ul>
                 </div>
 
-                <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+                <div className='flex p-2 items-start justify-start  bg-background text-sm'>
                   Recommended Requirements
                 </div>
                 <div className="p-2">
@@ -94,7 +94,7 @@ export default function DownloadPage() {
                     <Link href={process.env.DOWNLOAD_TAB2_LINK1 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
 
                 <div className="border rounded-sm shadow-md">
@@ -106,12 +106,12 @@ export default function DownloadPage() {
                     <Link href={process.env.DOWNLOAD_TAB2_LINK2 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
               </div>
 			  
 			                <div className="flex flex-col rounded-sm border">
-                <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+                <div className='flex p-2 items-start justify-start  bg-background text-sm'>
                   Minimum Requirements
                 </div>
                 <div className="p-2">
@@ -125,7 +125,7 @@ export default function DownloadPage() {
                   </ul>
                 </div>
 
-                <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+                <div className='flex p-2 items-start justify-start  bg-background text-sm'>
                   Recommended Requirements
                 </div>
                 <div className="p-2">
@@ -159,7 +159,7 @@ export default function DownloadPage() {
                     <Link href={process.env.DOWNLOAD_TAB3_LINK1 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
 
                 <div className="border rounded-sm shadow-md">
@@ -171,7 +171,7 @@ export default function DownloadPage() {
                     <Link href={process.env.DOWNLOAD_TAB3_LINK2 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
               </div>
             </TabsContent>
@@ -187,7 +187,7 @@ export default function DownloadPage() {
                     <Link href={process.env.DOWNLOAD_TAB4_LINK1 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
 
                 <div className="border rounded-sm shadow-md">
@@ -199,7 +199,7 @@ export default function DownloadPage() {
                     <Link href={process.env.DOWNLOAD_TAB4_LINK2 ?? "#"} className="text-blue-600 font-normal">Download</Link>
                     <span className="text-gray-400 text-xs">(Inclui Proxy Opcional)</span>
                   </div>
-                  <div className="font-medium bg-gray-100 text-center">150 <strong>MB</strong></div>
+                  <div className="font-medium bg-background text-center">150 <strong>MB</strong></div>
                 </div>
               </div>
             </TabsContent>

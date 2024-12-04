@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useRouter } from "next/navigation";
 import { getVocation } from "@/utils/functions/getVocations";
 import TableEmptyState from "@/components/table-empty-state";
-import AnimatedOutfit from "@/components/aimations/AnimatedOutfit";
+import AnimatedOutfit from "@/components/animations/AnimatedOutfit";
 
 interface Character {
   id: number

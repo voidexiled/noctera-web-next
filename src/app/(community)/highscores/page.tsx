@@ -80,7 +80,7 @@ export default async function HighScores({ searchParams }: { searchParams?: { vo
           </div>
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+            <div className='flex p-2 items-center justify-between bg-background text-sm'>
               HighScores
               <Pagination totalPages={totalPage} />
             </div>

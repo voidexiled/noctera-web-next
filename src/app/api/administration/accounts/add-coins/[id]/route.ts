@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 const CreatePlayersSchema = z
   .object({
     amount: z.number().nonnegative(),
-    type: z.enum(['transferable_coins', 'coins']),
+    type: z.enum(['coins_transferable', 'coins']),
 
   })
   .strict()
@@ -34,10 +34,9 @@ const handleAddCoins = async (req: Request, { params }: { params: Params }) => {
     await prisma.store_history.create({
       data: {
         account_id: +id,
-        coin_type: 1,
-        amount: data.amount,
+        coin_type: true,
+        coin_amount: data.amount,
         description: `Received ${data.amount} coins with system`,
-        cust: data.amount,
         time: dayjs().unix()
       }
     })

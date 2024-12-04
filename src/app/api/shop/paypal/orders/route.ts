@@ -92,11 +92,13 @@ const CreateOrders = async (req: Request) => {
 
     const session = await getServerSession(authOptions);
     if (!session?.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    const account = await prisma.accounts.findFirst({ where: { email: session.user.email }, include: { profile: true } })
+      
+    const account = await prisma.accounts.findFirst({ where: { email: session.user.email } })
     if (!account) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
     const { jsonResponse, httpStatusCode } = await createOrder({ cart: { currency_code, value } });
-
+    
+    
     if (httpStatusCode === 201) {
       await prisma.orders.create({
         data: {

@@ -35,7 +35,7 @@ export default function CharactersList({ chars = [], playerOnline = [] }: IProps
     <>
       <section>
         <div className="flex flex-col rounded-sm border">
-          <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+          <div className='flex p-2 items-center justify-between bg-background/60 text-sm border-b'>
             Characters
           </div>
           <Table>
@@ -185,7 +185,7 @@ function Actions({ player }: { player: players }) {
                 <DialogTitle>Edit Character</DialogTitle>
               </DialogHeader>
               <DialogDescription className="rounded-sm border">
-                <div className='flex p-2 items-center justify-between bg-gray-100 text-sm text-black'>
+                <div className='flex p-2 items-center justify-between bg-background text-sm text-black'>
                   Character Data
                 </div>
                 <Table className="pointer-events-none">

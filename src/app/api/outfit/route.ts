@@ -1,10 +1,10 @@
-import { OutfitData, loadData, outfit } from "@/components/aimations/outfits";
+import { OutfitData, loadData, outfit } from "@/components/animations/outfits";
 import { NextResponse, NextRequest } from "next/server"
 
 import { existsSync, readdirSync, writeFileSync } from 'fs';
 import path, { relative, resolve } from 'path';
 import invariant from 'tiny-invariant';
-import { outfitImagesPath, walkSpeeds } from "@/components/aimations/config";
+import { outfitImagesPath, walkSpeeds } from "@/components/animations/config";
 
 const CACHE_FILE_PATH = './cache.generated.txt';
 
@@ -102,18 +102,16 @@ function parseIntWithDefault(value: unknown, def = 0): number {
   return parseInt(value) ?? def;
 }
 
-generateCacheIfNeeded()
 
-const OutfitRoute = async (request: NextRequest) => {
+export async function GET(request: NextRequest) {
 
-  generateCacheIfNeeded();
   const url = new URL(request.url)
-
   const looktype = parseIntWithDefault(url.searchParams.get('looktype'));
   let outfitData = loadData(looktype, outfitImagesPath, false);
   if (!outfitData) {
-    return NextResponse.json({});
+    return Response.json({});
   }
+
   let mount = parseIntWithDefault(url.searchParams.get('mount'));
 
   if (mount > 0) {
@@ -126,7 +124,7 @@ const OutfitRoute = async (request: NextRequest) => {
   }
 
   if (!outfitData) {
-    return NextResponse.json({ error: 'Outfit not found' }, { status: 404 })
+    return Response.json({ error: 'Outfit not found' }, { status: 404 })
   }
 
   const head = parseIntWithDefault(url.searchParams.get('lookhead'));
@@ -158,13 +156,13 @@ const OutfitRoute = async (request: NextRequest) => {
       resize === 1,
     );
     if (!frame) {
-      return NextResponse.json({ error: 'Failed to create canvas frame' }, { status: 500 })
+      return Response.json({ error: 'Failed to create canvas frame' }, { status: 500 })
     }
     frames.push(frame as unknown as CanvasRenderingContext2D);
     durations.push(walkSpeeds[moveAnimFrames]);
   }
 
-  return NextResponse.json({
+  return Response.json({
     frames: frames.map((frame, index) => ({
       image: frame.canvas.toDataURL(),
       duration: durations[index],
@@ -173,6 +171,3 @@ const OutfitRoute = async (request: NextRequest) => {
 
 }
 
-
-
-export { OutfitRoute as GET }

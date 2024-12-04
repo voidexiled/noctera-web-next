@@ -5,7 +5,8 @@ interface ConfigLua<T> {
 	[key: string]: T;
 }
 
-const configDirectory = path.resolve(process.cwd(), "src/config")
+// const configDirectory = path.resolve(process.cwd(), "src/config")
+const configDirectory = path.resolve("C:/Users/jalomo/downloads/13.41 server/canary");
 
 export class readConfigLua {
 	private jsonString: string;

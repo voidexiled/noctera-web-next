@@ -1,5 +1,5 @@
 import { Typography } from "@/components/Typography";
-import AnimatedOutfit from "@/components/aimations/AnimatedOutfit";
+import AnimatedOutfit from "@/components/animations/AnimatedOutfit";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -33,7 +33,7 @@ export default async function SupportList() {
         <CardContent className="p-2 space-y-2">
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+            <div className='flex p-2 items-center justify-between bg-background text-sm'>
               Team {lua['serverName']}
             </div>
             <Table>
@@ -51,7 +51,7 @@ export default async function SupportList() {
                 {characters.filter((f) => f.group_id === 6).length > 0 && (
                   <TableRow >
                     <TableCell colSpan={4} className="p-0">
-                      <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+                      <div className='flex p-2 items-center justify-between bg-background text-sm'>
                         Administrator
                       </div>
                     </TableCell>
@@ -81,7 +81,7 @@ export default async function SupportList() {
                 {characters.filter((f) => f.group_id === 5).length > 0 && (
                   <TableRow >
                     <TableCell colSpan={4} className="p-0">
-                      <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+                      <div className='flex p-2 items-center justify-between bg-background text-sm'>
                         Community Manager
                       </div>
                     </TableCell>
@@ -110,7 +110,7 @@ export default async function SupportList() {
                 {characters.filter((f) => f.group_id === 4).length > 0 && (
                   <TableRow >
                     <TableCell colSpan={4} className="p-0">
-                      <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+                      <div className='flex p-2 items-center justify-between bg-background text-sm'>
                         Game Master
                       </div>
                     </TableCell>
@@ -139,7 +139,7 @@ export default async function SupportList() {
                 {characters.filter((f) => f.group_id === 3).length > 0 && (
                   <TableRow >
                     <TableCell colSpan={4} className="p-0">
-                      <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+                      <div className='flex p-2 items-center justify-between bg-background text-sm'>
                         Tutor Senhor
                       </div>
                     </TableCell>
@@ -168,7 +168,7 @@ export default async function SupportList() {
                 {characters.filter((f) => f.group_id === 2).length > 0 && (
                   <TableRow >
                     <TableCell colSpan={4} className="p-0">
-                      <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+                      <div className='flex p-2 items-center justify-between bg-background text-sm'>
                         Tutor
                       </div>
                     </TableCell>

@@ -47,7 +47,7 @@ function PaginationArrow({
     'flex h-9 w-9 items-center justify-center rounded-md border',
     {
       'pointer-events-none text-gray-300': isDisabled,
-      'hover:bg-gray-100': !isDisabled,
+      'hover:bg-background': !isDisabled,
       'mr-1': direction === 'left',
       'ml-1': direction === 'right',
     },

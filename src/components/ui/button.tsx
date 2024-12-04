@@ -21,6 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         blue: "bg-[#4681f4] text-primary-foreground shadow hover:bg-[#4681f4]/90",
         green: "bg-green-600 text-primary-foreground shadow hover:bg-green-600/90",
+        itemchild: "bg-card/70 text-foreground hover:bg-background/80"
 
       },
       size: {

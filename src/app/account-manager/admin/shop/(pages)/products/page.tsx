@@ -16,21 +16,25 @@ async function getProducts() {
   })
   return { products }
 }
+async function getCategories() {
+  const categories = await prisma.products_categories.findMany()
+  return { categories }
+}
 
 export default async function AdminProducts() {
   const { products } = await getProducts()
-
+  const { categories } = await getCategories()
   return (
     <>
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Products</h2>
         <div className="flex items-center space-x-2">
-          <CreateProduct />
+          <CreateProduct categories={categories} />
         </div>
       </div>
 
       <div className='border rounded-sm'>
-        <div className='flex p-2 items-center justify-end bg-gray-100 text-sm border-b'>
+        <div className='flex p-2 items-center justify-end bg-background text-sm border-b'>
           <div className="flex flex-row gap-2 items-center">
             <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">

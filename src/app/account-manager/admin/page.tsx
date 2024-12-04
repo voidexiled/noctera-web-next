@@ -6,18 +6,28 @@ import Link from "next/link";
 
 
 export default async function AdminManager() {
+  const [countAccounts] = await Promise.all([prisma.accounts.findMany()]);
+  
+  const [countPlayers] = await Promise.all([ prisma.players.findMany()]);
+  const [countGuilds] = await Promise.all([prisma.guilds.findMany()]);
 
-  const [countAccounts, countPlayers, countGuilds] = await Promise.all([
-    prisma.accounts.findMany(),
-    prisma.players.findMany({
-      where: {
-        id: { not: { in: [1, 2, 3, 4, 5] } },
-        group_id: { not: { in: [2, 3, 4, 5] } }
-      }
-    }),
-    prisma.guilds.findMany(),
-    prisma.$disconnect()
-  ]);
+  // let countAccounts = [];
+  // let countPlayers = [];
+  // let countGuilds = [];
+
+  
+
+  // const [countAccounts, countPlayers, countGuilds] = await Promise.all([
+  //   prisma.accounts.findMany(),
+  //   prisma.players.findMany({
+  //     where: {
+  //       id: { not: { in: [1, 2, 3, 4, 5] } },
+  //       group_id: { not: { in: [2, 3, 4, 5] } }
+  //     }
+  //   }),
+  //   prisma.guilds.findMany(),
+  //   prisma.$disconnect()
+  // ]);
 
   const totalUnregister = countAccounts.reduce((a, account) => {
     if (account.email_verified === false) {
@@ -37,7 +47,7 @@ export default async function AdminManager() {
     <>
 
       <div className="flex flex-col rounded-sm border">
-        <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+        <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
           General information
         </div>
         <Table>
@@ -60,7 +70,7 @@ export default async function AdminManager() {
           </TableBody>
         </Table>
 
-        <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b border-t'>
+        <div className='flex p-2 items-center justify-between bg-background text-sm border-b border-t'>
           Open Tickets
           <div className="flex flex-row gap-2 items-center">
             <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" >
@@ -98,7 +108,7 @@ export default async function AdminManager() {
             </TableRow>
             <TableRow className="p-0">
               <TableCell colSpan={6} className="p-0">
-                <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+                <div className='flex p-2 items-center justify-between bg-background text-sm'>
                   Pending Tickets
                   <div className="flex flex-row gap-2 items-center">
                     <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" >

@@ -119,7 +119,7 @@ export default function AdminBlog() {
     <>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}  >
         <div className='border rounded-sm'>
-          <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+          <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
             Create new Post
           </div>
 
@@ -158,7 +158,7 @@ export default function AdminBlog() {
       </FormProvider>
 
       <div className='border rounded-sm'>
-        <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+        <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
           News Manager
           <div className="flex flex-row gap-2 items-center">
             <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" disabled={page === 1} onClick={() => setPage(page - 1)} >

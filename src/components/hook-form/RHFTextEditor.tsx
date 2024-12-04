@@ -25,7 +25,7 @@ export default function RHFTextEditor({ name, label, initialValue, ...other }: P
         <div className="grid gap-2">
           <Editor
             id={inputId}
-            apiKey={process.env.TinyEditorAPI_KEY ?? '3wm64a35htdlac5v1zehh98br95z1jmh1a837csias6hm3k9'}
+            apiKey="iuv7q430lpc0w63ail9vi7xc1pmc5zu3t1aqrs73bcy6h8c1"
             value={field.value}
             // ref={field.ref}
 

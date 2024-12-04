@@ -44,9 +44,6 @@ async function getAccount(id: number) {
         }
       },
       account_bans: true,
-      profile: true,
-      address: true,
-      social_medias: true
     }
   })
   return account
@@ -142,7 +139,7 @@ export default async function Dashboard({ params, searchParams }: Params) {
             <div className="p-2 flex sm:flex-row sm:justify-between gap-2">
 
               <div className="flex-grow">
-                <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm rounded-sm mb-2'>
+                <div className='flex p-2 items-start justify-start bg-background/60 text-sm rounded-sm mb-2'>
                   Account Status
                 </div>
                 <div className="flex items-center gap-2 leading-none">
@@ -207,7 +204,7 @@ export default async function Dashboard({ params, searchParams }: Params) {
 
 
         <Tabs defaultValue={InitialTab} className="p-2 pt-0 rounded-sm" activationMode="manual">
-          <TabsList className="w-full border-[1px] rounded-sm bg-gray-100">
+          <TabsList className="w-full border-[1px] rounded-sm bg-background/60">
             <TabsTrigger value="status" className="rounded-sm">Status</TabsTrigger>
             <TabsTrigger value="account" className="rounded-sm">Account</TabsTrigger>
             <TabsTrigger value="history" className="rounded-sm">History</TabsTrigger>
@@ -219,7 +216,7 @@ export default async function Dashboard({ params, searchParams }: Params) {
             <div className="space-y-2">
               <div className="space-y-2">
                 <div className="flex flex-col rounded-sm border">
-                  <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm border-b'>
+                  <div className='flex p-2 items-start justify-start  bg-background/60 text-sm border-b'>
                     General Information
                   </div>
                   <Table>
@@ -253,7 +250,7 @@ export default async function Dashboard({ params, searchParams }: Params) {
                             </Tooltip>
                           </TooltipProvider>
                           {' '}
-                          ( include {acc?.tournamentBalance.toString()}
+                          ( include {acc?.tournament_coins.toString()}
                           {' '}
                           <TooltipProvider>
                             <Tooltip>
@@ -310,8 +307,8 @@ export default async function Dashboard({ params, searchParams }: Params) {
             <div className="space-y-2">
 
               <div className="space-y-2">
-                <div className="flex flex-col rounded-sm border">
-                  <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm border-b'>
+                {/* <div className="flex flex-col rounded-sm border">
+                  <div className='flex p-2 items-start justify-start  bg-background/60 text-sm border-b'>
                     Account Information
                   </div>
                   <Table>
@@ -362,11 +359,11 @@ export default async function Dashboard({ params, searchParams }: Params) {
                       </TableRow>
                     </TableBody>
                   </Table>
-                </div>
+                </div> */}
                 <div className="grid grid-cols-3 gap-2">
                   <ChangePasswordForm />
                   <ChangeEmailForm />
-                  <ChangeAccountInfoForm defaultValues={{
+                  {/* <ChangeAccountInfoForm defaultValues={{
                     firstName: acc.profile?.fisrt_name ?? '',
                     lastName: acc.profile?.last_name ?? '',
                     gender: acc.profile?.gender ?? '',
@@ -380,13 +377,13 @@ export default async function Dashboard({ params, searchParams }: Params) {
                       street: acc.address?.street ?? '',
                       zipCode: acc.address?.zip_code ?? ''
                     }
-                  }} />
+                  }} /> */}
                 </div>
 
               </div>
 
-              <div className="flex flex-col rounded-sm border">
-                <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+              {/* <div className="flex flex-col rounded-sm border">
+                <div className='flex p-2 items-center justify-between bg-background/60 text-sm border-b'>
                   Social media
                 </div>
                 <Table>
@@ -415,7 +412,7 @@ export default async function Dashboard({ params, searchParams }: Params) {
                     twitch: acc.social_medias?.twitch ?? ''
                   }
                 } />
-              </div>
+              </div> */}
 
 
             </div>

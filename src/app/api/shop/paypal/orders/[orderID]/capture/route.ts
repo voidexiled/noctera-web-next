@@ -10,7 +10,7 @@ type Params = { orderID: string }
 
 const CreatePlayersSchema = z
   .object({
-    type: z.enum(['coins', 'premdays']),
+    type: z.enum(['coins_transferable', 'premdays']),
     quantity: z.number().nonnegative(),
   })
   .strict()
@@ -124,7 +124,7 @@ const Checkout = async (request: Request, { params }: { params: Params }) => {
     const session = await getServerSession(authOptions);
     if (!session?.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
-    const account = await prisma.accounts.findFirst({ where: { email: session.user.email }, include: { profile: true } })
+    const account = await prisma.accounts.findFirst({ where: { email: session.user.email }})
     if (!account) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
     const findOrder = await prisma.orders.findFirst({ where: { orderID } })
@@ -155,11 +155,10 @@ const Checkout = async (request: Request, { params }: { params: Params }) => {
       await prisma.store_history.create({
         data: {
           account_id: account.id,
-          coin_type: 1,
-          amount: quantity,
-          description: type === 'coins' ? `Deposit ${quantity} coins with PayPal` : `Buy ${quantity} VIP time days with PayPal`,
-          cust: quantity,
-          time: dayjs().unix()
+          coin_type: true,
+          coin_amount: quantity,
+          description: type === 'coins_transferable' ? `Deposit ${quantity} coins with PayPal` : `Buy ${quantity} VIP time days with PayPal`,
+          time: dayjs().unix(),
         }
       })
       return NextResponse.json(jsonResponse, { status: httpStatusCode });

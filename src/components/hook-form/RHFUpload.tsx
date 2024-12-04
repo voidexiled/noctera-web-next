@@ -14,6 +14,7 @@ export function RHFUploadShopImage({ name, ...other }: Props) {
   const { control } = useFormContext();
   return (
     <Controller
+      
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (

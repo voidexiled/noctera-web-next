@@ -45,7 +45,7 @@ export default function PaymentDetails({ orderID, account_id }: { orderID: strin
           <DialogTitle>Order Details</DialogTitle>
         </DialogHeader>
         <div className="border rounded">
-          <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+          <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
             Paypal Information
           </div>
           <Table>
@@ -92,7 +92,7 @@ export default function PaymentDetails({ orderID, account_id }: { orderID: strin
             </TableBody>
           </Table>
 
-          <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b border-t'>
+          <div className='flex p-2 items-center justify-between bg-background text-sm border-b border-t'>
             Account Information
           </div>
 

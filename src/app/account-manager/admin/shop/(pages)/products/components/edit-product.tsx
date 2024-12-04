@@ -13,8 +13,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CustomFile } from "@/utils/getFileData";
 
+
+
 const FormSchema = z.object({
-  img: z.custom<File>((file) => file instanceof File, 'Required'),
+  img: z.custom<File>((file) => file instanceof File),
   title: z.string(),
   price: z.string(),
   currency: z.string(),
@@ -27,7 +29,6 @@ type ItemFormValues = z.infer<typeof FormSchema>
 interface FormValues extends Omit<ItemFormValues, 'img'> {
   img: CustomFile | string;
 }
-
 
 export default function EditProduct({ product }: { product: { id: number, img: string, title: string, price: string, quantity: string, category: string, currency: string } }) {
 

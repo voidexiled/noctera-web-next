@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 
-export default function PremiumHistory() {
+export default function LoyaltyPage() {
   return (
     <>
       <Card>
@@ -13,7 +13,7 @@ export default function PremiumHistory() {
         </CardHeader>
         <CardContent className="p-2 space-y-2">
           <div className="flex flex-col rounded-sm border">
-            {/* <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+            {/* <div className='flex p-2 items-center justify-between bg-background text-sm'>
               Loyalty
             </div> */}
             <TableEmptyState />

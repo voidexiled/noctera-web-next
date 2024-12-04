@@ -9,7 +9,7 @@ export default function ListGuilds({ guilds = [] }: { guilds: any[] }) {
     {guilds.length > 0
       ? (
         <Table>
-          <TableHeader className="pointer-events-none border-t bg-gray-100">
+          <TableHeader className="pointer-events-none border-t bg-background">
             <TableRow>
               <TableHead className="w-[80px]"></TableHead>
               <TableHead>Name</TableHead>

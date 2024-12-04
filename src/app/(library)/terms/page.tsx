@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import configLua from "@/hooks/configLua";
 const lua = configLua()
 
-export default function PremiumHistory() {
+export default function TermsAndConditions() {
   return (
     <>
       <Card>

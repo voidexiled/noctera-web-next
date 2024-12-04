@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) return null
         const user = await prisma.accounts.findFirst({ where: { email: credentials.email } });
         if (!user || !(comparePassword(credentials.password, user.password!))) throw new Error(ErrorCode.IncorrectPassword);
-
+        
         if (user.secret_status) {
           if (!credentials.totpCode) throw new Error(ErrorCode.SecondFactorRequired);
           if (!user.secret) throw new Error(ErrorCode.InternalServerError);

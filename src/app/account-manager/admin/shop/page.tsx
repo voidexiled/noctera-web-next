@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 import { Overview } from "./components/overview";
-import { Orders } from "@prisma/client";
+import { orders } from "@prisma/client";
 import { IconiFy } from "@/components/Iconify";
 
 function calculatePercentageChange(previousMonth = 0, currentMonth = 0) {
@@ -22,7 +22,7 @@ function calculatePercentageChange(previousMonth = 0, currentMonth = 0) {
   );
 }
 
-async function getMonthlyData(orders: Orders[], status: Orders['status'] = 'DELIVERED') {
+async function getMonthlyData(orders: orders[], status: orders['status'] = 'DELIVERED') {
   const currentYear = new Date().getFullYear();
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const monthlyTotals: Record<string, number> = {};
@@ -68,6 +68,8 @@ export default async function ProductsAdminManager() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+            {/* <div className="flex flex-row items-center space-x-1 text-sm">
+              USD */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -80,6 +82,7 @@ export default async function ProductsAdminManager() {
             >
               <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
             </svg>
+            {/* </div> */}
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{revenue}</div>

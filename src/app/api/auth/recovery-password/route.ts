@@ -21,7 +21,7 @@ const recovery = async (req: Request) => {
   const code = randomCode(20)
 
   const link = `${process.env.NEXTAUTH_URL}/reset-password/${token}`;
-
+  
   await prisma.tokens.create({
     data: {
       token,

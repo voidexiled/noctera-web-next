@@ -12,6 +12,7 @@ import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CustomFile } from "@/components/upload/types";
+import type * as Prisma from "@prisma/client";
 
 const FormSchema = z.object({
   img: z.custom<File>((file) => file instanceof File, 'Required'),
@@ -27,10 +28,12 @@ type CharacterFormValues = z.infer<typeof FormSchema> & {
   img: CustomFile | string
 }
 
-export default function CreateProduct() {
+export default function CreateProduct({ categories }: { categories: Prisma.products_categories[] }) {
   const route = useRouter()
 
   const [showModal, setShowModal] = useState(false)
+
+  const product_categories = categories.map((category) => ({ label: category.name.toString(), value: category.id.toString() }))
 
   const methods = useForm<CharacterFormValues>({
     resolver: zodResolver(FormSchema),
@@ -121,7 +124,7 @@ export default function CreateProduct() {
             <RHFTextField name="quantity" label="Amount" />
           </div>
 
-          <RHFSelect LabelOption={'label'} keyValue={'value'} name="category" options={[{ value: '1', label: 'Coins' }, { value: '2', label: 'Premium Time' }]} label="Category" />
+          <RHFSelect LabelOption={'label'} keyValue={'value'} name="category" options={product_categories} label="Category" />
 
           <DialogFooter>
             <Button onClick={() => {

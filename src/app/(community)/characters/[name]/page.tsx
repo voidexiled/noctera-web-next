@@ -105,7 +105,7 @@ export default async function Character({ params }: { params: { name: string } }
         <CardContent className="p-2 space-y-2">
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-start justify-start  bg-gray-100'>
+            <div className='flex p-2 items-start justify-start  bg-background'>
               Character Information
             </div>
             <Table>
@@ -167,7 +167,7 @@ export default async function Character({ params }: { params: { name: string } }
               </TableBody>
             </Table>
 
-            {/* <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm text-red-500'>
+            {/* <div className='flex p-2 items-start justify-start  bg-background text-sm text-red-500'>
               Roles Violation Record Details
             </div>
             <Table>
@@ -185,7 +185,7 @@ export default async function Character({ params }: { params: { name: string } }
               </TableBody>
             </Table> */}
 
-            <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+            <div className='flex p-2 items-start justify-start  bg-background text-sm'>
               Account Information
             </div>
             <Table>
@@ -197,7 +197,7 @@ export default async function Character({ params }: { params: { name: string } }
               </TableBody>
             </Table>
 
-            <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+            <div className='flex p-2 items-start justify-start  bg-background text-sm'>
               Character Information
             </div>
             <Table>
@@ -216,7 +216,7 @@ export default async function Character({ params }: { params: { name: string } }
           </div>
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+            <div className='flex p-2 items-start justify-start  bg-background text-sm'>
               Character Deaths
             </div>
             <Table>
@@ -244,7 +244,7 @@ export default async function Character({ params }: { params: { name: string } }
           </div>
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-start justify-start  bg-gray-100 text-sm'>
+            <div className='flex p-2 items-start justify-start  bg-background text-sm'>
               Character
             </div>
             <Table>

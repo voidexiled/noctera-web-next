@@ -10,13 +10,13 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.progamo.com.br',
+        hostname: 'www.noctera-global.com',
         port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'progamo.com.br',
+        hostname: 'noctera-global.com',
         port: '',
         pathname: '/**',
       },
@@ -24,8 +24,8 @@ const nextConfig = {
   },
   experimental: {
 		serverActions: {
-			allowedForwardedHosts: ['localhost', 'progamo.com.br'],
-			allowedOrigins: ['http://localhost', 'progamo.com.br', 'http://progamo.com.br', 'https://www.progamo.com.br']
+			allowedForwardedHosts: ['localhost', 'noctera-global.com'],
+			allowedOrigins: ['http://localhost', 'noctera-global.com', 'http://noctera-global.com', 'https://www.noctera-global.com']
 		},
 	},
   async headers() {
@@ -36,7 +36,7 @@ const nextConfig = {
         source: "/api/:path*",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "https://dev.progamo.com.br" },
+          { key: "Access-Control-Allow-Origin", value: "https://noctera-global.com" },
           {
             key: "Access-Control-Allow-Methods",
             value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",

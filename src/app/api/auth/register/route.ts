@@ -26,11 +26,11 @@ const CreateAccountSchema = z
     name: z.string(),
     email: z
       .string()
-      .email('Deve ser um email válido.')
+      .email('Debe ser un correo electrónico válido')
       .transform((value) => value.toLowerCase().replace(/\s/g, '')),
     password: z
       .string()
-      .min(8, 'A senha deve ter no mínimo 8 caracteres')
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
       .and(passwordUppercase)
       .and(passwordLowercase)
       .and(passwordDigit)
@@ -39,7 +39,7 @@ const CreateAccountSchema = z
     gender: z.enum(['female', 'male']),
     wordLocation: z.number().int().min(0).max(3).default(1),
     wordType: z.number().int().min(0).max(5).default(1),
-    country: z.string().default('br'),
+    country: z.string().default('mx'),
   })
 
   .strict();
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     }
 
     const findInitialPlayer = await prisma.players.findFirst({ where: { name: 'Rook Sample' } })
-    if (!findInitialPlayer) return NextResponse.json({ message: 'Initial Player not exist.' }, { status: 500 });
+    if (!findInitialPlayer) return NextResponse.json({ error: 'Initial Player not exist.' }, { status: 500 });
 
     const { id, account_id, ...restInitialPlayer } = findInitialPlayer || { id: undefined, account_id: undefined };
 
@@ -69,32 +69,23 @@ export async function POST(req: Request) {
         name: data.name,
         email: data.email,
         password: encryptPassword(data.password),
-        create_date: dayjs().unix(),
         created: dayjs().unix(),
+        country: data.country,
         players: {
           create: {
             ...restInitialPlayer,
             name: data.characterName,
             sex: data.gender === 'female' ? 0 : 1,
-            world_id: +lua['worldId'],
-            create_date: dayjs().unix(),
+            created: dayjs().unix(),
           }
         },
-        profile: {
-          create: {
-            gender: data.gender,
-          }
-        },
-        address: {
-          create: {}
-        }
       },
     });
 
     await emailProvider.SendMail({
       to: data.email,
-      subject: 'Well-come',
-      text: 'Bem vindo',
+      subject: 'Welcome to Noctera Global',
+      text: 'Bienvenido',
       html: `
       <div>
          <h1>Follow the following link</h1>

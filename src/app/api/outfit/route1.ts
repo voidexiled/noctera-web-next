@@ -3,8 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs/promises';
 import path from 'path';
 import invariant from 'tiny-invariant';
-import { outfitImagesPath, walkSpeeds } from '@/components/aimations/config';
-import { OutfitData, loadData, outfit } from '@/components/aimations/outfits';
+import { outfitImagesPath, walkSpeeds } from '@/components/animations/config';
+import { OutfitData, loadData, outfit } from '@/components/animations/outfits';
 
 
 

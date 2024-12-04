@@ -23,7 +23,7 @@ const Create = async (req: NextRequest) => {
     const fileName = `${randomUUID()}-${file.name}`
 
     await writeFile(`./public/shop/${fileName}`, buffer)
-
+    
     await prisma.products.create({
       data: {
         title: data.get('title') as string,

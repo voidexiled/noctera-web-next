@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { Provider } from '@/providers/providers'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import MainMenu from '@/components/main-menu'
+import MainMenu from '@/components/main-menu/main-menu'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 import LoginBox from '@/components/login-box'
@@ -22,8 +22,9 @@ import { Typography } from '@/components/Typography'
 import { prisma } from '@/lib/prisma'
 import { Badge } from '@/components/ui/badge'
 import { IconiFy } from '@/components/Iconify';
-import Boosted from '@/components/aimations/boosted';
+import Boosted from '@/components/animations/boosted';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '../lib/utils'
 
 const lua = configLua()
 
@@ -88,6 +89,25 @@ async function getSeverConfig(value: string) {
   return extractIdsFromArrayOfObjects(array1);
 
 }
+
+async function getBoostedCreature() {
+  const boostedCreature = await prisma.boosted_creature.findMany(
+    {
+      take: 1,
+    }
+  )
+  return boostedCreature;
+}
+
+async function getBoostedBoss() {
+  const boostedBoss = await prisma.boosted_boss.findMany(
+    {
+      take: 1,
+    }
+  )
+  return boostedBoss;
+}
+
 export default async function RootLayout({
   children,
 }: {
@@ -97,20 +117,42 @@ export default async function RootLayout({
   const statusServer = await status()
   const countOnline = await totalOnline()
 
-  const boostedCreature = await getSeverConfig('boost_monster_url')
-  const boostedBoss = await getSeverConfig('boost_boss_url')
+  const boostedCreature = await getBoostedCreature()
+  const boostedBoss = await getBoostedBoss()
+
+  const globalServerSaveTime: string = lua['globalServerSaveTime']
+  const globalServerSaveNotifyMessage: string = lua['globalServerSaveNotifyMessage']
+  const globalServerSaveNotifyDuration: string = lua['globalServerSaveNotifyDuration']
+
+  console.log(globalServerSaveTime)
+  console.log(globalServerSaveNotifyMessage)
+  console.log(globalServerSaveNotifyDuration)
+
+  const globalServerSaveTimeHours = Number.parseInt(globalServerSaveTime.split(':')[0])
+  const globalServerSaveTimeMinutes = Number.parseInt(globalServerSaveTime.split(':')[1])
+  const globalServerSaveTimeSeconds = Number.parseInt(globalServerSaveTime.split(':')[2])
+
+  const isGlobalServerSaveNotificationEnabled = globalServerSaveNotifyMessage === 'true' ? true : false
+  const globalServerSaveNotifyDurationMinutes = isGlobalServerSaveNotificationEnabled ? Number.parseInt(globalServerSaveNotifyDuration) : 0
+
+
+  let serverSaveTotalSeconds = (globalServerSaveTimeHours * 3600 + globalServerSaveTimeMinutes * 60 + globalServerSaveTimeSeconds) + (isGlobalServerSaveNotificationEnabled ? globalServerSaveNotifyDurationMinutes * 60 : 0)
+
+  const serverSaveHours = Math.floor(serverSaveTotalSeconds / 3600)
+  const serverSaveMinutes = Math.floor((serverSaveTotalSeconds % 3600) / 60)
+  const serverSaveSeconds = Math.floor((serverSaveTotalSeconds % 3600) % 60)
 
 
   return (
-    <html lang="en">
-      <body className={inter.className} suppressHydrationWarning >
+    <html lang="en" className="dark">
+      <body className={cn(inter.className, 'bg-background text-foreground')} suppressHydrationWarning >
         <>
           <Provider>
             {/* <video className="fixed top-0 left-0 min-w-full min-h-full -z-1 object-cover" autoPlay muted playsInline loop>
               <source src="/movies/logo.webm" type="video/webm" />
             </video> */}
             <ScrollArea className="h-screen w-full px-2">
-              <div className='sm:grid sm:grid-cols-12 sm:space-x-2 sm:space-y-0 space-y-2 grid-cols-1 mx-auto max-w-screen-xl mt-10 hidden'>
+              <div className='sm:grid sm:grid-cols-12 sm:space-x-2 sm:space-y-0 space-y-2 grid-cols-1 mx-auto max-w-screen-xl mt-10 hidden mb-4'>
                 <div className='col-span-2 space-y-2' >
 
                   {/* <Link href="/">
@@ -120,41 +162,42 @@ export default async function RootLayout({
                 <div className='col-span-8 space-y-2'>
                   <div className='flex justify-center items-center'>
                     <Link href="/">
-                      <video className='w-[380px]' autoPlay muted playsInline loop>
+                      {/* <video className='w-[380px]' autoPlay muted playsInline loop>
                         <source src="/movies/logo.webm" type="video/webm" />
-                      </video>
+                      </video> */}
+                      <Image alt="Noctera Global Logo" src="/movies/logo2.png" width={320} height={180} ></Image>
                     </Link>
                   </div>
                 </div>
 
-                <div className='sm:col-span-2 col-span-1 hidden sm:block gap-2'>
-                  {/* <div className='flex flex-row justify-center items-end h-full pb-2 gap-2'>
+                {/* <div className='sm:col-span-2 col-span-1 hidden sm:block gap-2'>
+                  <div className='flex flex-row justify-center items-end h-full pb-2 gap-2'>
                     <div className='bg-background/10 shadow rounded-sm backdrop-blur-[6px] p-3'>
                       <Boosted boosted={{
-                        boostname: boostedCreature[0].id,
+                        boostname: boostedCreature[0].looktype.toString(),
                         lookaddons: 0,
                         lookbody: 0,
                         lookfeet: 0,
                         lookhead: 0,
                         looklegs: 0,
                         lookmount: 0,
-                        looktype: boostedCreature[0].id
+                        looktype: boostedCreature[0].looktype
                       }} kind="creature" />
                     </div>
                     <div className='bg-background/10 shadow rounded-sm backdrop-blur-[6px] p-3'>
                       <Boosted boosted={{
-                        boostname: boostedBoss[0].id,
+                        boostname: boostedBoss[0].looktype.toString(),
                         lookaddons: 0,
                         lookbody: 0,
                         lookfeet: 0,
                         lookhead: 0,
                         looklegs: 0,
                         lookmount: 0,
-                        looktype: boostedBoss[0].id
+                        looktype: boostedBoss[0].looktype
                       }} kind="boss" />
                     </div>
-                  </div> */}
-                </div>
+                  </div>
+                </div> */}
 
               </div>
               <div className='grid sm:grid-cols-12 sm:space-x-2 sm:space-y-0 space-y-2 grid-cols-1 mx-auto max-w-screen-xl'>
@@ -178,7 +221,7 @@ export default async function RootLayout({
 
                 <div className='col-span-8 space-y-2 pb-8'>
                   <div className='flex flex-col p-1 gap-2 bg-background/10 shadow rounded-md backdrop-blur-[6px]'>
-                    <div className='flex items-center justify-between bg-gray-50 rounded-sm p-1'>
+                    <div className='flex items-center justify-between bg-background rounded-sm p-1'>
 
 
                       <div className='flex flex-row gap-4'>
@@ -216,14 +259,21 @@ export default async function RootLayout({
                     {children}
                   </div>
 
-                  <div className='flex justify-between p-2 gap-2 bg-background/10 shadow-md rounded-md backdrop-blur-[6px]'>
-                    <Typography variant={'overline'} className='text-white'>
-                      &copy; Progamo Ltda.
+                  <div className='flex justify-between p-1 bg-background/10 shadow-md rounded-md backdrop-blur-[6px]'>
+                  <div className='flex justify-between p-2 gap-2 bg-card rounded-md w-full h-full'>
+                    <Typography variant={'overline'} className=''>
+                       Noctera-Global &copy; 2024
                     </Typography>
-                    <Typography variant={'overline'} className='text-white'>
+                    <div className='flex flex-row gap-2 items-center'>
+                      <Typography variant={'overline'} className=''>
+                        Contact Support
+                      </Typography>
+                    <Typography variant={'overline'} className=''>
                       <Link href='#'> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3.2 14.222V4a2 2 0 0 1 2-2h13.6a2 2 0 0 1 2 2v10.222m-17.6 0h17.6m-17.6 0l-1.48 5.234A2 2 0 0 0 3.644 22h16.712a2 2 0 0 0 1.924-2.544l-1.48-5.234" /><path strokeLinecap="round" strokeLinejoin="round" d="M11 19h2m1-13l2 2l-2 2m-4-4L8 8l2 2" /></g></svg>
                       </Link>
                     </Typography>
+                    </div>
+                    </div>
                   </div>
 
                 </div>
@@ -241,27 +291,27 @@ export default async function RootLayout({
 
                         {boostedCreature && boostedCreature[0] && (
                         <Boosted boosted={{
-                          boostname: boostedCreature[0].id,
+                          boostname: boostedCreature[0].boostname,
                           lookaddons: 0,
                           lookbody: 0,
                           lookfeet: 0,
                           lookhead: 0,
                           looklegs: 0,
                           lookmount: 0,
-                          looktype: boostedCreature[0].id
+                          looktype: boostedCreature[0].looktype
                         }} kind="creature" />
                         )}
 
                         {boostedBoss && boostedBoss[0] && (
                         <Boosted boosted={{
-                          boostname: boostedBoss[0].id,
+                          boostname: boostedBoss[0].boostname,
                           lookaddons: 0,
                           lookbody: 0,
                           lookfeet: 0,
                           lookhead: 0,
                           looklegs: 0,
                           lookmount: 0,
-                          looktype: boostedBoss[0].id
+                          looktype: boostedBoss[0].looktype
                         }} kind="boss" />
                         )}
                         
@@ -270,7 +320,7 @@ export default async function RootLayout({
 
                   </div>
                   <div className='flex flex-col p-1 gap-2 bg-background/10 shadow rounded-md backdrop-blur-[6px]'>
-                    <CountDown hour={19} min={55} />
+                    <CountDown hour={serverSaveHours} min={serverSaveMinutes} sec={serverSaveSeconds} />
                   </div>
                   <div className='flex flex-col p-1 gap-2 bg-background/10 shadow rounded-md backdrop-blur-[6px]'>
                     <RashidBox />

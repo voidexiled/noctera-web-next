@@ -105,7 +105,7 @@ export default async function GuildData({ params }: { params: { name: string } }
 
           <div className="flex border rounded sm:justify-between p-2 gap-2">
             <div className="flex flex-col w-full">
-              <div className='flex p-2 rounded-sm  bg-gray-100 text-sm'>
+              <div className='flex p-2 rounded-sm  bg-background text-sm'>
                 Guild information
               </div>
               <div className="p-2">
@@ -133,7 +133,7 @@ export default async function GuildData({ params }: { params: { name: string } }
           </div>
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+            <div className='flex p-2 items-center justify-between bg-background text-sm'>
               Guild Members
 
             </div>
@@ -196,7 +196,7 @@ export default async function GuildData({ params }: { params: { name: string } }
             </Table>
           </div>
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+            <div className='flex p-2 items-center justify-between bg-background text-sm'>
               Invited Characters
 
               {level && level >= 2 && <InvitePlayerTo guild_id={guild.id} rank_id={guild.guild_ranks.filter((f) => f.level === 1)[0].id} />}

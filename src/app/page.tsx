@@ -1,4 +1,7 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LastNews from "./(news)/last-news/page";
+
+
 
 export default function Home() {
 
@@ -12,7 +15,7 @@ export default function Home() {
           {news?.map((post) => {
             return (
               <article key={post.id}>
-                <header className='flex p-2 space-x-2 items-center justify-between rounded-sm  bg-gray-100'>
+                <header className='flex p-2 space-x-2 items-center justify-between rounded-sm  bg-background'>
                   <div className="flex flex-row gap-2 items-center">
                     <Typography variant="h6" className="leading-3" >{post.title}</Typography>
                   </div>

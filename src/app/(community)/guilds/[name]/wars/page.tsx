@@ -23,7 +23,7 @@ export default async function War({ params }: { params: { name: string } }) {
         <CardContent className="space-y-2">
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+            <div className='flex p-2 items-center justify-between bg-background text-sm'>
               Guild War
             </div>
             <Table>
@@ -65,7 +65,7 @@ export default async function War({ params }: { params: { name: string } }) {
 
 
           <div className="flex flex-col rounded-sm border">
-            <div className='flex p-2 items-center justify-between bg-gray-100 text-sm'>
+            <div className='flex p-2 items-center justify-between bg-background text-sm'>
               Guild War History
             </div>
             <Table>

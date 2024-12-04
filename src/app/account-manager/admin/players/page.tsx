@@ -52,7 +52,7 @@ export default function AdminManagerPlayer() {
   return (
     <>
       <div className="flex flex-col rounded-sm border">
-        <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+        <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
           Player Manager
           <div className="flex flex-row gap-2 items-center">
             <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" disabled={page === 1} onClick={() => setPage(page - 1)} >

@@ -1,4 +1,4 @@
-import AnimatedOutfit from "@/components/aimations/AnimatedOutfit";
+import AnimatedOutfit from "@/components/animations/AnimatedOutfit";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";

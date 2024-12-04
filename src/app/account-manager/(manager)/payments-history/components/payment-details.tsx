@@ -32,7 +32,7 @@ export default function PaymentDetails({ orderID }: { orderID: string }) {
           <DialogTitle>Order Details</DialogTitle>
         </DialogHeader>
         <div className="border rounded">
-          <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+          <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
             Paypal Information
           </div>
           <Table>

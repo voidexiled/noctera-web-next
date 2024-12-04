@@ -7,7 +7,7 @@ export default function AdminCategories() {
   return (
     <>
       <div className='border rounded-sm'>
-        <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b'>
+        <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
           Categories Manager
           <div className="flex flex-row gap-2 items-center">
             <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" >

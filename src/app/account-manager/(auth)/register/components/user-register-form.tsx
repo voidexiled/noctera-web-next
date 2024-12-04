@@ -26,6 +26,7 @@ const passwordDigit = z.string().regex(/\d/, 'The password must contain at least
 const passwordSpecialChar = z.string().regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/, 'The password must contain at least one special character');
 
 const sexOptions = [{ value: '0', label: 'Female' }, { value: '1', label: 'Male' }]
+const vocationOptions = [{value: '1', label: 'Sorcerer' }, {value: '2', label: 'Druid'}, {value: '3', label: 'Paladin'}, {value: '4', label: 'Knight'}]
 
 export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
   const router = useRouter();
@@ -111,6 +112,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
           />
 
           <RHFTextField
+            className="border-input"
             name="email"
             label="Email Address"
             type="email"
@@ -151,6 +153,16 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
           />
         </div>
 
+        <div className="gird gird-cols-1 sm:grid-cols-1 gap-4">
+          <RHFSelect
+              LabelOption={'label'} keyValue={'value'}
+              name="vocation"
+              label="Vocation"
+              defaultValue={'1'}
+              options={vocationOptions}
+            />
+        </div>
+
         <div className="grid gap-2">
           <div className="grid gap-1">
             <h4 className="text-sm font-medium">World Location:</h4>
@@ -159,7 +171,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
                 <RadioGroupItem value="All" id="All" className="peer sr-only" />
                 <Label
                   htmlFor="All"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-gray-900 [&:has([data-state=checked])]:border-gray-900 cursor-pointer"
+                  className="transition-colors flex flex-col items-center justify-between rounded-md border-2 border-muted p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
                   All
                 </Label>
@@ -201,7 +213,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
 
           <div className="grid gap-1">
             <h4 className="text-sm font-medium">World Type:</h4>
-            <RadioGroup defaultValue="retro-pvp" className="grid grid-cols-4 gap-4">
+            <RadioGroup defaultValue="open-pvp" className="grid grid-cols-4 gap-4">
               <div>
                 <RadioGroupItem value="pvp" id="pvp" className="peer sr-only" disabled />
                 <Label
@@ -216,17 +228,17 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
                   value="open-pvp"
                   id="open-pvp"
                   className="peer sr-only"
-                  disabled
+                  
                 />
                 <Label
                   htmlFor="open-pvp"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-gray-900 [&:has([data-state=checked])]:border-gray-900 cursor-pointer"
+                  className="transition-colors flex flex-col items-center justify-between rounded-md border-2 border-muted p-4 hover:bg-accent hover:text-card-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
                   Open PvP
                 </Label>
               </div>
               <div>
-                <RadioGroupItem value="retro-pvp" id="retro-pvp" className="peer sr-only" />
+                <RadioGroupItem value="retro-pvp" id="retro-pvp" className="peer sr-only"  disabled/>
                 <Label
                   htmlFor="retro-pvp"
                   className="flex flex-col items-center justify-between rounded-md border-2 border-muted p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-gray-900 [&:has([data-state=checked])]:border-gray-900 cursor-pointer"
@@ -248,7 +260,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
           <div className=" flex flex-row gap-2 justify-end">
             <RHFCheckbox
               name="terms"
-              label="Li e aceito os termos"
+              label="Acepto los terminos y condiciones"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

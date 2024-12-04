@@ -21,7 +21,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
-
+import type * as Prisma from "@prisma/client";
 
 export default function PremiumHistory() {
 
@@ -30,6 +30,8 @@ export default function PremiumHistory() {
   const { data: session, status } = useSession()
 
   const payments = [{ title: 'PayPal', value: 'paypal', img_url: 'string' }]
+
+  //const [categories, setCategories] = useState<Prisma.products_categories[]>([]);
   const [products, setProducts] = useState<any[]>([]);
 
 
@@ -46,7 +48,7 @@ export default function PremiumHistory() {
   const ShopStepFormSchema = z.object({
     product: z.string(),
     payment: z.string(),
-    category: z.enum(['coins', 'premdays']),
+    category: z.enum(['coins_transferable', 'premdays']),
     terms: boolean().default(false)
   })
 
@@ -55,7 +57,7 @@ export default function PremiumHistory() {
   const methods = useForm<shopStepFormValues>({
     resolver: zodResolver(ShopStepFormSchema),
     defaultValues: {
-      category: 'coins'
+      category: 'premdays'
     }
   })
 
@@ -72,6 +74,14 @@ export default function PremiumHistory() {
 
   const selectedProduct = products?.filter((p) => p.id.toString() === watch('product'))[0]
 
+  // async function getCategories() {
+  //   const req = await fetch('/api/shop/categories')
+  //   if (req.ok) {
+  //     const body = await req.json()
+  //     setCategories(body)
+  //   }
+  // }
+
   async function GetProducts(category: string) {
 
     const req = await fetch(`/api/shop/product/${category}`)
@@ -83,18 +93,26 @@ export default function PremiumHistory() {
     }
 
   }
+
+  // useEffect(() => {
+  //   setValue('category', 'premdays')
+  // }, [])
+
   useEffect(() => {
 
-    if (values.category === 'coins') {
+    if (values.category === 'premdays') {
       GetProducts('1')
     }
 
-    if (values.category === 'premdays') {
+    if (values.category === 'coins_transferable') {
       GetProducts('2')
     }
 
+    // GetProducts(values.category.toString())
+
   }, [values.category])
 
+  
   return (
     <>
       <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!, currency: process.env.NEXT_PUBLIC_CURRENCY ?? 'USD' }}>
@@ -109,7 +127,7 @@ export default function PremiumHistory() {
               <div className="border rounded-sm">
 
                 <div className="`transition-all duration-300 ease-in-out transform">
-                  <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b '>
+                  <div className='flex p-2 items-center justify-between bg-background text-sm border-b '>
                     <div className="flex gap-2 items-center">
                       <IconiFy icon={'healthicons:money-bag-outline'} />
                       Select Product
@@ -125,13 +143,16 @@ export default function PremiumHistory() {
                           LabelOption={'label'} keyValue={'value'}
                           defaultValue={watch('category')}
                           options={[
-                            // { label: 'Transferable Coins', value: 'transferable_coins' },
-                            { label: 'Transferable coins', value: 'coins', },
-                            { label: 'Premium time', value: 'premdays' }
+                            // { label: 'Transferable Coins', value: 'coins_transferable' },
+                            { label: 'Vip days', value: 'premdays' },
+                            { label: 'Noctera coins', value: 'coins_transferable', }
                           ]}
+                          // options={
+                          //   categories.map((c) => ({ label: c.name, value: c.id.toString() }))
+                          // }
                           onValueChange={(v) => {
                             reset()
-                            setValue('category', v as "coins" | "premdays")
+                            setValue('category', v as "coins_transferable" | "premdays")
                             // if (v === 'coins') {
                             //   setProducts(PRODUCTS[0])
                             // } else if (v === 'premdays') {
@@ -159,7 +180,7 @@ export default function PremiumHistory() {
                   )}
                 </div>
 
-                <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b border-t'>
+                <div className='flex p-2 items-center justify-between bg-background text-sm border-b border-t'>
                   <div className="flex gap-2 items-center">
                     <IconiFy icon={'fluent:payment-28-regular'} />
                     Select payment provider
@@ -175,7 +196,7 @@ export default function PremiumHistory() {
                     />
                   </>
                 )}
-                <div className='flex p-2 items-center justify-between bg-gray-100 text-sm border-b border-t'>
+                <div className='flex p-2 items-center justify-between bg-background text-sm border-b border-t'>
                   <div className="flex gap-2 items-center">
                     Checkout
                   </div>
@@ -199,7 +220,7 @@ export default function PremiumHistory() {
                           </TableRow>
                           <TableRow>
                             <TableCell>Country</TableCell>
-                            <TableCell><strong>BR</strong></TableCell>
+                            <TableCell><strong>MX</strong></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>E-Mail Address</TableCell>
@@ -247,7 +268,7 @@ export default function PremiumHistory() {
                               </TableRow>
                               <TableRow>
                                 <TableCell>Country</TableCell>
-                                <TableCell>BR</TableCell>
+                                <TableCell>MX</TableCell>
                               </TableRow>
                               <TableRow>
                                 <TableCell>E-Mail Address</TableCell>
@@ -320,7 +341,7 @@ export default function PremiumHistory() {
                                   route.push('/account-manager/payments-history')
                                   toast({
                                     variant: 'success',
-                                    title: `Add ${selectedProduct.quantity} ${watch('category') === 'premdays' ? 'premium days' : 'coins'}`,
+                                    title: `Add ${selectedProduct.quantity} ${watch('category') === 'premdays' ? 'premium days' : 'transferable coins'}`,
                                     description: (
                                       <div>{`Transaction ${transaction.status}: ${transaction.id}`}</div>
                                     ),

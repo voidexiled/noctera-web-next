@@ -27,7 +27,7 @@ export function AddCoinsForm({ children, id }: FormProps) {
 
   const accountFormSchema = z.object({
     amount: z.string().transform((data) => Number(data)),
-    type: z.enum(['transferable_coins', 'coins']),
+    type: z.enum(['coins_transferable', 'coins']),
   })
 
   type AccountFormValues = z.infer<typeof accountFormSchema>
@@ -104,7 +104,7 @@ export function AddCoinsForm({ children, id }: FormProps) {
                 <RHFSelect
                   LabelOption={'label'} keyValue={'value'}
                   label='type'
-                  options={[{ value: 'transferable_coins', label: 'Transferable' }, { value: 'coins', label: 'No transferable' }]}
+                  options={[{ value: 'coins_transferable', label: 'Transferable' }, { value: 'coins', label: 'No transferable' }]}
                   name="type"
                   defaultValue={'coins'}
                   disabled={isSubmitting}
