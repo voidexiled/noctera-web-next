@@ -40,9 +40,10 @@ export const metadata: Metadata = {
 export async function status() {
   try {
     const statusServer = new StatusServer();
-    const host = lua['ip']
+    const host = lua['ip'].split(' ')[0]
     const port = +lua['statusProtocolPort'];
     const status = await statusServer.getStatus(host, port);
+    console.log("status: ", status)
     return {
       status: !!status,
     };
