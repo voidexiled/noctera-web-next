@@ -87,20 +87,20 @@ export async function POST(req: Request) {
       },
     });
 
-    await emailProvider.SendMail({
-      to: data.email,
-      subject: 'Welcome to Noctera Global',
-      text: 'Bienvenido',
-      html: `
-      <div>
-         <h1>Follow the following link</h1>
-          <p>Please follow
-            <a href=""> this link </a>
-            to reset your password
-            </p>
-      </div>
-      `,
-    });
+    // await emailProvider.SendMail({
+    //   to: data.email,
+    //   subject: 'Welcome to Noctera Global',
+    //   text: 'Bienvenido',
+    //   html: `
+    //   <div>
+    //      <h1>Follow the following link</h1>
+    //       <p>Please follow
+    //         <a href=""> this link </a>
+    //         to reset your password
+    //         </p>
+    //   </div>
+    //   `,
+    // });
     NextResponse.json({}, { status: 200 });
 
   } catch (error) {
