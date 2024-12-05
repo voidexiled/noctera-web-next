@@ -108,7 +108,7 @@ export async function POST(req: Request) {
     if (error instanceof ZodError) {
       return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
     }
-    return NextResponse.json({ error: error,  }, { status: 500 });
+    return NextResponse.json({ error: error }, { status: 500 });
   }
   return NextResponse.json(null, { status: 200 });
 }
