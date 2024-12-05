@@ -7,6 +7,8 @@ import { NextResponse } from "next/server";
 import { ZodError, z } from 'zod';
 //import { positions, samplePlayer } from "../../../../../prisma/seed";
 import { MailProvider } from "@/lib/nodemailer";
+import { config } from "process";
+import {pageConfig} from "@/lib/config";
 
 //  World Pvp Types
 // 0 >> Open PvP
@@ -75,6 +77,9 @@ export async function POST(req: Request) {
         password: encryptPassword(data.password),
         created: dayjs().unix(),
         country: data.country,
+        coins_transferable: pageConfig.new_account.add_transferable_coins ? pageConfig.new_account.coins_transferable : 0,
+        coins: pageConfig.new_account.add_coins ? pageConfig.new_account.coins : 0,
+        premdays: pageConfig.new_account.add_vip_days ? pageConfig.new_account.vip_days : 0,
         players: {
           create: {
             ...restInitialPlayer,
