@@ -42,7 +42,7 @@ const CreateAccountSchema = z
     wordLocation: z.number().int().min(0).max(3).default(1),
     wordType: z.number().int().min(0).max(5).default(1),
     country: z.string().default('mx'),
-    vocation: z.number().int().min(0).max(4).default(0),
+    vocation: z.string().default('0'),
   })
 
   .strict();
@@ -61,8 +61,8 @@ export async function POST(req: Request) {
     if (existsPlayer) {
       return NextResponse.json({ error: "Character already exists" }, { status: 400 });
     }
-
-    const initialPlayerName = data.vocation === 1 ? 'Sorcerer Sample' : data.vocation === 2 ? 'Druid Sample' : data.vocation === 3 ? 'Paladin Sample' : data.vocation === 4 ? 'Knight Sample' : 'Rook Sample';
+    console.log("DATA.VOCATION, ",data.vocation);
+    const initialPlayerName = data.vocation === '1' ? 'Sorcerer Sample' : data.vocation === '2' ? 'Druid Sample' : data.vocation === '3' ? 'Paladin Sample' : data.vocation === '4' ? 'Knight Sample' : 'Rook Sample';
 
     const findInitialPlayer = await prisma.players.findFirst({ where: { name: initialPlayerName } })
 
@@ -85,7 +85,12 @@ export async function POST(req: Request) {
             ...restInitialPlayer,
             name: data.characterName,
             sex: data.gender === 'female' ? 0 : 1,
-            vocation: data.vocation,
+            level: findInitialPlayer.level,
+            vocation: findInitialPlayer.vocation,
+            health: findInitialPlayer.health,
+            healthmax: findInitialPlayer.healthmax,
+            experience: findInitialPlayer.experience,
+            
             created: dayjs().unix(),
           }
         },

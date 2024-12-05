@@ -3,6 +3,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { Input, InputProps } from '../ui/input'
 import { Label } from '../ui/label'
 import React from 'react'
+import { cn } from '@/lib/utils'
 
 type IProps = {
   name: string
@@ -13,7 +14,7 @@ type IProps = {
 
 type Props = IProps & InputProps
 
-export default function RHFTextField({ name, label, ...other }: Props) {
+export default function RHFTextField({  name, label, ...other }: Props) {
   const { control } = useFormContext()
   const inputId = React.useId()
 
@@ -22,7 +23,7 @@ export default function RHFTextField({ name, label, ...other }: Props) {
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <div className="flex flex-col gap-2 w-full">
+        <div className={cn("flex flex-col gap-2 w-full")}>
           {label && <Label htmlFor={inputId} className='whitespace-nowrap'>{label}</Label>}
           <Input
             {...other}

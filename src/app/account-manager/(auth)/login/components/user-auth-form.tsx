@@ -22,6 +22,7 @@ import TwoFactAuth from "@/components/TwoFactAuth";
 import { ErrorCode } from "@/utils/ErrorCode";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import RHFCheckbox from "@/components/hook-form/RHFCheckbox";
 
 const Uppercase = z.string().regex(/[A-Z]/, 'The password should contain at least 1 uppercase character');
 const Lowercase = z.string().regex(/[a-z]/, 'The password must contain at least one lowercase letter');
@@ -119,6 +120,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             autoComplete="email"
             autoCorrect="off"
             disabled={isSubmitting}
+            //className="border-primary"
           />
           <div className="relative">
             <RHFTextField
@@ -131,8 +133,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <IconiFy onClick={() => setShowPassword(!showPassword)} icon={!showPassword ? 'ph:eye-light' : 'ph:eye-slash-light'} className="absolute right-2 bottom-2" />
           </div>
 
-          {/*
-          <Dialog open={showOTP}>
+
+          {/* <Dialog open={showOTP}>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Are you sure absolutely sure?</DialogTitle>
@@ -146,6 +148,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               </DialogFooter>
             </DialogContent>
           </Dialog> */}
+
           {showOTP && (
             <div>
               <Label>Enter your code 2FA</Label>

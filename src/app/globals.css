@@ -234,7 +234,8 @@
   --destructive: 0 100% 50%;
   --destructive-foreground: 230 20% 100%;
   --border: 240 20% 30%;
-  --input: 240 20% 20%;
+  /* --input: 240 20% 20%; */
+  --input: 240 20% 28%;
   --ring: 250 70% 50%;
   --chart-1: 250 70% 50%;
   --chart-2: 240 60% 55%;

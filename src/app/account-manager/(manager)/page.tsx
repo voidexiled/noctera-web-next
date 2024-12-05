@@ -147,13 +147,13 @@ export default async function Dashboard({ params, searchParams }: Params) {
                   <div>
                     {acc?.premdays ? (
                       <>
-                        <Typography variant={"h6"} className="text-green-500 leading-none" >Premium Account</Typography>
-                        <Typography variant={"overline"} className="text-sm leading-none">( Balance of Premium Time: <strong>{acc?.premdays}</strong> days )</Typography>
+                        <Typography variant={"h6"} className="text-green-500 leading-none" >VIP Account</Typography>
+                        <Typography variant={"overline"} className="text-sm leading-none">( Balance of VIP Time: <strong>{acc?.premdays}</strong> days )</Typography>
                       </>
                     ) : (
                       <>
                         <Typography variant={"h6"} className="text-red-500" >Free Account</Typography>
-                        <Typography variant={"overline"} className="text-sm">To benefit from our great premium features, get Premium Time for your account.</Typography>
+                        <Typography variant={"overline"} className="text-sm">To benefit from our great VIP features, get VIP Time for your account.</Typography>
                       </>
                     )}
                   </div>
@@ -422,8 +422,8 @@ export default async function Dashboard({ params, searchParams }: Params) {
             <div className="space-y-2">
               <div className="flex flex-row justify-between items-center space-x-2 rounded-md border p-2 leading-none">
                 <div>
-                  <Typography variant={'h5'} className="text-sm">Premium History</Typography>
-                  <Typography variant={'body1'} className="text-sm" component={'p'}>Contains all historical data about your Premium Scrolls and Premium Times.</Typography>
+                  <Typography variant={'h5'} className="text-sm">VIP History</Typography>
+                  <Typography variant={'body1'} className="text-sm" component={'p'}>Contains all historical data about your VIP Times.</Typography>
                 </div>
                 <Button size={'sm'} className="whitespace-nowrap" asChild>
                   <Link href={'/account-manager/premium-history'}>View History</Link>

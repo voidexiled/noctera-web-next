@@ -39,7 +39,7 @@ const Setup = async (request: NextRequest) => {
 
     await prisma.accounts.update({ where: { id: user.id }, data: { secret } })
 
-    const keyUri = authenticator.keyuri(user.email, 'TibiaGods', secret);
+    const keyUri = authenticator.keyuri(user.email, "Noctera Global", secret);
     const dataUri = await qrcode.toDataURL(keyUri);
 
     return NextResponse.json({ dataUri });

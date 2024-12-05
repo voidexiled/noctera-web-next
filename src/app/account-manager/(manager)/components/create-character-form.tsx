@@ -17,19 +17,25 @@ import RHFCheckbox from "@/components/hook-form/RHFCheckbox"
 import { toast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
 
+const vocationOptions = [{value: '1', label: 'Sorcerer' }, {value: '2', label: 'Druid'}, {value: '3', label: 'Paladin'}, {value: '4', label: 'Knight'}]
+
+
 export function CharacterForm() {
   const router = useRouter()
 
   const [showNewTeamDialog, setShowNewTeamDialog] = useState(false)
 
   const characterFormSchema = z.object({
-    name: z.string().nonempty(),
+    name: z.string().min(1),
     sex: z.string(),
     wLocation: z.string().optional(),
     wType: z.string().optional(),
     world_id: z.string().optional(),
-    tutorial: z.boolean(),
+    vocation: z.string().min(1)
+    //tutorial: z.boolean(),
   })
+
+  
 
   type CharacterFormValues = z.infer<typeof characterFormSchema>
 
@@ -37,7 +43,8 @@ export function CharacterForm() {
     resolver: zodResolver(characterFormSchema),
     defaultValues: {
       sex: '0',
-      tutorial: true,
+      vocation: '1'
+      //tutorial: true,
     }
   })
 
@@ -53,7 +60,8 @@ export function CharacterForm() {
         body: JSON.stringify({
           name: data.name,
           sex: +data.sex,
-          tutorial: data.tutorial
+          vocation: data.vocation
+          //tutorial: data.tutorial
         }),
       })
 
@@ -120,13 +128,21 @@ export function CharacterForm() {
                     defaultValue={'0'}
                     disabled={isSubmitting}
                   />
+                  <RHFSelect
+                    LabelOption={'label'} keyValue={'value'}
+                    label='Vocation'
+                    options={vocationOptions}
+                    name="vocation"
+                    defaultValue={'1'}
+                    disabled={isSubmitting}
+                  />
 
-                  <div className="flex flex-row justify-between items-center space-x-2 rounded-md border p-2 leading-none">
+                  {/* <div className="flex flex-row justify-between items-center space-x-2 rounded-md border p-2 leading-none">
                     <RHFCheckbox
                       name="tutorial"
                       label="Do you want to play the tutorial?"
                     />
-                  </div>
+                  </div> */}
 
                 </div>
               </div>

@@ -34,7 +34,7 @@ const create = async (req: Request) => {
     }
   })
 
-  const link = `${process.env.NEXTAUTH_URL}/email-confirmation/${token}`;
+  const link = `${process.env.NEXTAUTH_URL}/email-confirmation/${token}?key=${code}`;
 
   await emailProvider.SendMail({
     to: acc.email,

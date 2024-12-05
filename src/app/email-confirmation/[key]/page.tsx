@@ -6,10 +6,13 @@ import { DialogFooter } from "@/components/ui/dialog"
 import { toast } from "@/components/ui/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Icon } from "@iconify/react/dist/iconify.js"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+ 
 
 export default function Character({ params }: { params: { key: string } }) {
+  const router = useRouter()
   const characterFormSchema = z.object({
     code: z.string(),
     token: z.string(),
@@ -40,7 +43,8 @@ export default function Character({ params }: { params: { key: string } }) {
           title: "Account Manager",
           description: (<div>You email has been activated.</div>),
         })
-        return
+        
+        return router.replace('/account-manager/')
       }
       toast({
         title: "Account Manager",

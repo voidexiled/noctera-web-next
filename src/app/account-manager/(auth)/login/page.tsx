@@ -31,7 +31,7 @@ export default function Login() {
           </Typography>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="text-card-foreground">
         <CardHeader className="border-b">
           <CardTitle>Account Login</CardTitle>
         </CardHeader>

@@ -18,11 +18,11 @@ export const metadata: Metadata = {
 export default function Register() {
   return (
     <>
-      <Card className="rounded-md relative text-foreground">
-        <CardHeader className="border-b">
+      <Card className="rounded-md relative text-foreground bg-background">
+        <CardHeader className="border-b ">
           <CardTitle>Create New Account</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-1 gap-3">  
+        <CardContent className="grid grid-cols-1 sm:grid-cols-1 gap-3 ">  
           <div>
             <UseRegisterForm />
           </div>

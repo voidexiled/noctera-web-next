@@ -49,7 +49,8 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
     gender: z.string(),
     wLocation: z.string().optional(),
     wType: z.string().optional(),
-    terms: z.boolean().default(false)
+    terms: z.boolean().default(false),
+    vocation: z.string().default('1'),
   })
 
   type LoginFormValues = z.infer<typeof loginFormSchema>
@@ -58,10 +59,11 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
       gender: '0',
+      vocation: '1'
     }
   })
 
-  const { handleSubmit, watch, formState: { isSubmitting } } = methods
+  const { handleSubmit, watch, formState: { isSubmitting }, trigger } = methods
 
   async function onSubmit(data: LoginFormValues) {
     fetch("/api/auth/register", {
@@ -75,6 +77,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
         password: data.password,
         gender: data.gender === '0' ? 'female' : 'male',
         characterName: data.characterName,
+        vocation: data.vocation
       }),
     }).then(async (res) => {
       if (res.status === 200) {
@@ -106,35 +109,44 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)} >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <RHFTextField
+
             name="accountName"
             label="Account Name"
             disabled={isSubmitting}
+            onChange={() => {trigger("accountName")}}
           />
 
           <RHFTextField
             className="border-input"
             name="email"
             label="Email Address"
+            placeholder="email@example.com"
             type="email"
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect="off"
             disabled={isSubmitting}
+            onChange={() => {trigger("email")}}
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <RHFTextField
+          
+            placeholder="********"
             name="password"
             label="Password"
             type="password"
             disabled={isSubmitting}
+            onChange={() => {trigger("password")}}
           />
           <RHFTextField
+            placeholder="********"
             name="passwordConfirm"
             label="Password Again"
             type="password"
             disabled={isSubmitting}
+            onChange={() => {trigger("passwordConfirm")}}
           />
         </div>
 
@@ -143,6 +155,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
             name="characterName"
             label="Character Name"
             disabled={isSubmitting}
+            onChange={() => {trigger("characterName")}}
           />
           <RHFSelect
             LabelOption={'label'} keyValue={'value'}
@@ -150,6 +163,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
             label="Sex"
             defaultValue={'0'}
             options={sexOptions}
+            onValueChange={() => {trigger("gender")}}
           />
         </div>
 
@@ -160,6 +174,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
               label="Vocation"
               defaultValue={'1'}
               options={vocationOptions}
+              onValueChange={() => {trigger("vocation")}}
             />
         </div>
 
