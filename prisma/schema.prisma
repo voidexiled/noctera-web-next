@@ -195,9 +195,9 @@ model accounts {
   pagseguro_transactions pagseguro_transactions[]
   players                players[]
   store_history          store_history[]
-  tokens                 Tokens[]
   social_medias          social_medias?
   posts                  posts[]
+  tokens                 Tokens[]
 }
 
 model Tokens {
@@ -462,7 +462,7 @@ model market_offers {
 model myaac_account_actions {
   account_id Int
   ip         String @default("0.0.0.0") @db.VarChar(16)
-  ipv6       Bytes  @default(dbgenerated("0x30")) @db.Binary(16)
+  ipv6       Bytes  @default(dbgenerated("('0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0')")) @db.Binary(16)
   date       Int    @default(0)
   action     String @default("") @db.VarChar(255)
   id         Int    @id @default(autoincrement())
@@ -1100,6 +1100,7 @@ model players {
   created                                                  Int                    @default(0)
   hidden                                                   Boolean                @default(false)
   comment                                                  String                 @db.Text
+  cast_on                                                  Int                    @default(0) @db.TinyInt
   account_ban_history                                      account_ban_history[]
   account_bans                                             account_bans[]
   account_vipgrouplist                                     account_vipgrouplist[]
@@ -1125,7 +1126,6 @@ model players {
   player_wheeldata                                         player_wheeldata?
   accounts                                                 accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "players_account_fk")
   roulette_plays                                           roulette_plays[]
-  cast_on                                                  Int                    @default(0) @db.TinyInt
 
   @@index([account_id], map: "account_id")
   @@index([vocation], map: "vocation")
