@@ -240,7 +240,7 @@ export default async function Dashboard({ params, searchParams }: Params) {
                       <TableRow>
                         <TableCell>Tibia Coins:</TableCell>
                         <TableCell className="flex items-center gap-1">
-                          {acc?.coins}{' '}
+                          {acc?.coins_transferable}{' '}
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger><Image src="/icons/icon-tibiacointrusted.png" alt="tibiacointrusted" width={16} height={16} className=" w-auto h-auto" /></TooltipTrigger>
@@ -250,7 +250,7 @@ export default async function Dashboard({ params, searchParams }: Params) {
                             </Tooltip>
                           </TooltipProvider>
                           {' '}
-                          ( include {acc?.tournament_coins.toString()}
+                          ( include {acc?.coins.toString()}
                           {' '}
                           <TooltipProvider>
                             <Tooltip>
