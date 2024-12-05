@@ -1,5 +1,5 @@
-import { encryptPassword } from '@/utils/functions/criptoPassword';
-import { randomKey } from '@/utils/functions/randomKey';
+import { encryptPassword } from '../src/utils/functions/criptoPassword';
+//import { randomKey } from '@/utils/functions/randomKey';
 import {
 	PrismaClient,
 	type accounts,
@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 
 //import config from '@/lib/config';
 
-const key = randomKey();
+//const key = randomKey();
 
 const password = encryptPassword('Z4me5cwh*$%');
 export const sampleAccount: accounts = {
@@ -705,10 +705,10 @@ async function seed() {
 }
 
 seed()
+	.finally(async () => {
+		await prisma.$disconnect();
+	})
 	.catch((error) => {
 		console.log(error);
 		process.exit(1);
-	})
-	.finally(async () => {
-		await prisma.$disconnect();
 	});
