@@ -304,6 +304,7 @@ export default function PremiumHistory() {
                                 })
                               })
                               const order = await res.json()
+                              console.log(order)
                               return order.id
                             }}
                             onApprove={async (data, actions) => {
