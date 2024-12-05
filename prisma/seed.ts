@@ -281,7 +281,6 @@ export const sampleAdmin = {
 	lookhead: 0,
 	lookbody: 0,
 	lookaddons: 0,
-	lookmount: 0,
 	health: 1,
 	healthmax: 1,
 	level: 1,
