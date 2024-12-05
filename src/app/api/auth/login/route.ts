@@ -159,7 +159,9 @@ function parseDate(date: string) {
 async function handleEventSchedule() {
     //const json_file_path = lua['']
     try {
-        const json_file_path = `${path.resolve("C:/Users/jalomo/Downloads/13.41 server/canary/data/json/eventscheduler/events.json")}`
+        const server_path = process.env.SERVER_PATH! || "";
+        //const json_file_path = `${path.resolve("C:/Users/jalomo/Downloads/13.41 server/canary/data/json/eventscheduler/events.json")}`
+        const json_file_path = `${server_path}/data/json/eventscheduler/events.json`
         console.log(1)
         const fileContents = await fs.readFile(json_file_path, "utf8")
         console.log(2)
