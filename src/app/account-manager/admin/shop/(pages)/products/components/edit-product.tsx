@@ -97,12 +97,13 @@ export default function EditProduct({ product }: { product: { id: number, img: s
         </DialogHeader>
 
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <RHFUploadShopImage
+          {/* <RHFUploadShopImage
             name="img"
             accept={{ 'image': ['.png', '.gif'] }}
             maxSize={3145728}
             onDrop={handleDrop}
-          />
+          /> */}
+          <RHFTextField name="img" label="Image name file" autoFocus required />
           <RHFTextField name="title" label="Title" />
           <div className="grid sm:grid-cols-3 gap-2">
             <RHFTextField name="price" label="Price" />

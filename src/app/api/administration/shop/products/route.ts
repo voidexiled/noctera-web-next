@@ -14,15 +14,15 @@ const Create = async (req: NextRequest) => {
     if (!acc) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
     const data = await req.formData()
-    const file: File | null = data.get('img') as unknown as File
-    if (!file || !data.get('title') || !data.get('price') || !data.get('quantity') || !data.get('category')) {
+    //const file: File | null = data.get('img') as unknown as File
+    if (!data.get('img') || !data.get('title') || !data.get('price') || !data.get('quantity') || !data.get('category')) {
       throw new Error('No file uploaded')
     }
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    const fileName = `${randomUUID()}-${file.name}`
+    //const bytes = await file.arrayBuffer()
+    //const buffer = Buffer.from(bytes)
+    //const fileName = `${randomUUID()}-${file.name}`
 
-    await writeFile(`./public/shop/${fileName}`, buffer)
+    //await writeFile(`./public/shop/${fileName}`, buffer)
     
     await prisma.products.create({
       data: {
@@ -31,7 +31,7 @@ const Create = async (req: NextRequest) => {
         quantity: Number(data.get('quantity')),
         category_id: Number(data.get('category')),
         content: data.get('title') as string,
-        img_url: fileName,
+        img_url: data.get('img') as string,
         currency: data.get('currency') as string
       }
     })
