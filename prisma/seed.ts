@@ -1,21 +1,17 @@
+import { PrismaClient } from '@prisma/client'
 import { encryptPassword } from '../src/utils/functions/criptoPassword';
 //import { randomKey } from '@/utils/functions/randomKey';
-import {
-	PrismaClient,
-	type accounts,
-	type boosted_boss,
-	type boosted_creature,
-	type players,
-} from '@prisma/client';
 import dayjs from 'dayjs';
-const prisma = new PrismaClient();
+
 
 //import config from '@/lib/config';
 
 //const key = randomKey();
 
+const prisma = new PrismaClient()
+
 const password = encryptPassword('Z4me5cwh*$%');
-export const sampleAccount: accounts = {
+export const sampleAccount = {
 	id: 1,
 	name: 'godwwytk2mu',
 	password: password,
