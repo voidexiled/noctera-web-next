@@ -215,8 +215,9 @@ model Tokens {
 }
 
 model boosted_boss {
+  id         Int     @id @default(autoincrement())
   boostname  String? @db.Text
-  date       String  @id @default("") @db.VarChar(250)
+  date       String  @default("") @db.VarChar(250)
   raceid     String  @default("") @db.VarChar(250)
   looktypeEx Int     @default(0)
   looktype   Int     @default(136)
@@ -229,8 +230,9 @@ model boosted_boss {
 }
 
 model boosted_creature {
+  id         Int     @id @default(autoincrement())
   boostname  String? @db.Text
-  date       String  @id @default("") @db.VarChar(250)
+  date       String  @default("") @db.VarChar(250)
   raceid     String  @default("") @db.VarChar(250)
   looktype   Int     @default(136)
   lookfeet   Int     @default(0)
