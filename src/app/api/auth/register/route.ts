@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { NextResponse } from "next/server";
 
 import { ZodError, z } from 'zod';
-import { positions, samplePlayer } from "../../../../../prisma/seed";
+//import { positions, samplePlayer } from "../../../../../prisma/seed";
 import { MailProvider } from "@/lib/nodemailer";
 
 //  World Pvp Types
