@@ -642,9 +642,9 @@ export const knighSample = {
 
 export const sampleBoostedCreature = {
 	boostname: 'Mushroom Sniffer',
-	date: '870',
+	date: '4',
 	raceid: '60',
-	looktype: 0,
+	looktype: 870,
 	lookfeet: 0,
 	looklegs: 0,
 	lookhead: 0,
