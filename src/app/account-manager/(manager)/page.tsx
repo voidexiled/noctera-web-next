@@ -238,14 +238,14 @@ export default async function Dashboard({ params, searchParams }: Params) {
                         <TableCell className="">{fUnixToDate(acc.web_lastlogin)}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Tibia Coins:</TableCell>
+                        <TableCell>Noctera Coins:</TableCell>
                         <TableCell className="flex items-center gap-1">
                           {acc?.coins_transferable}{' '}
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger><Image src="/icons/icon-tibiacointrusted.png" alt="tibiacointrusted" width={16} height={16} className=" w-auto h-auto" /></TooltipTrigger>
                               <TooltipContent>
-                                <p>Tibia Coins</p>
+                                <p>Noctera Coins</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
