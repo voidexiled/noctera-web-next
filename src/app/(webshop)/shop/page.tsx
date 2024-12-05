@@ -164,7 +164,7 @@ export default function PremiumHistory() {
 
                       <RHFRadioGroupItemShop
                         name="product"
-                        options={products}
+                        options={products.toSorted(((a, b) => a.quantity! - b.quantity!))}
                         defaultValue={watch('product')}
                       />
 
