@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, type players, type products_categories } from '@prisma/client'
 import { encryptPassword } from '../src/utils/functions/criptoPassword';
 //import { randomKey } from '@/utils/functions/randomKey';
 import dayjs from 'dayjs';
@@ -16,6 +16,40 @@ export const sampleAccount = {
 	name: 'godwwytk2mu',
 	password: password,
 	email: 'admin@godwwytkmu.com',
+	created: dayjs().unix(),
+	rlname: '',
+	location: '',
+	country: '',
+	web_lastlogin: 0,
+	web_flags: 0,
+	email_hash: '',
+	email_new: '',
+	email_new_time: 0,
+	email_code: '',
+	email_next: 0,
+	email_verified: true,
+	phone: null,
+	key: '',
+	premdays: 0,
+	premdays_purchased: 0,
+	lastday: 0,
+	type: 6,
+	coins: 0,
+	coins_transferable: 0,
+	tournament_coins: 0,
+	creation: dayjs().unix(),
+	recruiter: 0,
+	vote: 0,
+	secret: '',
+	secret_status: false,
+	gamesecret: '',
+	authToken: '',
+};
+export const godAccount = {
+	id: 2,
+	name: 'wwytk2mu',
+	password: password,
+	email: 'heathcliff@god.com',
 	created: dayjs().unix(),
 	rlname: '',
 	location: '',
@@ -235,6 +269,25 @@ export const sampleRook = {
 	created: 100,
 	comment: '',
 };
+
+export const sampleAdmin = {
+	...sampleRook,
+	group_id: 6,
+	account_id: 2,
+	town_id: 8,
+	looktype: 302,
+	lookfeet: 0,
+	looklegs: 0,
+	lookhead: 0,
+	lookbody: 0,
+	lookaddons: 0,
+	lookmount: 0,
+	health: 1,
+	healthmax: 1,
+	level: 1,
+	mana: 1,
+	manamax: 1,
+}
 
 export const sampleSorcerer = {
 	id: 2,
@@ -668,6 +721,16 @@ export const sampleBoostedBoss = {
 };
 
 
+// // products
+// export const sampleProductCategories: products_categories = {
+// 	img_url: 'd2bc1428-a3c1-492e-8cf1-84679d4ecd9a-Premium_Time_360.png'
+// 	name: 'Vip',
+// 	desc: 'Vip',
+// }
+// // categories
+
+
+
 
 
 async function seed() {
@@ -680,12 +743,14 @@ async function seed() {
 	// await prisma.towns.createMany({ data: positions, skipDuplicates: true });
 
 	await prisma.accounts.createMany({
-		data: sampleAccount,
+		data: [sampleAccount, godAccount],
 		skipDuplicates: true,
 	});
 
+		
+
 	await prisma.players.createMany({
-		data: [sampleRook, sampleSorcerer, druidSample, paladinSample, knighSample],
+		data: [sampleRook, sampleSorcerer, druidSample, paladinSample, knighSample, sampleAdmin],
 		skipDuplicates: true,
 	});
 
