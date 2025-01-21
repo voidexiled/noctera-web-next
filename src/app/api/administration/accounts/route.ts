@@ -24,8 +24,8 @@ const find = async (req: Request) => {
   }
 
   const url = new URL(req.url)
-  const page = parseInt(url.searchParams.get("page") || "1");
-  const postsPerPage = parseInt((url.searchParams.get("limit") || "10"));
+  const page = Number.parseInt(url.searchParams.get("page") || "1");
+  const postsPerPage = Number.parseInt((url.searchParams.get("limit") || "10"));
   const skip = (page - 1) * postsPerPage;
 
   const accounts = await prisma.accounts.findMany({

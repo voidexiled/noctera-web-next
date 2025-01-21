@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs';
-import path, { dirname } from 'path';
+import { readFileSync } from 'node:fs';
+import path, { dirname } from 'node:path';
 
 interface ConfigLua<T> {
 	[key: string]: T;

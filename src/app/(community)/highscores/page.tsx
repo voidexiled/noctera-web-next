@@ -15,7 +15,7 @@ const columnName = {
   skill_axe: 'Axe Fighting',
   skill_club: "Club Fighting",
   skill_dist: "Distance Fighting",
-  experience: "Experience Point",
+  experience: "Exp",
   skill_fishing: "Fishing",
   skill_fist: "First Fighting",
   maglevel: "Magic Level",
@@ -44,7 +44,7 @@ export default async function HighScores({ searchParams }: { searchParams?: { vo
     <>
       <Card>
         <CardHeader className="border-b">
-          <CardTitle>HighScores</CardTitle>
+          <CardTitle>Highscores</CardTitle>
         </CardHeader>
         <CardContent className="p-2 space-y-2">
 
@@ -68,7 +68,7 @@ export default async function HighScores({ searchParams }: { searchParams?: { vo
                   { value: 'skill_axe', label: 'Axe Fighting' },
                   { value: 'skill_club', label: 'Club Fighting' },
                   { value: 'skill_dist', label: 'Distance Fighting' },
-                  { value: 'experience', label: 'Experience Point' },
+                  { value: 'experience', label: 'Exp' },
                   { value: 'skill_fishing', label: 'Fishing' },
                   { value: 'skill_fist', label: 'First Fighting' },
                   { value: 'maglevel', label: 'Magic Level' },

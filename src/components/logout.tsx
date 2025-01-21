@@ -18,7 +18,7 @@ export const LogoutButton = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="whitespace-nowrap">
+        <Button className="whitespace-nowrap" variant={'secondary'}>
           Logout
         </Button>
       </AlertDialogTrigger>

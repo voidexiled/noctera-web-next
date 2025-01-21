@@ -234,7 +234,7 @@ export default async function Character({ params }: { params: { name: string } }
                 {deaths.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={4}>
-                      <Typography variant="overline" className="text-center">Not Death.</Typography>
+                      <Typography variant="overline" className="text-center">Never died.</Typography>
                     </TableCell>
                   </TableRow>
                 )}
@@ -243,9 +243,15 @@ export default async function Character({ params }: { params: { name: string } }
             </Table>
           </div>
 
+          {/* Character inventory */}
+          <div className="flex flex-col rounded-sm border">
+                
+          </div>
+
+
           <div className="flex flex-col rounded-sm border">
             <div className='flex p-2 items-start justify-start  bg-background text-sm'>
-              Character
+              Characters
             </div>
             <Table>
               <TableHeader className="pointer-events-none">

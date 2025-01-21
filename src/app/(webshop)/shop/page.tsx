@@ -118,7 +118,7 @@ export default function PremiumHistory() {
       <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!, currency: process.env.NEXT_PUBLIC_CURRENCY ?? 'USD' }}>
 
         <Card>
-          <CardHeader className="border-b">
+          <CardHeader className="border-b bg-background">
             <CardTitle>Buy Coins</CardTitle>
           </CardHeader>
           <CardContent className="p-2 space-y-2">

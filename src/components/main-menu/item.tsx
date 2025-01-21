@@ -31,9 +31,9 @@ export default function Item({
   children,
 }: ItemProps) {
   return (
-    <AccordionItem value={accordionValue} className="border-none p-0  ">
-      <AccordionTrigger className="p-1 px-2 bg-card text-card-foreground rounded-sm decoration-none">
-        <div className={clsx("flex flex-row gap-2 items-center", className)}>
+    <AccordionItem value={accordionValue} className="border-none p-0 " >
+      <AccordionTrigger className="rounded-sm bg-card p-1 px-2 text-card-foreground decoration-none">
+        <div className={clsx("flex flex-row items-center gap-2", className)}>
           <Image
             src={imgSrc ?? ""}
             width={imgWidth ?? 24}
@@ -44,7 +44,7 @@ export default function Item({
         </div>
       </AccordionTrigger>
       <AccordionContent>
-        <div className="flex flex-col space-y-1 mt-1 ">
+        <div className="mt-1 flex flex-col space-y-1 ">
           {children}
         </div>
       </AccordionContent>

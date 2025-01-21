@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer';
 import configLua from "@/hooks/configLua";
+import nodemailer, { type TestAccount } from 'nodemailer';
 const lua = configLua()
 
 export interface SendMailParams<T> {
@@ -15,7 +15,15 @@ export class MailProvider implements SendMail {
   async SendMail<T>(params: SendMailParams<T>): Promise<void> {
     const { to, subject, text, html } = params;
 
-    let Transport;
+    let Transport: TestAccount | {
+      user: string | undefined;
+      pass: string | undefined;
+      smtp: {
+        host: string | undefined;
+        port: number;
+        secure: boolean;
+      };
+    }
 
     if (process.env.NODE_ENV !== 'production') {
       Transport = await nodemailer.createTestAccount();
@@ -47,7 +55,7 @@ export class MailProvider implements SendMail {
 
 
     const message = await transporter.sendMail({
-      from: `${lua['serverName']} <${process.env.MAIL_CONTACT}>`,
+      from: `${lua.serverName} <${process.env.MAIL_CONTACT}>`,
       to,
       text,
       subject,

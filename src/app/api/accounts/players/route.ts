@@ -1,11 +1,11 @@
 
-import { ZodError, z } from 'zod';
 import dayjs from "dayjs";
+import { ZodError, z } from 'zod';
 
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { NextResponse } from 'next/server';
 
 const CreatePlayersSchema = z
   .object({
@@ -38,7 +38,7 @@ const handleCreate = async (req: Request) => {
     const { id, account_id, ...restInitialPlayer } = findInitialPlayer || { id: undefined, account_id: undefined };
 
 
-    await prisma.players.create({
+    const playerCreated = await prisma.players.create({
       data: {
         ...restInitialPlayer,
         account_id: Number(session?.user?.id),
@@ -50,6 +50,38 @@ const handleCreate = async (req: Request) => {
         comment: ''
       }
     })
+
+    const battlepassSeasons = await prisma.battlepass_seasons.findMany({
+      select: { id: true, season_number: true },
+    })
+
+    const latestSeason = battlepassSeasons.sort((a, b) => Number(b.season_number) - Number(a.season_number))[0]
+
+
+    await prisma.player_battlepass_progress.create({
+      data: {
+        current_exp: 0,
+        season_id: latestSeason.id,
+        player_id: playerCreated.id
+      }
+    })
+
+    const latestSeasonTasks = await prisma.battlepass_seasons_tasks.findMany({
+      where: { season_id: latestSeason.id }
+    })
+
+    const playerTasks = latestSeasonTasks.map((task) => {
+      return {
+        player_id: playerCreated.id,
+        task_id: task.id,
+        season_id: latestSeason.id
+      }
+    })
+
+    const createdPlayerTasks = await prisma.player_battlepass_tasks.createMany({
+      data: playerTasks
+    })
+    
 
     return NextResponse.json({}, { status: 200 });
   } catch (err) {

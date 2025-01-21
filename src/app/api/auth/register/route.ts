@@ -4,11 +4,10 @@ import { encryptPassword } from "@/utils/functions/criptoPassword";
 import dayjs from "dayjs";
 import { NextResponse } from "next/server";
 
-import { ZodError, z } from 'zod';
+import {pageConfig} from "@/lib/config";
 //import { positions, samplePlayer } from "../../../../../prisma/seed";
 import { MailProvider } from "@/lib/nodemailer";
-import { config } from "process";
-import {pageConfig} from "@/lib/config";
+import { ZodError, z } from 'zod';
 
 //  World Pvp Types
 // 0 >> Open PvP
@@ -70,7 +69,8 @@ export async function POST(req: Request) {
 
     const { id, account_id, ...restInitialPlayer } = findInitialPlayer || { id: undefined, account_id: undefined };
 
-    await prisma.accounts.create({
+
+    const createdAccount = await prisma.accounts.create({
       data: {
         name: data.name,
         email: data.email,
@@ -90,8 +90,9 @@ export async function POST(req: Request) {
             health: findInitialPlayer.health,
             healthmax: findInitialPlayer.healthmax,
             experience: findInitialPlayer.experience,
-            
+            battlepass_rank: "FREE",
             created: dayjs().unix(),
+
           }
         },
       },
@@ -111,6 +112,53 @@ export async function POST(req: Request) {
     //   </div>
     //   `,
     // });
+
+    const createdAccountSearched = await prisma.accounts.findFirst({
+      where: {
+        id: createdAccount.id
+      },
+      include: {
+        players: true
+      }
+    })
+
+    const playerCreated = createdAccountSearched?.players[0]
+
+    if (!createdAccountSearched || !playerCreated) throw Error()
+
+    const battlepassSeasons = await prisma.battlepass_seasons.findMany({
+      select: { id: true, season_number: true },
+    })
+
+    const latestSeason = battlepassSeasons.sort((a, b) => Number(b.season_number) - Number(a.season_number))[0]
+
+
+    await prisma.player_battlepass_progress.create({
+      data: {
+        current_exp: 0,
+        season_id: latestSeason.id,
+        player_id: playerCreated.id
+      }
+    })
+
+    const latestSeasonTasks = await prisma.battlepass_seasons_tasks.findMany({
+      where: { season_id: latestSeason.id }
+    })
+
+    const playerTasks = latestSeasonTasks.map((task) => {
+      return {
+        player_id: playerCreated.id,
+        task_id: task.id,
+        season_id: latestSeason.id
+      }
+    })
+
+    const createdPlayerTasks = await prisma.player_battlepass_tasks.createMany({
+      data: playerTasks
+    })
+
+
+
     NextResponse.json({}, { status: 200 });
 
   } catch (error) {

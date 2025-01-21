@@ -1,16 +1,16 @@
 import { prisma } from "@/lib/prisma";
+import { ErrorCode } from "@/utils/ErrorCode";
+import { symmetricDecrypt } from "@/utils/crypto";
 import { comparePassword } from "@/utils/functions/criptoPassword";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import dayjs from 'dayjs';
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import dayjs from 'dayjs';
-import { symmetricDecrypt } from "@/utils/crypto";
-import { ErrorCode } from "@/utils/ErrorCode";
 
 import { authenticator } from 'otplib';
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma as any),
+  adapter: PrismaAdapter(prisma),
   pages: {
     signIn: "/account-manager/login",
     verifyRequest: "/account-manager/verify-request",
@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
     jwt: ({ token, user }) => {
 
       if (user) {
-        const u = user as unknown as any;
+        const u = user;
         return {
           ...token,
           id: Number(u.id),

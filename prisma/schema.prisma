@@ -7,6 +7,142 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum BATTLEPASS_TYPE_REWARDS {
+  ITEM
+  MONEY
+  EXP
+  COINS
+  COINS_TRANSFERABLE
+  VIP_DAYS
+  OUTFIT
+  MOUNT
+  STORAGE
+}
+
+enum BATTLEPASS_TYPE_TASKS {
+  MONSTER_KILL
+  ITEM_GET
+  ITEM_USE
+  EXP
+  OFFER_MARKET
+  STORAGE
+}
+
+enum BATTLEPASS_RANK_ACCESS {
+  FREE
+  VIP_SILVER
+  VIP_GOLD
+  DIAMOND
+}
+
+model battlepass_seasons {
+  id                                Int                                 @id @default(autoincrement())
+  season_number                     String                              @unique @db.VarChar(255)
+  season_name                       String                              @db.VarChar(255)
+  date_start                        DateTime                            @db.DateTime(0)
+  date_end                          DateTime                            @db.DateTime(0)
+  background_img                    String                              @db.VarChar(255)
+  description                       String                              @db.Text
+  //  visible_rewards            Int                          @default(0)
+  battlepass_seasons_rewards        battlepass_seasons_rewards[]
+  battlepass_seasons_tasks          battlepass_seasons_tasks[]
+  player_battlepass_progress        player_battlepass_progress[]
+  player_battlepass_tasks           player_battlepass_tasks[]
+  player_battlepass_rewards_claimed player_battlepass_rewards_claimed[]
+
+  @@map("battlepass_seasons")
+}
+
+model battlepass_seasons_rewards {
+  id                        Int                     @id @default(autoincrement()) @db.UnsignedInt
+  season_id                 Int                     @db.Int
+  level                     Int                     @default(1)
+  reward_name               String                  @db.VarChar(255)
+  reward_img                String                  @db.VarChar(255)
+  reward_type               BATTLEPASS_TYPE_REWARDS @default(ITEM)
+  reward_amount             Int                     @default(1)
+  reward_value              Int                     @default(0)
+  reward_should_plus_amount Boolean                 @default(false)
+  reward_required_access    BATTLEPASS_RANK_ACCESS  @default(FREE)
+  description               String                  @db.Text
+  visible                   Boolean                 @default(true)
+
+  seasons                           battlepass_seasons                  @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "battlepass_seasons_rewards_seasons_fk")
+  player_battlepass_rewards_claimed player_battlepass_rewards_claimed[]
+
+  @@index([season_id], map: "season_id")
+  @@map("battlepass_seasons_rewards")
+}
+
+model battlepass_seasons_tasks {
+  id                         Int                   @id @default(autoincrement()) @db.UnsignedInt
+  season_id                  Int                   @db.Int
+  task_name                  String                @db.VarChar(255)
+  task_img                   String                @db.VarChar(255)
+  task_type                  BATTLEPASS_TYPE_TASKS @default(MONSTER_KILL)
+  task_value                 String                @default("") @db.VarChar(255)
+  task_amount                Int                   @default(1)
+  task_battlepass_exp_reward Int                   @default(0)
+
+  battlepass_seasons      battlepass_seasons        @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "battlepass_seasons_tasks_seasons_fk")
+  player_battlepass_tasks player_battlepass_tasks[]
+
+  @@index([season_id], map: "season_id")
+  @@map("battlepass_seasons_tasks")
+}
+
+model player_battlepass_rewards_claimed {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  season_id  Int      @db.Int
+  player_id  Int      @db.Int
+  reward_id  Int      @db.UnsignedInt
+  claimed_at DateTime @db.DateTime(0)
+
+  seasons battlepass_seasons         @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_rewards_claimed_seasons_fk")
+  players players                    @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_rewards_claimed_players_fk")
+  rewards battlepass_seasons_rewards @relation(fields: [reward_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_rewards_claimed_rewards_fk")
+
+  @@index([season_id], map: "season_id")
+  @@map("player_battlepass_rewards_claimed")
+}
+
+model player_battlepass_progress {
+  id          Int @id @default(autoincrement()) @db.UnsignedInt
+  season_id   Int @db.Int
+  player_id   Int @db.Int
+  current_exp Int @db.UnsignedInt
+  // rewards_claimed Int[] @db.Int[] 
+
+  seasons battlepass_seasons @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "battlepass_seasons_tasks_seasons_fk1")
+  players players            @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_progress_players_fk")
+
+  // account_id Int @db.UnsignedInt
+  // accounts accounts @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_progress_account_fk")
+  //@@index([account_id], map: "account_id")
+
+  @@index([player_id], map: "player_id")
+  @@map("player_battlepass_progress")
+}
+
+model player_battlepass_tasks {
+  id             Int     @id @default(autoincrement()) @db.UnsignedInt
+  player_id      Int     @db.Int
+  season_id      Int     @db.Int
+  task_id        Int     @db.UnsignedInt
+  current_amount Int     @default(0) @db.UnsignedInt
+  claimed        Boolean @default(false)
+  finished       Boolean @default(false)
+
+  players players @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_tasks_players_fk")
+
+  battlepass_seasons battlepass_seasons @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_tasks_seasons_fk")
+
+  battlepass_seasons_tasks battlepass_seasons_tasks @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_tasks_tasks_fk")
+
+  @@index([player_id], map: "player_id")
+  @@map("player_battlepass_tasks")
+}
+
 model posts {
   id         Int           @id @default(autoincrement())
   account_id Int           @db.UnsignedInt
@@ -34,7 +170,7 @@ model social_medias {
   updatedAt  DateTime? @updatedAt @map("updated_at")
   account    accounts  @relation(fields: [account_id], references: [id])
 
-  @@map("wp-social_medias")
+  @@map("wp_social_medias")
 }
 
 model products_categories {
@@ -198,6 +334,7 @@ model accounts {
   social_medias          social_medias?
   posts                  posts[]
   tokens                 Tokens[]
+  //player_battlepass_progress player_battlepass_progress[]
 }
 
 model Tokens {
@@ -994,113 +1131,116 @@ model player_wheeldata {
 }
 
 model players {
-  id                                                       Int                    @id @default(autoincrement())
-  name                                                     String                 @unique(map: "players_unique") @db.VarChar(255)
-  group_id                                                 Int                    @default(1)
-  account_id                                               Int                    @default(0) @db.UnsignedInt
-  level                                                    Int                    @default(1)
-  vocation                                                 Int                    @default(0)
-  health                                                   Int                    @default(150)
-  healthmax                                                Int                    @default(150)
-  experience                                               BigInt                 @default(0)
-  lookbody                                                 Int                    @default(0)
-  lookfeet                                                 Int                    @default(0)
-  lookhead                                                 Int                    @default(0)
-  looklegs                                                 Int                    @default(0)
-  looktype                                                 Int                    @default(136)
-  lookaddons                                               Int                    @default(0)
-  maglevel                                                 Int                    @default(0)
-  mana                                                     Int                    @default(0)
-  manamax                                                  Int                    @default(0)
-  manaspent                                                BigInt                 @default(0) @db.UnsignedBigInt
-  soul                                                     Int                    @default(0) @db.UnsignedInt
-  town_id                                                  Int                    @default(1)
-  posx                                                     Int                    @default(0)
-  posy                                                     Int                    @default(0)
-  posz                                                     Int                    @default(0)
-  conditions                                               Bytes                  @db.MediumBlob
-  cap                                                      Int                    @default(0)
-  sex                                                      Int                    @default(0)
-  pronoun                                                  Int                    @default(0)
-  lastlogin                                                BigInt                 @default(0) @db.UnsignedBigInt
-  lastip                                                   Int                    @default(0) @db.UnsignedInt
-  save                                                     Boolean                @default(true)
-  skull                                                    Int                    @default(0) @db.TinyInt
-  skulltime                                                BigInt                 @default(0)
-  lastlogout                                               BigInt                 @default(0) @db.UnsignedBigInt
-  blessings                                                Int                    @default(0) @db.TinyInt
-  blessings1                                               Int                    @default(0) @db.TinyInt
-  blessings2                                               Int                    @default(0) @db.TinyInt
-  blessings3                                               Int                    @default(0) @db.TinyInt
-  blessings4                                               Int                    @default(0) @db.TinyInt
-  blessings5                                               Int                    @default(0) @db.TinyInt
-  blessings6                                               Int                    @default(0) @db.TinyInt
-  blessings7                                               Int                    @default(0) @db.TinyInt
-  blessings8                                               Int                    @default(0) @db.TinyInt
-  onlinetime                                               Int                    @default(0)
-  deletion                                                 BigInt                 @default(0)
-  balance                                                  BigInt                 @default(0) @db.UnsignedBigInt
-  offlinetraining_time                                     Int                    @default(43200) @db.UnsignedSmallInt
-  offlinetraining_skill                                    Int                    @default(-1) @db.TinyInt
-  stamina                                                  Int                    @default(2520) @db.UnsignedSmallInt
-  skill_fist                                               Int                    @default(10) @db.UnsignedInt
-  skill_fist_tries                                         BigInt                 @default(0) @db.UnsignedBigInt
-  skill_club                                               Int                    @default(10) @db.UnsignedInt
-  skill_club_tries                                         BigInt                 @default(0) @db.UnsignedBigInt
-  skill_sword                                              Int                    @default(10) @db.UnsignedInt
-  skill_sword_tries                                        BigInt                 @default(0) @db.UnsignedBigInt
-  skill_axe                                                Int                    @default(10) @db.UnsignedInt
-  skill_axe_tries                                          BigInt                 @default(0) @db.UnsignedBigInt
-  skill_dist                                               Int                    @default(10) @db.UnsignedInt
-  skill_dist_tries                                         BigInt                 @default(0) @db.UnsignedBigInt
-  skill_shielding                                          Int                    @default(10) @db.UnsignedInt
-  skill_shielding_tries                                    BigInt                 @default(0) @db.UnsignedBigInt
-  skill_fishing                                            Int                    @default(10) @db.UnsignedInt
-  skill_fishing_tries                                      BigInt                 @default(0) @db.UnsignedBigInt
-  skill_critical_hit_chance                                Int                    @default(0) @db.UnsignedInt
-  skill_critical_hit_chance_tries                          BigInt                 @default(0) @db.UnsignedBigInt
-  skill_critical_hit_damage                                Int                    @default(0) @db.UnsignedInt
-  skill_critical_hit_damage_tries                          BigInt                 @default(0) @db.UnsignedBigInt
-  skill_life_leech_chance                                  Int                    @default(0) @db.UnsignedInt
-  skill_life_leech_chance_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_life_leech_amount                                  Int                    @default(0) @db.UnsignedInt
-  skill_life_leech_amount_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_mana_leech_chance                                  Int                    @default(0) @db.UnsignedInt
-  skill_mana_leech_chance_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_mana_leech_amount                                  Int                    @default(0) @db.UnsignedInt
-  skill_mana_leech_amount_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_criticalhit_chance                                 BigInt                 @default(0) @db.UnsignedBigInt
-  skill_criticalhit_damage                                 BigInt                 @default(0) @db.UnsignedBigInt
-  skill_lifeleech_chance                                   BigInt                 @default(0) @db.UnsignedBigInt
-  skill_lifeleech_amount                                   BigInt                 @default(0) @db.UnsignedBigInt
-  skill_manaleech_chance                                   BigInt                 @default(0) @db.UnsignedBigInt
-  skill_manaleech_amount                                   BigInt                 @default(0) @db.UnsignedBigInt
-  manashield                                               Int                    @default(0) @db.UnsignedInt
-  max_manashield                                           Int                    @default(0) @db.UnsignedInt
-  xpboost_stamina                                          Int?                   @db.UnsignedSmallInt
-  xpboost_value                                            Int?                   @db.UnsignedTinyInt
-  marriage_status                                          BigInt                 @default(0) @db.UnsignedBigInt
-  marriage_spouse                                          Int                    @default(-1)
-  bonus_rerolls                                            BigInt                 @default(0)
-  prey_wildcard                                            BigInt                 @default(0)
-  task_points                                              BigInt                 @default(0)
-  quickloot_fallback                                       Boolean?               @default(false)
-  lookmountbody                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookmountfeet                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookmounthead                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookmountlegs                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookfamiliarstype                                        Int                    @default(0) @db.UnsignedInt
-  isreward                                                 Boolean                @default(true)
-  istutorial                                               Boolean                @default(false)
-  ismain                                                   Boolean                @default(false)
-  forge_dusts                                              BigInt                 @default(0)
-  forge_dust_level                                         BigInt                 @default(100)
-  randomize_mount                                          Boolean                @default(false)
-  boss_points                                              Int                    @default(0)
-  created                                                  Int                    @default(0)
-  hidden                                                   Boolean                @default(false)
-  comment                                                  String                 @db.Text
-  cast_on                                                  Int                    @default(0) @db.TinyInt
+  id                              Int      @id @default(autoincrement())
+  name                            String   @unique(map: "players_unique") @db.VarChar(255)
+  group_id                        Int      @default(1)
+  account_id                      Int      @default(0) @db.UnsignedInt
+  level                           Int      @default(1)
+  vocation                        Int      @default(0)
+  health                          Int      @default(150)
+  healthmax                       Int      @default(150)
+  experience                      BigInt   @default(0)
+  lookbody                        Int      @default(0)
+  lookfeet                        Int      @default(0)
+  lookhead                        Int      @default(0)
+  looklegs                        Int      @default(0)
+  looktype                        Int      @default(136)
+  lookaddons                      Int      @default(0)
+  maglevel                        Int      @default(0)
+  mana                            Int      @default(0)
+  manamax                         Int      @default(0)
+  manaspent                       BigInt   @default(0) @db.UnsignedBigInt
+  soul                            Int      @default(0) @db.UnsignedInt
+  town_id                         Int      @default(1)
+  posx                            Int      @default(0)
+  posy                            Int      @default(0)
+  posz                            Int      @default(0)
+  conditions                      Bytes    @db.MediumBlob
+  cap                             Int      @default(0)
+  sex                             Int      @default(0)
+  pronoun                         Int      @default(0)
+  lastlogin                       BigInt   @default(0) @db.UnsignedBigInt
+  lastip                          Int      @default(0) @db.UnsignedInt
+  save                            Boolean  @default(true)
+  skull                           Int      @default(0) @db.TinyInt
+  skulltime                       BigInt   @default(0)
+  lastlogout                      BigInt   @default(0) @db.UnsignedBigInt
+  blessings                       Int      @default(0) @db.TinyInt
+  blessings1                      Int      @default(0) @db.TinyInt
+  blessings2                      Int      @default(0) @db.TinyInt
+  blessings3                      Int      @default(0) @db.TinyInt
+  blessings4                      Int      @default(0) @db.TinyInt
+  blessings5                      Int      @default(0) @db.TinyInt
+  blessings6                      Int      @default(0) @db.TinyInt
+  blessings7                      Int      @default(0) @db.TinyInt
+  blessings8                      Int      @default(0) @db.TinyInt
+  onlinetime                      Int      @default(0)
+  deletion                        BigInt   @default(0)
+  balance                         BigInt   @default(0) @db.UnsignedBigInt
+  offlinetraining_time            Int      @default(43200) @db.UnsignedSmallInt
+  offlinetraining_skill           Int      @default(-1) @db.TinyInt
+  stamina                         Int      @default(2520) @db.UnsignedSmallInt
+  skill_fist                      Int      @default(10) @db.UnsignedInt
+  skill_fist_tries                BigInt   @default(0) @db.UnsignedBigInt
+  skill_club                      Int      @default(10) @db.UnsignedInt
+  skill_club_tries                BigInt   @default(0) @db.UnsignedBigInt
+  skill_sword                     Int      @default(10) @db.UnsignedInt
+  skill_sword_tries               BigInt   @default(0) @db.UnsignedBigInt
+  skill_axe                       Int      @default(10) @db.UnsignedInt
+  skill_axe_tries                 BigInt   @default(0) @db.UnsignedBigInt
+  skill_dist                      Int      @default(10) @db.UnsignedInt
+  skill_dist_tries                BigInt   @default(0) @db.UnsignedBigInt
+  skill_shielding                 Int      @default(10) @db.UnsignedInt
+  skill_shielding_tries           BigInt   @default(0) @db.UnsignedBigInt
+  skill_fishing                   Int      @default(10) @db.UnsignedInt
+  skill_fishing_tries             BigInt   @default(0) @db.UnsignedBigInt
+  skill_critical_hit_chance       Int      @default(0) @db.UnsignedInt
+  skill_critical_hit_chance_tries BigInt   @default(0) @db.UnsignedBigInt
+  skill_critical_hit_damage       Int      @default(0) @db.UnsignedInt
+  skill_critical_hit_damage_tries BigInt   @default(0) @db.UnsignedBigInt
+  skill_life_leech_chance         Int      @default(0) @db.UnsignedInt
+  skill_life_leech_chance_tries   BigInt   @default(0) @db.UnsignedBigInt
+  skill_life_leech_amount         Int      @default(0) @db.UnsignedInt
+  skill_life_leech_amount_tries   BigInt   @default(0) @db.UnsignedBigInt
+  skill_mana_leech_chance         Int      @default(0) @db.UnsignedInt
+  skill_mana_leech_chance_tries   BigInt   @default(0) @db.UnsignedBigInt
+  skill_mana_leech_amount         Int      @default(0) @db.UnsignedInt
+  skill_mana_leech_amount_tries   BigInt   @default(0) @db.UnsignedBigInt
+  skill_criticalhit_chance        BigInt   @default(0) @db.UnsignedBigInt
+  skill_criticalhit_damage        BigInt   @default(0) @db.UnsignedBigInt
+  skill_lifeleech_chance          BigInt   @default(0) @db.UnsignedBigInt
+  skill_lifeleech_amount          BigInt   @default(0) @db.UnsignedBigInt
+  skill_manaleech_chance          BigInt   @default(0) @db.UnsignedBigInt
+  skill_manaleech_amount          BigInt   @default(0) @db.UnsignedBigInt
+  manashield                      Int      @default(0) @db.UnsignedInt
+  max_manashield                  Int      @default(0) @db.UnsignedInt
+  xpboost_stamina                 Int?     @db.UnsignedSmallInt
+  xpboost_value                   Int?     @db.UnsignedTinyInt
+  marriage_status                 BigInt   @default(0) @db.UnsignedBigInt
+  marriage_spouse                 Int      @default(-1)
+  bonus_rerolls                   BigInt   @default(0)
+  prey_wildcard                   BigInt   @default(0)
+  task_points                     BigInt   @default(0)
+  quickloot_fallback              Boolean? @default(false)
+  lookmountbody                   Int      @default(0) @db.UnsignedTinyInt
+  lookmountfeet                   Int      @default(0) @db.UnsignedTinyInt
+  lookmounthead                   Int      @default(0) @db.UnsignedTinyInt
+  lookmountlegs                   Int      @default(0) @db.UnsignedTinyInt
+  lookfamiliarstype               Int      @default(0) @db.UnsignedInt
+  isreward                        Boolean  @default(true)
+  istutorial                      Boolean  @default(false)
+  ismain                          Boolean  @default(false)
+  forge_dusts                     BigInt   @default(0)
+  forge_dust_level                BigInt   @default(100)
+  randomize_mount                 Boolean  @default(false)
+  boss_points                     Int      @default(0)
+  created                         Int      @default(0)
+  hidden                          Boolean  @default(false)
+  comment                         String   @db.Text
+  cast_on                         Int      @default(0) @db.TinyInt
+
+  battlepass_rank BATTLEPASS_RANK_ACCESS @default(FREE)
+
   account_ban_history                                      account_ban_history[]
   account_bans                                             account_bans[]
   account_vipgrouplist                                     account_vipgrouplist[]
@@ -1118,14 +1258,17 @@ model players {
   player_hirelings                                         player_hirelings[]
   player_inboxitems                                        player_inboxitems[]
   player_items                                             player_items[]
-  player_namelocks_player_namelocks_namelocked_byToplayers player_namelocks[]     @relation("player_namelocks_namelocked_byToplayers")
-  player_namelocks_player_namelocks_player_idToplayers     player_namelocks?      @relation("player_namelocks_player_idToplayers")
+  player_namelocks_player_namelocks_namelocked_byToplayers player_namelocks[]                  @relation("player_namelocks_namelocked_byToplayers")
+  player_namelocks_player_namelocks_player_idToplayers     player_namelocks?                   @relation("player_namelocks_player_idToplayers")
   player_rewards                                           player_rewards[]
   player_spells                                            player_spells[]
   player_storage                                           player_storage[]
   player_wheeldata                                         player_wheeldata?
-  accounts                                                 accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "players_account_fk")
+  accounts                                                 accounts                            @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "players_account_fk")
   roulette_plays                                           roulette_plays[]
+  player_battlepass_progress                               player_battlepass_progress[]
+  player_battlepass_tasks                                  player_battlepass_tasks[]
+  player_battlepass_rewards_claimed                        player_battlepass_rewards_claimed[]
 
   @@index([account_id], map: "account_id")
   @@index([vocation], map: "vocation")
