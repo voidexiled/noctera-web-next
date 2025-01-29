@@ -1,13 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LastNews from "./(news)/last-news/page";
 
-
-
 export default function Home() {
-
-  return (
-    <>
-      {/* <Card>
+	return (
+		<>
+			{/* <Card>
         <CardHeader className="border-b">
           <CardTitle>News Ticker</CardTitle>
         </CardHeader>
@@ -28,7 +25,7 @@ export default function Home() {
         </CardContent>
       </Card> */}
 
-      <LastNews />
-    </>
-  )
+			<LastNews />
+		</>
+	);
 }

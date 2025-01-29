@@ -1,36 +1,39 @@
-'use client'
-import React from 'react';
+"use client";
+import React from "react";
 
-import { BoostedProps } from './types';
-import AnimatedOutfit from './AnimatedOutfit';
+import AnimatedOutfit from "./AnimatedOutfit";
+import type { BoostedProps } from "./types";
 
 export function toProperCase(str: string) {
-  return str
-    .replace(/([A-Z])/g, (c) => ` ${c.toLowerCase()}`)
-    .replace(/^./, (str) => str.toUpperCase());
+	return str
+		.replace(/([A-Z])/g, (c) => ` ${c.toLowerCase()}`)
+		.replace(/^./, (str) => str.toUpperCase());
 }
 
-
 interface BoostedComponentProps {
-  kind: 'boss' | 'creature';
-  boosted: BoostedProps | null;
-  tooltip?: boolean;
+	kind: "boss" | "creature";
+	boosted: BoostedProps | null;
+	tooltip?: boolean;
 }
 
 const BoostedComponent = ({ kind, boosted }: BoostedComponentProps) => {
-  if (!boosted) {
-    return null;
-  }
+	if (!boosted) {
+		return null;
+	}
 
-  return (
-    <div
-      className="transition-all ease-in-out duration-300 hover:scale-110 rounded-token relative p-2"
-      data-tooltip={`Boosted ${toProperCase(kind)}: ${boosted.boostname ?? ''}`}
-      data-offset="20"
-    >
-      <AnimatedOutfit outfit={boosted} alt={boosted.boostname ?? ''} className='w-16 h-16 right-4 -bottom-4'  />
-    </div>
-  );
+	return (
+		<div
+			className="relative rounded-token p-2 transition-all duration-300 ease-in-out hover:scale-110"
+			data-tooltip={`Boosted ${toProperCase(kind)}: ${boosted.boostname ?? ""}`}
+			data-offset="20"
+		>
+			<AnimatedOutfit
+				outfit={boosted}
+				alt={boosted.boostname ?? ""}
+				className="-bottom-4 right-4 h-16 w-16"
+			/>
+		</div>
+	);
 };
 
 export default BoostedComponent;

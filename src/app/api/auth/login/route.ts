@@ -63,7 +63,7 @@ type ActionType =
 export async function POST(request: NextRequest) {
 	try {
 		const body = await request.json();
-		console.log(body);
+		body;
 		const { type: actionType } = body;
 		// if (!actionType) {
 		//     return NextResponse.json({
@@ -78,22 +78,22 @@ export async function POST(request: NextRequest) {
 
 		switch (actionType) {
 			case "news":
-				console.log("news");
+				("news");
 				return await handleNews();
 			case "cacheinfo":
-				console.log("cacheinfo");
+				("cacheinfo");
 				return await handleCacheInfo();
 			case "eventschedule":
-				console.log("eventschedule");
+				("eventschedule");
 				return await handleEventSchedule();
 			case "boostedcreature":
-				console.log("boostedcreature");
+				("boostedcreature");
 				return await handleBoostedCreature();
 			case "login":
-				console.log("login");
+				("login");
 				return await handleLogin(body);
 			default:
-				console.log("default");
+				("default");
 				return NextResponse.json({
 					errorCode: 3,
 					errorMessage: `Unrecognized event ${actionType}.`,
@@ -139,13 +139,13 @@ type EventScheduleType = {
 
 function parseDate(date: string) {
 	const firstPhase = parse(date, "MM/dd/yyyy", new Date());
-	console.log(firstPhase);
+	firstPhase;
 	const secondPhase = firstPhase.getTime();
-	console.log(secondPhase);
+	secondPhase;
 	const thirdPhase = secondPhase;
-	console.log(thirdPhase);
+	thirdPhase;
 	const fourthPhase = Math.floor(new Date(date).getTime() / 1000);
-	console.log(fourthPhase);
+	fourthPhase;
 	return fourthPhase;
 
 	//return Math.floor(parse(date, "MM/dd/yyyy", new Date()).getTime() / 1000)
@@ -157,12 +157,11 @@ async function handleEventSchedule() {
 		const server_path = process.env.SERVER_PATH! || "";
 		//const json_file_path = `${path.resolve("C:/Users/jalomo/Downloads/13.41 server/canary/data/json/eventscheduler/events.json")}`
 		const json_file_path = `${server_path}/data/json/eventscheduler/events.json`;
-		console.log(1);
+
 		const fileContents = await fs.readFile(json_file_path, "utf8");
-		console.log(2);
+
 		const events: EventScheduleType = JSON.parse(fileContents);
-		console.log(3);
-		console.log("events: ", events);
+
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		const parsedEvents = events.events.map((event: any) => {
 			const parsedEvent = {
@@ -179,7 +178,7 @@ async function handleEventSchedule() {
 			};
 			return parsedEvent;
 		});
-		console.log(4);
+		4;
 
 		return NextResponse.json({
 			eventlist: parsedEvents,
@@ -259,7 +258,7 @@ async function handleLogin(body: any) {
 	if (!email || !password) {
 		return NextResponse.json(
 			{ errorCode: 3, errorMessage: "Email and password are required" },
-			{ status: 400 },
+			{ status: 200 },
 		);
 	}
 
@@ -287,6 +286,13 @@ async function handleLogin(body: any) {
 		},
 	});
 
+	if (!account) {
+		return NextResponse.json(
+			{ errorCode: 3, errorMessage: "Email or password is incorrect." },
+			{ status: 200 },
+		);
+	}
+
 	const passwordsMatched = comparePassword(
 		password,
 		account?.password as string,
@@ -295,7 +301,7 @@ async function handleLogin(body: any) {
 	if (!account || !passwordsMatched) {
 		return NextResponse.json(
 			{ errorCode: 3, errorMessage: "Email or password is incorrect." },
-			{ status: 400 },
+			{ status: 200 },
 		);
 	}
 
@@ -310,18 +316,18 @@ async function handleLogin(body: any) {
 	// }
 
 	const getVocation = (vocation: number) => {
-        const vocations: Record<number, string> = {
-            0: "None",
-            1: "Sorcerer",
-            2: "Druid",
-            3: "Paladin",
-            4: "Knight",
-            5: "Master Sorcerer",
-            6: "Elder Druid",
-            7: "Royal Paladin",
-            8: "Elite Knight",
-        }
-        return vocations[vocation];
+		const vocations: Record<number, string> = {
+			0: "None",
+			1: "Sorcerer",
+			2: "Druid",
+			3: "Paladin",
+			4: "Knight",
+			5: "Master Sorcerer",
+			6: "Elder Druid",
+			7: "Royal Paladin",
+			8: "Elite Knight",
+		};
+		return vocations[vocation];
 	};
 
 	const characters = account.players.map((player) => ({

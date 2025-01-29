@@ -2,42 +2,69 @@ import configLua from "@/hooks/configLua";
 import { authOptions } from "@/lib/auth";
 import { MailProvider } from "@/lib/nodemailer";
 import { prisma } from "@/lib/prisma";
-import { comparePassword, encryptPassword } from "@/utils/functions/criptoPassword";
+import {
+	comparePassword,
+	encryptPassword,
+} from "@/utils/functions/criptoPassword";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { ZodError, z } from "zod";
 
-
-const passwordUppercase = z.string().regex(/[A-Z]/, 'The password should contain at least 1 uppercase character');
-const passwordLowercase = z.string().regex(/[a-z]/, 'The password must contain at least one lowercase letter');
-const passwordDigit = z.string().regex(/\d/, 'The password must contain at least one numeric digit');
-const passwordSpecialChar = z.string().regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/, 'The password must contain at least one special character');
+const passwordUppercase = z
+	.string()
+	.regex(/[A-Z]/, "The password should contain at least 1 uppercase character");
+const passwordLowercase = z
+	.string()
+	.regex(/[a-z]/, "The password must contain at least one lowercase letter");
+const passwordDigit = z
+	.string()
+	.regex(/\d/, "The password must contain at least one numeric digit");
+const passwordSpecialChar = z
+	.string()
+	.regex(
+		/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
+		"The password must contain at least one special character",
+	);
 
 const UpdatePasswordSchema = z.object({
-  currentPassword: z.string(),
-  password: z.string().min(8).and(passwordUppercase).and(passwordLowercase).and(passwordDigit).and(passwordSpecialChar),
-})
+	currentPassword: z.string(),
+	password: z
+		.string()
+		.min(8)
+		.and(passwordUppercase)
+		.and(passwordLowercase)
+		.and(passwordDigit)
+		.and(passwordSpecialChar),
+});
 
 const update = async (request: Request) => {
-  try {
-    const lua = configLua()
-    const emailProvider = new MailProvider()
+	try {
+		const lua = configLua();
+		const emailProvider = new MailProvider();
 
-    const body = UpdatePasswordSchema.parse(await request.json())
+		const body = UpdatePasswordSchema.parse(await request.json());
 
-    const session = await getServerSession(authOptions);
-    if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+		const session = await getServerSession(authOptions);
+		if (!session)
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const account = await prisma.accounts.findUnique({ where: { id: Number(session.user.id) } })
-    if (!account) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    if (comparePassword(body.password, account.password)) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+		const account = await prisma.accounts.findUnique({
+			where: { id: Number(session.user.id) },
+		});
+		if (!account)
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (comparePassword(body.password, account.password))
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    await prisma.accounts.update({ where: { id: account.id }, data: { password: encryptPassword(body.password) } })
+		await prisma.accounts.update({
+			where: { id: account.id },
+			data: { password: encryptPassword(body.password) },
+		});
 
-    await emailProvider.SendMail({
-      to: account.email,
-      subject: lua['serverName'] + ' Reset email',
-      html: `
+		await emailProvider.SendMail({
+			to: account.email,
+			subject: `${lua.serverName} Reset email`,
+			html: `
       <div>Dear Tibia player,<br>
       &nbsp;&nbsp;&nbsp; <br>
       Thank you for requesting a change of your Tibia account's registration data.<br>
@@ -64,18 +91,20 @@ const update = async (request: Request) => {
       &nbsp; in order to receive a new account password.<br>
       <br>
       Kind regards,<br>
-      Your ${lua['serverName']} Team<br>
+      Your ${lua.serverName} Team<br>
       </div>
       `,
-    });
+		});
 
+		return NextResponse.json({}, { status: 200 });
+	} catch (error) {
+		if (error instanceof ZodError) {
+			return NextResponse.json(
+				{ message: error.issues[0].message },
+				{ status: 400 },
+			);
+		}
+	}
+};
 
-    return NextResponse.json({}, { status: 200 });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
-    }
-  }
-}
-
-export { update as PUT }
+export { update as PUT };

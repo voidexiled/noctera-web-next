@@ -1,11 +1,13 @@
-"use client"
-import { BattlepassContext, type BattlepassContextType } from "@/app/(battlepass)/battlepass/components/context/BattlepassContext";
+"use client";
+import {
+	BattlepassContext,
+	type BattlepassContextType,
+} from "@/app/(battlepass)/battlepass/components/context/BattlepassContext";
 import { BattlepassTask } from "@/app/(battlepass)/battlepass/components/task/task-item";
 import {
 	getBattlepassTasksSorted,
 	getPlayerBattlepassTask,
 } from "@/app/(battlepass)/battlepass/lib/utils";
-
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useContext } from "react";

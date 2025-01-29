@@ -18,6 +18,7 @@ import {
 import { IconiFy } from "@/components/Iconify";
 import { FormProvider, RHFSelect } from "@/components/hook-form";
 import SparklesText from "@/components/ui/sparkles-text";
+import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import type {
 	accounts,
@@ -55,9 +56,9 @@ export function CharacterBattlepass() {
 		setSelectedPlayer,
 		setAccount,
 		setCurrentSeason,
+		refetchSeason,
+		refetchAccount,
 	} = useContext(BattlepassContext) as BattlepassContextType;
-
-
 
 	// setAccount(acc);
 	// setCurrentSeason(cs);
@@ -71,7 +72,11 @@ export function CharacterBattlepass() {
 
 	const methods = useForm<battlepassFormValues>({
 		defaultValues: {
-			character_name: account.players ? account.players.length > 0 ? account.players[0].name : "" : "",
+			character_name: account.players
+				? account.players.length > 0
+					? account.players[0].name
+					: ""
+				: "",
 		},
 	});
 
@@ -85,15 +90,47 @@ export function CharacterBattlepass() {
 	const values = watch();
 
 	useEffect(() => {
-		const _findedCharacter = account.players.find(
-			(c) => c.name === values.character_name,
-		);
-		if (_findedCharacter) setSelectedPlayer(_findedCharacter);
+		const findCharacter = async () => {
+			const _findedCharacter = account.players.find(
+				(c) => c.name === values.character_name,
+			);
+			if (!_findedCharacter) return;
+
+			try {
+				console.log("id: ", _findedCharacter.id, typeof _findedCharacter.id);
+				console.log("season_id: ", currentSeason.id, typeof currentSeason.id);
+
+				const _updatedCharacter = await fetch("api/battlepass/character", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						id: _findedCharacter.id,
+						season_id: currentSeason.id,
+					}),
+				})
+					.then((res) => res.json())
+					.catch((err) => {
+						console.log(err);
+						return { character: null };
+					});
+
+				if (_updatedCharacter) {
+					refetchSeason();
+					setSelectedPlayer(_updatedCharacter.player);
+				}
+				console.log("_updatedCharacter", _updatedCharacter);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		findCharacter();
+		console.log("name is changed to ", values.character_name);
 	}, [values.character_name]);
 
-
-
-	if (!account || !account.players || !account.players.length || !currentSeason) return <></>
+	if (!account || !account.players || !account.players.length || !currentSeason)
+		return <></>;
 
 	return (
 		<>
@@ -105,20 +142,20 @@ export function CharacterBattlepass() {
 						<SparklesText
 							className={cn(
 								"font-sans text-base",
-								getDisplayRankTextClassname(selectedPlayer.battlepass_rank),
+								getDisplayRankTextClassname(selectedPlayer?.battlepass_rank),
 							)}
 							sparklesCount={25}
-							text={selectedPlayer.battlepass_rank as string}
+							text={selectedPlayer?.battlepass_rank as string}
 						/>
 					) : (
 						<strong
 							className={cn(
 								"font-sans",
-								getDisplayRankTextClassname(selectedPlayer.battlepass_rank),
+								getDisplayRankTextClassname(selectedPlayer?.battlepass_rank),
 								!playerIsRank(selectedPlayer, "FREE") && "font-bold",
 							)}
 						>
-							{selectedPlayer.battlepass_rank}
+							{selectedPlayer?.battlepass_rank}
 						</strong>
 					)}
 				</CustomCardHeader>
@@ -162,7 +199,7 @@ export function CharacterBattlepass() {
 						Remaining Tasks
 						<div className="flex flex-row items-center gap-2">
 							<span className="font-bold text-accent">
-								{selectedPlayer.name}
+								{selectedPlayer?.name}
 							</span>
 						</div>
 					</CustomCardHeader>

@@ -14,7 +14,7 @@ type Props = IProps & React.ComponentProps<typeof Checkbox>;
 
 export default function RHFCheckbox({ name, label, ...other }: Props) {
 	const { control } = useFormContext();
-  const inputId = useId();
+	const inputId = useId();
 
 	return (
 		<Controller

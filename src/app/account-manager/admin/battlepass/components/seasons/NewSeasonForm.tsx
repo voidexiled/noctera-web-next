@@ -36,9 +36,9 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 	const router = useRouter();
 	const { toast } = useToast();
 
-	const lastSeasonNumber = Math.max(
-		...seasons.map((s) => Number(s.season_number)),
-	);
+	const lastSeasonNumber = seasons
+		? Math.max(...seasons.map((s) => Number(s.season_number)))
+		: 1;
 	const currentDate = new Date();
 
 	const formSchema = z.object({
@@ -51,12 +51,12 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 		update_players_progress: z.boolean(),
 	});
 
-	type LoginFormValues = z.infer<typeof formSchema>;
+	type NewSeasonFormValues = z.infer<typeof formSchema>;
 
 	const nextSeasonNumber = validateIsFinite(lastSeasonNumber)
 		? lastSeasonNumber + 1
 		: 1;
-	const methods = useForm<LoginFormValues>({
+	const methods = useForm<NewSeasonFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			season_number: `${nextSeasonNumber}`,
@@ -78,8 +78,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 
 	const TARGET_TIMEZONE = "America/Mexico_City";
 
-	async function onSubmit(data: LoginFormValues) {
-		console.log("data: ", data)
+	async function onSubmit(data: NewSeasonFormValues) {
 		fetch("/api/battlepass/season/new", {
 			method: "POST",
 			headers: {
@@ -104,7 +103,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 				}
 			})
 			.catch((error) => {
-				console.log(error);
+				error;
 				toast({
 					title: "Error:",
 					variant: "destructive",
@@ -118,7 +117,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 			<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
 				<RHFTextField
 					name="season_number"
-					label="Season Number"
+					label="Number"
 					disabled={isSubmitting}
 					onChange={() => {
 						trigger("season_number");
@@ -127,7 +126,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 
 				<RHFTextField
 					name="season_name"
-					label="Season Title"
+					label="Title"
 					placeholder="Season x: the title of the season"
 					type="text"
 					disabled={isSubmitting}
@@ -138,7 +137,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 
 				<RHFTextarea
 					name="description"
-					label="Season Description"
+					label="Description"
 					disabled={isSubmitting}
 					onChange={() => {
 						trigger("description");
@@ -147,7 +146,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 
 				<RHFDatePicker
 					name="date_start"
-					label="Season Start Date"
+					label="Start Date"
 					disabled={isSubmitting}
 					onChange={() => {
 						trigger("date_start");
@@ -156,7 +155,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 
 				<RHFDatePicker
 					name="date_end"
-					label="Season Start End"
+					label="End Date"
 					disabled={isSubmitting}
 					onChange={(date) => {
 						trigger("date_end");

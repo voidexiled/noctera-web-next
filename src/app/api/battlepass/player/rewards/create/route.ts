@@ -11,12 +11,11 @@ type Params = {
 
 export async function POST(req: NextRequest) {
 	try {
-
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
-    	if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+		if (!user)
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-		
 		const { player_id, season_id, reward_id } = (await req.json()) as Params;
 
 		if (!player_id || !season_id || !reward_id) {
@@ -31,7 +30,6 @@ export async function POST(req: NextRequest) {
 					reward_id: Number(reward_id),
 				},
 			});
-		console.log("already claimed?", alreadyClaimed);
 
 		if (alreadyClaimed) {
 			return NextResponse.json({
@@ -50,7 +48,7 @@ export async function POST(req: NextRequest) {
 				},
 			})
 			.catch((error) => {
-				console.log(error);
+				error;
 				return NextResponse.json((error as Error).message, { status: 500 });
 			});
 
@@ -63,7 +61,7 @@ export async function POST(req: NextRequest) {
 
 		return NextResponse.json(res);
 	} catch (error) {
-		console.log(error);
+		error;
 		return new Response((error as Error).message, { status: 500 });
 	}
 }

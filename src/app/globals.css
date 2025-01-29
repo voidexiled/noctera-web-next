@@ -1,238 +1,233 @@
 @tailwind base;
 
 @layer base {
-  .no-tailwindcss-base h1,
-  .no-tailwindcss-base h2,
-  .no-tailwindcss-base h3,
-  .no-tailwindcss-base h4,
-  .no-tailwindcss-base h5,
-  .no-tailwindcss-base h6 {
-    font-size: revert;
-    font-weight: revert;
-  }
+	.no-tailwindcss-base h1,
+	.no-tailwindcss-base h2,
+	.no-tailwindcss-base h3,
+	.no-tailwindcss-base h4,
+	.no-tailwindcss-base h5,
+	.no-tailwindcss-base h6 {
+		font-size: revert;
+		font-weight: revert;
+	}
 
-  .no-tailwindcss-base ol,
-  .no-tailwindcss-base ul {
-    list-style: revert;
-    margin: revert;
-    padding: revert;
-  }
+	.no-tailwindcss-base ol,
+	.no-tailwindcss-base ul {
+		list-style: revert;
+		margin: revert;
+		padding: revert;
+	}
 
-  .no-tailwindcss-base {
-    font-size: 11pt;
-  }
-  .no-tailwindcss-base p,
-  .no-tailwindcss-base img,
-  .no-tailwindcss-base svg,
-  .no-tailwindcss-base video,
-  .no-tailwindcss-base canvas,
-  .no-tailwindcss-base audio,
-  .no-tailwindcss-base iframe,
-  .no-tailwindcss-base embed,
-  .no-tailwindcss-base object {
-    display: revert;
-    vertical-align: revert;
-    list-style: revert;
-    margin: revert;
-    padding: revert;
-  }
+	.no-tailwindcss-base {
+		font-size: 11pt;
+	}
+	.no-tailwindcss-base p,
+	.no-tailwindcss-base img,
+	.no-tailwindcss-base svg,
+	.no-tailwindcss-base video,
+	.no-tailwindcss-base canvas,
+	.no-tailwindcss-base audio,
+	.no-tailwindcss-base iframe,
+	.no-tailwindcss-base embed,
+	.no-tailwindcss-base object {
+		display: revert;
+		vertical-align: revert;
+		list-style: revert;
+		margin: revert;
+		padding: revert;
+	}
 }
 
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-  --background: 230 20% 95%;
-  --foreground: 230 20% 10%;
-  --card: 230 20% 98%;
-  --card-foreground: 230 20% 10%;
-  --popover: 240 20% 90%;
-  --popover-foreground: 230 20% 15%;
-  --primary: 250 70% 50%;
-  --primary-foreground: 230 20% 100%;
-  --secondary: 210 40% 30%;
-  --secondary-foreground: 230 20% 100%;
-  --muted: 240 15% 85%;
-  --muted-foreground: 230 20% 10%;
-  --accent: 245 70% 60%;
-  --accent-foreground: 230 20% 10%;
-  --destructive: 0 100% 50%;
-  --destructive-foreground: 230 20% 100%;
-  --border: 240 20% 80%;
-  --input: 240 20% 98%;
-  --ring: 250 70% 50%;
-  --chart-1: 250 70% 50%;
-  --chart-2: 240 60% 55%;
-  --chart-3: 230 50% 60%;
-  --chart-4: 220 40% 65%;
-  --chart-5: 210 30% 70%;
+	:root {
+		--background: 230 20% 95%;
+		--foreground: 230 20% 10%;
+		--card: 230 20% 98%;
+		--card-foreground: 230 20% 10%;
+		--popover: 240 20% 90%;
+		--popover-foreground: 230 20% 15%;
+		--primary: 250 70% 50%;
+		--primary-foreground: 230 20% 100%;
+		--secondary: 210 40% 30%;
+		--secondary-foreground: 230 20% 100%;
+		--muted: 240 15% 85%;
+		--muted-foreground: 230 20% 10%;
+		--accent: 245 70% 60%;
+		--accent-foreground: 230 20% 10%;
+		--destructive: 0 100% 50%;
+		--destructive-foreground: 230 20% 100%;
+		--border: 240 20% 80%;
+		--input: 240 20% 98%;
+		--ring: 250 70% 50%;
+		--chart-1: 250 70% 50%;
+		--chart-2: 240 60% 55%;
+		--chart-3: 230 50% 60%;
+		--chart-4: 220 40% 65%;
+		--chart-5: 210 30% 70%;
 
-    --radius: 0.4rem;
-  }
+		--radius: 0.4rem;
+	}
 
-  .dark {
-  --background: 230 20% 15%;
-  --foreground: 230 20% 95%;
-  --card: 240 20% 20%;
-  --card-foreground: 230 20% 95%;
-  --popover: 250 20% 25%;
-  --popover-foreground: 230 20% 95%;
-  --primary: 250 70% 50%;
-  --primary-foreground: 230 20% 100%;
-  --secondary: 205 42% 55%;
-  --secondary-foreground: 230 20% 100%;
-  --muted: 230 20% 25%;
-  --muted-foreground: 230 20% 95%;
-  --accent: 245 70% 60%;
-  --accent-foreground: 230 20% 10%;
-  --destructive: 0 100% 50%;
-  --destructive-foreground: 230 20% 100%;
-  --border: 240 20% 30%;
-  /* --input: 240 20% 20%; */
-  --input: 240 20% 28%;
-  --ring: 250 70% 50%;
-  --chart-1: 250 70% 50%;
-  --chart-2: 240 60% 55%;
-  --chart-3: 230 50% 60%;
-  --chart-4: 220 40% 65%;
-  --chart-5: 210 30% 70%;
-  }
-
+	.dark {
+		--background: 230 20% 15%;
+		--foreground: 230 20% 95%;
+		--card: 240 20% 20%;
+		--card-foreground: 230 20% 95%;
+		--popover: 250 20% 25%;
+		--popover-foreground: 230 20% 95%;
+		--primary: 250 70% 50%;
+		--primary-foreground: 230 20% 100%;
+		--secondary: 205 42% 55%;
+		--secondary-foreground: 230 20% 100%;
+		--muted: 230 20% 25%;
+		--muted-foreground: 230 20% 95%;
+		--accent: 245 70% 60%;
+		--accent-foreground: 230 20% 10%;
+		--destructive: 0 100% 50%;
+		--destructive-foreground: 230 20% 100%;
+		--border: 240 20% 30%;
+		/* --input: 240 20% 20%; */
+		--input: 240 20% 28%;
+		--ring: 250 70% 50%;
+		--chart-1: 250 70% 50%;
+		--chart-2: 240 60% 55%;
+		--chart-3: 230 50% 60%;
+		--chart-4: 220 40% 65%;
+		--chart-5: 210 30% 70%;
+	}
 }
 
 @layer base {
-  * {
-    @apply border-border p-0 m-0;
-  }
-  body {
-    /*
+	* {
+		@apply border-border p-0 m-0;
+	}
+	body {
+		/*
     @apply bg-background text-foreground p-0 m-0 box-border;
     remover bg-[url('/backgrounds/background-artwork.jpg')] para remover a imagen de backgroud
     */
-    @apply bg-[url('/backgrounds/wallpaper6.jpg')] bg-no-repeat bg-top bg-cover bg-[#051122] text-[12pt];
-  }
-  p {
-    @apply text-[12pt];
-  }
-  video {
-    @apply object-contain overflow-clip;
-  }
+		@apply bg-[url('/backgrounds/wallpaper6.jpg')] bg-no-repeat bg-top bg-cover bg-[#051122] text-[12pt];
+	}
+	p {
+		@apply text-[12pt];
+	}
+	video {
+		@apply object-contain overflow-clip;
+	}
 }
 
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active  {
-  transition: background-color 5000s;
-  -webkit-text-fill-color: #fff !important;
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	transition: background-color 5000s;
+	-webkit-text-fill-color: #fff !important;
 }
 
-
 .text-battlepass-rank-free {
-  color: hsl(var(--muted-foreground));
+	color: hsl(var(--muted-foreground));
 }
 
 .text-battlepass-rank-vip-silver {
-  /* color: hsl(var(--secondary));
+	/* color: hsl(var(--secondary));
   text-shadow: 1px 1px 4px hsl(230, 20%, 50%); */
-  color: hsl(216, 100%, 56%);
-  text-shadow: 1px 1px 6px hsl(230, 20%, 50%);
+	color: hsl(216, 100%, 56%);
+	text-shadow: 1px 1px 6px hsl(230, 20%, 50%);
 }
 
 .text-battlepass-rank-vip-gold {
-  /* color: hsl(50, 70%, 50%);
+	/* color: hsl(50, 70%, 50%);
   text-shadow: 2px 2px 6px hsl(50, 100%, 70%); */
-  color: hsl(52, 90%, 54%);
-  text-shadow: 1px 1px 6px hsl(50, 100%, 70%);
+	color: hsl(52, 90%, 54%);
+	text-shadow: 1px 1px 6px hsl(50, 100%, 70%);
 }
 
 .text-battlepass-rank-diamond {
-  color: hsl(210, 57%, 75%); /* Azul Zafiro */
-  text-shadow: 
-    0 0 8px hsl(226, 100%, 58%), /* Brillo */
-    2px 2px 12px hsl(271, 98%, 62%); /* Sombra elegante */
-  color: hsl(7, 100%, 60%);
-  text-shadow:
-    0 0 8px hsl(0, 100%, 50%), /* Brillo */
-    2px 2px 12px hsl(22, 100%, 59%); /* Sombra elegante */
+	color: hsl(210, 57%, 75%); /* Azul Zafiro */
+	text-shadow: 0 0 8px hsl(226, 100%, 58%), /* Brillo */ 2px 2px 12px
+		hsl(271, 98%, 62%); /* Sombra elegante */
+	color: hsl(7, 100%, 60%);
+	text-shadow: 0 0 8px hsl(0, 100%, 50%), /* Brillo */ 2px 2px 12px
+		hsl(22, 100%, 59%); /* Sombra elegante */
 }
 
 .text-battlepass-rank-premium {
-  background: linear-gradient(90deg, hsl(0, 100%, 50%), hsl(50, 100%, 50%), hsl(240, 100%, 50%));
-  background-size: 400px;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: rainbow 15s linear infinite, glow 1.5s ease-in-out infinite;
+	background: linear-gradient(
+		90deg,
+		hsl(0, 100%, 50%),
+		hsl(50, 100%, 50%),
+		hsl(240, 100%, 50%)
+	);
+	background-size: 400px;
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	animation: rainbow 15s linear infinite, glow 1.5s ease-in-out infinite;
 }
 
-
-
 @keyframes rainbow {
-  0% {
-    background-position: 0%;
-  }
-  100% {
-    background-position: 500%;
-  }
+	0% {
+		background-position: 0%;
+	}
+	100% {
+		background-position: 500%;
+	}
 }
 
 @keyframes glow {
-  0%, 100% {
-    text-shadow: 0 0 8px hsl(240, 100%, 70%), 0 0 16px hsl(240, 100%, 50%);
-  }
-  50% {
-    text-shadow: 0 0 16px hsl(240, 100%, 80%), 0 0 24px hsl(240, 100%, 60%);
-  }
+	0%,
+	100% {
+		text-shadow: 0 0 8px hsl(240, 100%, 70%), 0 0 16px hsl(240, 100%, 50%);
+	}
+	50% {
+		text-shadow: 0 0 16px hsl(240, 100%, 80%), 0 0 24px hsl(240, 100%, 60%);
+	}
 }
 
-
 .no-selectable {
-
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .no-draggable {
-
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	-moz-user-drag: none;
+	-o-user-drag: none;
+	user-drag: none;
 }
 
 .reward-locked::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/icons/battlepass/reward-locked.png');
-  z-index: 11;
-  
-  
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+		url("/icons/battlepass/reward-locked.png");
+	z-index: 11;
 }
 
 .reward-image-shadow:hover {
-  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5));
-
+	filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5));
 }
 
 .battlepass-level-separator-text::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 125%;
-  width: 125%;
-  @apply bg-background/80 rounded-full;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 125%;
+	width: 125%;
+	@apply bg-background/80 rounded-full;
 }
 
 /* [data-radix-scroll-area-viewport] {

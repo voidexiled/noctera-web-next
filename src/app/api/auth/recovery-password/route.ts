@@ -6,36 +6,36 @@ import dayjs from "dayjs";
 import { NextResponse } from "next/server";
 
 const recovery = async (req: Request) => {
+	const lua = configLua();
 
-  const lua = configLua()
+	const data = await req.json();
+	const existsUser = await prisma.accounts.findFirst({
+		where: { OR: [{ name: data.email }, { email: data.email }] },
+	});
+	if (!existsUser) {
+		return NextResponse.json({ error: "User not found" }, { status: 400 });
+	}
+	const emailProvider = new MailProvider();
 
+	const token = randomCode(32);
+	const code = randomCode(20);
 
-  const data = await req.json()
-  const existsUser = await prisma.accounts.findFirst({ where: { OR: [{ name: data.email }, { email: data.email }] } });
-  if (!existsUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 400 });
-  }
-  const emailProvider = new MailProvider()
+	const link = `${process.env.NEXTAUTH_URL}/reset-password/${token}`;
 
-  const token = randomCode(32)
-  const code = randomCode(20)
+	await prisma.tokens.create({
+		data: {
+			token,
+			code,
+			expired_at: dayjs().add(1, "day").toDate(),
+			isValid: true,
+			account_id: existsUser.id,
+		},
+	});
 
-  const link = `${process.env.NEXTAUTH_URL}/reset-password/${token}`;
-  
-  await prisma.tokens.create({
-    data: {
-      token,
-      code,
-      expired_at: dayjs().add(1, 'day').toDate(),
-      isValid: true,
-      account_id: existsUser.id
-    }
-  })
-
-  await emailProvider.SendMail({
-    to: existsUser.email,
-    subject: 'Confirmation key for new Tibia password',
-    html: `
+	await emailProvider.SendMail({
+		to: existsUser.email,
+		subject: "Confirmation key for new Tibia password",
+		html: `
     <div>Dear Tibia player,<br>
     <br>
     A request for a new password of your Tibia account has been<br>
@@ -67,13 +67,12 @@ const recovery = async (req: Request) => {
     password or do not want the password to change anymore.<br>
     <br>
     Kind regards,<br>
-    Your ${lua['serverName']} Team<br>
+    Your ${lua.serverName} Team<br>
     </div>
     `,
-  });
+	});
 
-  return NextResponse.json({}, { status: 200 });
-}
+	return NextResponse.json({}, { status: 200 });
+};
 
-
-export { recovery as POST }
+export { recovery as POST };

@@ -7,7 +7,7 @@ import type {
 	battlepass_seasons,
 	player_battlepass_progress,
 } from "@prisma/client";
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion";
 import { useContext, useEffect } from "react";
 
 export const BattlepassProgressBar = () => {
@@ -22,7 +22,9 @@ export const BattlepassProgressBar = () => {
 		return null;
 	}
 
-	const playerExp = selectedPlayer.player_battlepass_progress ? selectedPlayer.player_battlepass_progress[0].current_exp : 0;
+	const playerExp = selectedPlayer.player_battlepass_progress
+		? selectedPlayer.player_battlepass_progress[0].current_exp
+		: 0;
 
 	return (
 		<div className="flex h-full w-full flex-row items-center justify-center gap-4 px-2 pt-3 pb-1 text-center text-card-foreground/80">
@@ -31,8 +33,15 @@ export const BattlepassProgressBar = () => {
 				<motion.div
 					className="absolute top-0 left-0 h-full bg-gradient-to-r from-accent/80 to-primary/80 transition-all "
 					initial={{ width: "0%" }}
-					animate={{ width: `${playerExp % battlepassRequiredExperienceForLevelUp}%` }}
-					transition={{ duration: 1, ease: "circInOut", type: "spring", delay: 0.1 }}
+					animate={{
+						width: `${playerExp % battlepassRequiredExperienceForLevelUp}%`,
+					}}
+					transition={{
+						duration: 1,
+						ease: "circInOut",
+						type: "spring",
+						delay: 0.1,
+					}}
 					// style={{
 					// 	width: `${playerExp % battlepassRequiredExperienceForLevelUp}%`,
 					// }}

@@ -115,9 +115,7 @@ export function getRewardPath(
 			basePath = basePath.concat("unknown/");
 			break;
 	}
-	basePath = basePath.concat(
-		reward_image !== "" ? reward_image : "0.gif",
-	);
+	basePath = basePath.concat(reward_image !== "" ? reward_image : "0.gif");
 
 	return basePath;
 }
@@ -195,14 +193,16 @@ export const getDisplayRankTextContent = (
 };
 
 export const playerIsRank = (
-	player: players & {
-		player_battlepass_progress: player_battlepass_progress[];
-		player_battlepass_rewards_claimed: player_battlepass_rewards_claimed[];
-		player_battlepass_tasks: player_battlepass_tasks[];
-	},
+	player:
+		| (players & {
+				player_battlepass_progress: player_battlepass_progress[];
+				player_battlepass_rewards_claimed: player_battlepass_rewards_claimed[];
+				player_battlepass_tasks: player_battlepass_tasks[];
+		  })
+		| players,
 	rank: BATTLEPASS_RANK_ACCESS,
 ) => {
-	return player.battlepass_rank === rank;
+	return player?.battlepass_rank === rank;
 };
 
 type BattlepassTasksSortByType = "battlepass_exp_reward";

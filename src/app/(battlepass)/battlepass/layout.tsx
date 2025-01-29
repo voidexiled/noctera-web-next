@@ -16,7 +16,7 @@ export default async function BattlepassLayout({
 	children,
 }: BattlepassLayoutProps) {
 	const session = await getServerSession(authOptions);
-	console.log(!session ? "NotSession" : "Session" );
+	!session ? "NotSession" : "Session";
 	if (!session) redirect("/account-manager/login");
 
 	return <>{children}</>;

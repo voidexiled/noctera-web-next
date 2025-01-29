@@ -18,17 +18,17 @@ async function getRewards() {
 }
 
 export default async function AdminBattlepassTasks() {
-    const seasons = await getSeasons();
-    const tasks = await getTasks();
-    const rewards = await getRewards();
+	const seasons = await getSeasons();
+	const tasks = await getTasks();
+	const rewards = await getRewards();
 
-    return (
-        <AdminBattlepassProvider
+	return (
+		<AdminBattlepassProvider
 			battlepassSeasons={seasons}
 			battlepassRewards={rewards}
 			battlepassTasks={tasks}
 		>
 			<TasksContent />
 		</AdminBattlepassProvider>
-    )
+	);
 }

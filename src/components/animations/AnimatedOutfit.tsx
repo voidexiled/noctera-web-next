@@ -1,22 +1,22 @@
-'use client';
+"use client";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
-import React, { useEffect, useRef, useState } from 'react';
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import React, { useEffect, useRef, useState } from "react";
 
 const validOutfitKeys = [
-	'looktype',
-	'lookaddons',
-	'lookhead',
-	'lookbody',
-	'looklegs',
-	'lookfeet',
-	'mount',
-	'resize',
+	"looktype",
+	"lookaddons",
+	"lookhead",
+	"lookbody",
+	"looklegs",
+	"lookfeet",
+	"mount",
+	"resize",
 ];
 
 export function outfitURL({
@@ -40,7 +40,7 @@ export function outfitURL({
 		search.append(key, (value ?? 0).toString());
 	}
 	if (resize) {
-		search.append('resize', '1');
+		search.append("resize", "1");
 	}
 	return `/api/outfit?${search.toString()}`;
 }
@@ -63,7 +63,7 @@ interface Frame {
 
 interface OutfitComponentProps {
 	outfit: Outfit;
-	alt: string;
+	alt?: string;
 	className?: string;
 }
 
@@ -91,14 +91,20 @@ const OutfitComponent = ({ outfit, alt, className }: OutfitComponentProps) => {
 				}), // Replace with your actual API endpoint
 			);
 			const data = await response.json();
-			const newFrames: Frame[] = data.frames.map((frame: any) => ({
-				...frame,
-				image: (() => {
-					const image = new Image();
-					image.src = frame.image;
-					return image;
-				})(),
-			}));
+
+			const newFrames: Frame[] = data.frames.map(
+				(frame: {
+					image: string;
+					duration: number;
+				}) => ({
+					...frame,
+					image: (() => {
+						const image = new Image();
+						image.src = frame.image;
+						return image;
+					})(),
+				}),
+			);
 			setFrames(newFrames);
 		};
 
@@ -122,7 +128,7 @@ const OutfitComponent = ({ outfit, alt, className }: OutfitComponentProps) => {
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		const context = canvas?.getContext('2d');
+		const context = canvas?.getContext("2d");
 
 		if (canvas && context && frames.length > 0) {
 			const frame = frames[index];
@@ -142,17 +148,17 @@ const OutfitComponent = ({ outfit, alt, className }: OutfitComponentProps) => {
 	}, [index, frames]);
 
 	return (
-		<TooltipProvider >
-			<Tooltip delayDuration={50} >
-				<TooltipTrigger >
-					<div className={cn(`relative w-20 h-20`, className)}>
+		<TooltipProvider>
+			<Tooltip delayDuration={50}>
+				<TooltipTrigger>
+					<div className={cn("relative h-20 w-20", className)}>
 						<div
-							className={`absolute group ${hasMount ? '-left-7 -bottom-1' : '-left-1 bottom-4'}`}
+							className={`group absolute ${hasMount ? "-left-7 -bottom-1" : "-left-1 bottom-4"}`}
 						>
 							{frames && outfit.looktype > 0 ? (
 								<canvas
 									ref={canvasRef}
-									className="w-20 h-20 whitespace-nowrap"
+									className={cn("h-20 w-20 whitespace-nowrap", className)}
 									aria-details={alt}
 								/>
 							) : (
@@ -161,7 +167,11 @@ const OutfitComponent = ({ outfit, alt, className }: OutfitComponentProps) => {
 						</div>
 					</div>
 				</TooltipTrigger>
-				<TooltipContent side='bottom' sideOffset={1}>{alt}</TooltipContent>
+				{alt && (
+					<TooltipContent side="bottom" sideOffset={1}>
+						{alt}
+					</TooltipContent>
+				)}
 			</Tooltip>
 		</TooltipProvider>
 	);

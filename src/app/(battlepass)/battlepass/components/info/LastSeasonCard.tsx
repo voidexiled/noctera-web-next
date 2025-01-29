@@ -7,13 +7,13 @@ type LastSeasonCardProps = {
 };
 
 export const LastSeasonCard = ({ lastSeason }: LastSeasonCardProps) => {
-    console.log(lastSeason);
+	lastSeason;
 	return (
 		<Card>
 			<CardHeader className="border-b bg-background">
 				<CardTitle>
 					{lastSeason.season_name} ended at{" "}
-                    {new Date(lastSeason.date_end).toLocaleString()}
+					{new Date(lastSeason.date_end).toLocaleString()}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="">Resumen .. last season</CardContent>

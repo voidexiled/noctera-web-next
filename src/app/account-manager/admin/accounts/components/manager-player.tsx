@@ -1,146 +1,173 @@
-"use client"
+"use client";
 import { useState } from "react";
-
 
 import { Input } from "@/components/ui/input";
 
-import { Table, TableBody, TableRow, TableCell, TableHeader, TableHead } from "@/components/ui/table";
-import ActionsDropdown from "./actions-dropdown";
 import { Button } from "@/components/ui/button";
-
-
-
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import ActionsDropdown from "./actions-dropdown";
 
 export default function AdminManagerPlayer() {
-  const [searchTerm, setSearchTerm] = useState('');
+	const [searchTerm, setSearchTerm] = useState("");
 
+	return (
+		<>
+			<div className="flex flex-col rounded-sm border">
+				<div className="flex items-center justify-between border-b bg-background p-2 text-sm">
+					General information
+					<div className="flex flex-row items-center gap-2">
+						<Button
+							variant={"outline"}
+							className="h-[24px] w-[24px] bg-white p-0 hover:bg-slate-50"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+							>
+								<rect
+									x="0"
+									y="0"
+									width="24"
+									height="24"
+									fill="none"
+									stroke="none"
+								/>
+								<path
+									fill="none"
+									stroke="currentColor"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="m14 7l-5 5m0 0l5 5"
+								/>
+							</svg>
+						</Button>
+						<span>0 of 5</span>
+						<Button
+							variant={"outline"}
+							className="h-[24px] w-[24px] bg-white p-0 hover:bg-slate-50"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+							>
+								<rect
+									x="0"
+									y="0"
+									width="24"
+									height="24"
+									fill="none"
+									stroke="none"
+								/>
+								<path
+									fill="none"
+									stroke="currentColor"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="m10 17l5-5l-5-5"
+								/>
+							</svg>
+						</Button>
+					</div>
+				</div>
+				<div className="border-b p-2">
+					<Input
+						id="search"
+						type="text"
+						placeholder="Search Email, Account Name..."
+						onChange={(e) => setSearchTerm(e.target.value)}
+						value={searchTerm}
+						autoFocus
+					/>
+				</div>
 
-  return (
-    <>
-
-      <div className="flex flex-col rounded-sm border">
-
-        <div className='flex p-2 items-center justify-between bg-background text-sm border-b'>
-          General information
-          <div className="flex flex-row gap-2 items-center">
-            <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                <rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
-                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m14 7l-5 5m0 0l5 5" />
-              </svg>
-            </Button>
-            <span>
-              0 of 5
-            </span>
-            <Button variant={'outline'} className="bg-white hover:bg-slate-50 w-[24px] h-[24px] p-0" >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                <rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
-                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m10 17l5-5l-5-5" />
-              </svg>
-            </Button>
-          </div>
-        </div>
-        <div className="p-2 border-b">
-          <Input
-            id="search"
-            type="text"
-            placeholder="Search Email, Account Name..."
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-            autoFocus
-          />
-        </div>
-
-        <Table>
-          <TableHeader className="pointer-events-none">
-            <TableRow>
-              <TableHead className="w-[80px]">ID</TableHead>
-              <TableHead>Email:</TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-
-
-
-
-            <TableRow>
-              <TableCell>00002</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00003</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00004</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00005</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00006</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00007</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00008</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00009</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>00010</TableCell>
-              <TableCell>I</TableCell>
-              <TableCell className="text-right w-[30px]">
-                {/* <ActionsDropdown /> */}
-
-              </TableCell>
-            </TableRow>
-
-
-          </TableBody>
-        </Table>
-      </div >
-    </>
-  )
+				<Table>
+					<TableHeader className="pointer-events-none">
+						<TableRow>
+							<TableHead className="w-[80px]">ID</TableHead>
+							<TableHead>Email:</TableHead>
+							<TableHead />
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						<TableRow>
+							<TableCell>00002</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00003</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00004</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00005</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00006</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00007</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00008</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00009</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>00010</TableCell>
+							<TableCell>I</TableCell>
+							<TableCell className="w-[30px] text-right">
+								{/* <ActionsDropdown /> */}
+							</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			</div>
+		</>
+	);
 }

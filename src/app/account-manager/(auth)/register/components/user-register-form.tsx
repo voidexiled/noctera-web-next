@@ -117,7 +117,7 @@ export function UseRegisterForm({ className, ...props }: UseRegisterFormProps) {
 				}
 			})
 			.catch((error) => {
-				console.log(error);
+				error;
 				toast({
 					title: "Error:",
 					variant: "destructive",

@@ -97,7 +97,7 @@ const SparklesText: React.FC<SparklesTextProps> = ({
 					if (star.lifespan <= 0) {
 						return generateStar();
 					}
-						return { ...star, lifespan: star.lifespan - 0.1 };
+					return { ...star, lifespan: star.lifespan - 0.1 };
 				}),
 			);
 		};

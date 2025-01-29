@@ -105,7 +105,7 @@ export const BattlepassRewardFree = ({
 				});
 			}}
 			className={cn(
-				"no-draggable no-selectable group relative grid h-full min-w-[182px] cursor-pointer grid-cols-1 grid-rows-[1fr_35px] px-4 py-3 transition-colors duration-100 ease-in-out hover:bg-background active:bg-background/65",
+				"no-draggable no-selectable group relative grid h-full min-w-[182px] cursor-pointer grid-cols-1 grid-rows-[1fr_35px] px-4 py-3 transition-colors delay-0 duration-100 ease-in-out hover:bg-background active:bg-background/65",
 				isLocked && " reward-locked pointer-events-none bg-background",
 				isClaimed &&
 					!hasRemainingRewards &&
@@ -134,7 +134,7 @@ export const BattlepassRewardFree = ({
 			/>
 			<div
 				className={cn(
-					"group relative grid h-[165px] w-[150px] grid-cols-1 grid-rows-[1fr_40px] overflow-hidden p-2 transition-all ",
+					"group relative grid h-[165px] w-[150px] grid-cols-1 grid-rows-[1fr_40px] overflow-hidden p-2 transition-all delay-0 duration-100 ",
 				)}
 			>
 				<div className="relative flex flex-col items-center justify-center">
@@ -165,7 +165,7 @@ export const BattlepassRewardFree = ({
 								width={64}
 								height={64}
 								className={cn(
-									"absolute p-1 transition-all duration-500 ease-in-out",
+									"absolute p-1 transition-all delay-0 duration-500 ease-in-out",
 									isCurrent && "z-10",
 									!hasAccessToReward(
 										selectedPlayer.battlepass_rank,
@@ -200,7 +200,7 @@ export const BattlepassRewardFree = ({
 							<div
 								key={`${rew.id}-${index}-reward-name`}
 								className={cn(
-									"absolute z-10 flex flex-row items-end justify-center gap-1 text-center font-bold text-secondary-foreground/60 text-xs transition-all duration-500 ease-in-out",
+									"absolute z-10 flex flex-row items-end justify-center gap-1 text-center font-bold text-secondary-foreground/60 text-xs transition-all delay-0 duration-500 ease-in-out",
 									isCurrent && "z-10 opacity-100",
 								)}
 								style={{
@@ -241,7 +241,7 @@ export const BattlepassRewardFree = ({
 
 			{hasRemainingRewards && !isLocked && (
 				<div className="flex h-full w-full items-center justify-center">
-					<span className="font-bold text-accent/80 transition-all group-hover:opacity-80 group-active:text-accent group-active:opacity-100">
+					<span className="font-bold text-accent/80 transition-all delay-0 duration-100 group-hover:opacity-80 group-active:text-accent group-active:opacity-100">
 						Click to claim
 					</span>
 				</div>

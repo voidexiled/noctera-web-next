@@ -13,7 +13,6 @@ export default async function AdminBattlepass({
 	children,
 }: { children: React.ReactNode }) {
 	return (
-        
 		<Card>
 			<CardHeader className="border-b bg-background">
 				<CardTitle>Battlepass Manager</CardTitle>

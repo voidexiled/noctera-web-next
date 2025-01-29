@@ -6,8 +6,6 @@
 // import { outfitImagesPath, walkSpeeds } from '@/components/animations/config';
 // import { OutfitData, loadData, outfit } from '@/components/animations/outfits';
 
-
-
 // // Define the path to the cache file
 // const CACHE_FILE_PATH = './cache.generated.txt';
 
@@ -81,14 +79,14 @@
 //       try {
 //         await fs.writeFile(cacheGeneratedFilePath, 'cache generated');
 //       } catch (err) {
-//         console.log(
+//         (
 //           `Node.js cannot write to: "${cacheGeneratedFilePath}", check directory access rights`
 //         );
 //         process.exit(1);
 //       }
 
-//       console.log('FILE SYSTEM CACHE GENERATED');
-//       console.log('Animation frames count in loaded outfits:', frameNumbers);
+//       ('FILE SYSTEM CACHE GENERATED');
+//       ('Animation frames count in loaded outfits:', frameNumbers);
 
 //       return true;
 //     }

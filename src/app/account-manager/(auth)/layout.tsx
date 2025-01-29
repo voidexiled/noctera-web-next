@@ -3,15 +3,14 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 interface SettingsLayoutProps {
-  children: React.ReactNode
+	children: React.ReactNode;
 }
 
-export default async function SettingsLayout({ children }: SettingsLayoutProps) {
+export default async function SettingsLayout({
+	children,
+}: SettingsLayoutProps) {
+	const session = await getServerSession(authOptions);
+	if (session) redirect("/account-manager");
 
-  const session = await getServerSession(authOptions)
-  if (session) redirect('/account-manager')
-
-  return (
-    <>{children}</>
-  )
+	return <>{children}</>;
 }

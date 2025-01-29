@@ -15,9 +15,8 @@ export function MainNav({
 
 	const partes = pathname.split("/");
 
-	const selectedPath = partes[3]
-	console.log(selectedPath)
-//	const lastPath = partes[partes.length - 1];
+	const selectedPath = partes[3];
+	//	const lastPath = partes[partes.length - 1];
 
 	return (
 		<nav
@@ -26,7 +25,7 @@ export function MainNav({
 		>
 			<Link
 				href={BASE_ADMIN_PATH}
-				className={`font-medium text-sm transition-colors hover:text-accent ${["accounts", "shop", "blog", "battlepass", "settings"].includes(selectedPath) && "text-muted-foreground/70"}`} 
+				className={`font-medium text-sm transition-colors hover:text-accent ${["accounts", "shop", "blog", "battlepass", "settings"].includes(selectedPath) && "text-muted-foreground/70"}`}
 			>
 				Manager
 			</Link>
@@ -50,7 +49,10 @@ export function MainNav({
 			</Link>
 			<Link
 				href={`${BASE_ADMIN_PATH}/battlepass`}
-				className={cn("font-medium text-sm transition-colors hover:text-accent", selectedPath !== "battlepass" && "text-muted-foreground/70")}
+				className={cn(
+					"font-medium text-sm transition-colors hover:text-accent",
+					selectedPath !== "battlepass" && "text-muted-foreground/70",
+				)}
 			>
 				Battlepass
 			</Link>

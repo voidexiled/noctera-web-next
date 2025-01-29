@@ -49,11 +49,9 @@ export const BattlepassRewardVip = ({
 		),
 	);
 
-
 	const hasAccess = !playerIsRank(selectedPlayer, BATTLEPASS_RANK_ACCESS.FREE);
 
 	const isLocked = battlepassLevel.level > playerCurrentBattlepassLevel;
-
 
 	useEffect(() => {
 		if (battlepassLevel.rewards.length <= 1) return;
@@ -118,7 +116,9 @@ export const BattlepassRewardVip = ({
 				"no-draggable no-selectable group relative grid h-full min-w-[182px] cursor-pointer grid-cols-1 grid-rows-[1fr_35px] px-4 py-3 transition-colors duration-100 ease-in-out hover:bg-background active:bg-background/65",
 				!hasAccess && "reward-locked pointer-events-none",
 				isLocked && "reward-locked pointer-events-none bg-background",
-				!isLocked && hasAccess && isClaimed &&
+				!isLocked &&
+					hasAccess &&
+					isClaimed &&
 					!hasRemainingRewards &&
 					"pointer-events-none bg-primary/40 ",
 			)}
@@ -169,7 +169,7 @@ export const BattlepassRewardVip = ({
 
 						return (
 							<img
-							loading="lazy"
+								loading="lazy"
 								key={rew.id}
 								src={getRewardPath(rew.reward_type, rew.reward_img)}
 								alt={rew.reward_name}
@@ -178,7 +178,10 @@ export const BattlepassRewardVip = ({
 								className={cn(
 									"absolute p-1 transition-all duration-500 ease-in-out",
 									isCurrent && "z-10",
-									!hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access) && "grayscale-[100%]",
+									!hasAccessToReward(
+										selectedPlayer.battlepass_rank,
+										rew.reward_required_access,
+									) && "grayscale-[100%]",
 								)}
 								style={{
 									zIndex: isCurrent ? 10 : 10 - stackIndex,
@@ -199,40 +202,50 @@ export const BattlepassRewardVip = ({
 					})}
 				</div>
 				<div className="relative flex flex-col items-center justify-start">
-					{battlepassLevel.rewards.sort((a, b) => RANK_PRIORITY[a.reward_required_access as BATTLEPASS_RANK_ACCESS] - RANK_PRIORITY[b.reward_required_access as BATTLEPASS_RANK_ACCESS]).map((rew, index) => {
-						const stackIndex =
-							(index - currentRewardShowed + battlepassLevel.rewards.length) %
-							battlepassLevel.rewards.length;
-						const isCurrent = stackIndex === 0;
-						return (
-							<div
-								key={`${rew.id}-${index}-reward-name`}
-								className={cn(
-									"absolute z-10 flex flex-row items-end justify-center gap-1 text-center font-bold text-secondary-foreground/60 text-xs transition-all duration-500 ease-in-out",
-									isCurrent && "z-10 opacity-100",
-								)}
-								style={{
-									zIndex: isCurrent ? 10 : 10 - stackIndex,
-									transform: isCurrent
-										? "scale(1) translateY(0)"
-										: `scale(${1 - stackIndex * 0.16}) `,
-									opacity: isCurrent ? 1 : 0,
-								}}
-							>
-								<span
+					{battlepassLevel.rewards
+						.sort(
+							(a, b) =>
+								RANK_PRIORITY[
+									a.reward_required_access as BATTLEPASS_RANK_ACCESS
+								] -
+								RANK_PRIORITY[
+									b.reward_required_access as BATTLEPASS_RANK_ACCESS
+								],
+						)
+						.map((rew, index) => {
+							const stackIndex =
+								(index - currentRewardShowed + battlepassLevel.rewards.length) %
+								battlepassLevel.rewards.length;
+							const isCurrent = stackIndex === 0;
+							return (
+								<div
+									key={`${rew.id}-${index}-reward-name`}
 									className={cn(
-										!hasAccessToReward(
-											selectedPlayer.battlepass_rank,
-											rew.reward_required_access,
-										) && "line-through",
-										getDisplayRankTextClassname(rew.reward_required_access),
+										"absolute z-10 flex flex-row items-end justify-center gap-1 text-center font-bold text-secondary-foreground/60 text-xs transition-all duration-500 ease-in-out",
+										isCurrent && "z-10 opacity-100",
 									)}
+									style={{
+										zIndex: isCurrent ? 10 : 10 - stackIndex,
+										transform: isCurrent
+											? "scale(1) translateY(0)"
+											: `scale(${1 - stackIndex * 0.16}) `,
+										opacity: isCurrent ? 1 : 0,
+									}}
 								>
-									{rew.reward_name} x {rew.reward_amount}
-								</span>
-							</div>
-						);
-					})}
+									<span
+										className={cn(
+											!hasAccessToReward(
+												selectedPlayer.battlepass_rank,
+												rew.reward_required_access,
+											) && "line-through",
+											getDisplayRankTextClassname(rew.reward_required_access),
+										)}
+									>
+										{rew.reward_name} x {rew.reward_amount}
+									</span>
+								</div>
+							);
+						})}
 				</div>
 			</div>
 			{hasAccess && hasRemainingRewards && !isLocked && (

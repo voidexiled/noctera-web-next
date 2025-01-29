@@ -57,7 +57,7 @@ export default function RHFSelect<T>({
 						<SelectContent className="max-h-[206px] overflow-auto">
 							{options?.map((item, index) => (
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                <SelectItem key={index} value={item[keyValue] as string}>
+								<SelectItem key={index} value={item[keyValue] as string}>
 									{item[LabelOption] as string}
 								</SelectItem>
 							))}

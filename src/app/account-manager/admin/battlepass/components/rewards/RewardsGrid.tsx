@@ -17,6 +17,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Command,
 	CommandEmpty,
@@ -47,6 +48,7 @@ import {
 	Table,
 	TableBody,
 	TableCell,
+	TableHead,
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
@@ -65,16 +67,50 @@ import {
 	type battlepass_seasons_rewards,
 } from "@prisma/client";
 import {
+	CaretSortIcon,
 	CheckIcon,
 	ChevronDownIcon,
 	ChevronUpIcon,
 	CrossCircledIcon,
 	Pencil1Icon,
 } from "@radix-ui/react-icons";
-import type { SelectValue } from "@radix-ui/react-select";
+import { SelectValue } from "@radix-ui/react-select";
+import {
+	type ColumnDef,
+	type SortingState,
+	flexRender,
+	getCoreRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	useReactTable,
+} from "@tanstack/react-table";
+import {
+	ArrowUpDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight,
+	Cross,
+	CrossIcon,
+	PencilIcon,
+	RemoveFormatting,
+	Trash,
+} from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { MoreHorizontal } from "lucide-react";
+
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuShortcut,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const RewardsGrid = () => {
 	const [filteredRewards, setFilteredRewards] = useState<
@@ -106,20 +142,167 @@ export const RewardsGrid = () => {
 		AdminBattlepassContext,
 	) as AdminBattlepassContextType;
 
-	const tableHeaders = [
-        "Img",
-		"Id",
-		"Season",
-		"Name",
-		"Type",
-		"Amount",
-		"Value",
-		"Should Plus",
-		"Rank",
-		"Description",
-		"Visible",
-		"Actions",
+	const [sorting, setSorting] = useState<SortingState>([]);
+
+	const columns: ColumnDef<battlepass_seasons_rewards>[] = [
+		{
+			accessorKey: "season_id",
+			header: ({ column }) => {
+				return (
+					<Button
+						size="xs"
+						variant="ghost"
+						onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+					>
+						Season
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
+				);
+			},
+			cell: ({ row }) => {
+				const season_id = Number.parseInt(row.getValue("season_id"));
+				const season = seasons.filter((s) => s.id === season_id);
+
+				return <div className="text-left">{season[0].season_name}</div>;
+			},
+		},
+		{
+			accessorKey: "level",
+			header: ({ column }) => {
+				return (
+					<Button
+						size="xs"
+						variant="ghost"
+						onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+					>
+						Level
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
+				);
+			},
+		},
+		{
+			accessorKey: "reward_img",
+			header: "Image",
+			cell: ({ row }) => {
+				const rw_type = (
+					row.getValue("reward_type") as string
+				).toUpperCase() as BATTLEPASS_TYPE_REWARDS;
+				const rw_img = row.getValue("reward_img") as string;
+
+				return (
+					<div>
+						<img src={getRewardPath(rw_type, rw_img)} alt="reward-img" />
+					</div>
+				);
+			},
+		},
+		{
+			accessorKey: "reward_name",
+			header: "Name",
+		},
+		{
+			accessorKey: "reward_type",
+			header: ({ column }) => {
+				return (
+					<Button
+						size="xs"
+						variant="ghost"
+						onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+					>
+						Type
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
+				);
+			},
+		},
+		{
+			accessorKey: "reward_amount",
+			header: "Amount",
+		},
+		{
+			accessorKey: "reward_value",
+			header: "Value",
+		},
+		{
+			accessorKey: "reward_should_plus",
+			header: "Merge",
+		},
+		{
+			accessorKey: "reward_required_access",
+			header: ({ column }) => {
+				return (
+					<Button
+						size="xs"
+						variant="ghost"
+						onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+					>
+						Rank
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
+				);
+			},
+		},
+		{
+			accessorKey: "visible",
+			header: "Visible",
+		},
+		{
+			id: "actions",
+			cell: ({ row }) => {
+				const reward = row.original as battlepass_seasons_rewards;
+				return (
+					<Dialog>
+						<AlertDialog>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="ghost" size="xs">
+										<span className="sr-only">Open menu</span>
+										<MoreHorizontal className="h-4 w-4" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+									<DialogTrigger asChild>
+										<DropdownMenuItem>
+											Edit
+											<DropdownMenuShortcut>
+												<PencilIcon className="h-4 w-4" />
+											</DropdownMenuShortcut>
+										</DropdownMenuItem>
+									</DialogTrigger>
+
+									<AlertDialogTrigger asChild>
+										<DropdownMenuItem>
+											Delete
+											<DropdownMenuShortcut>
+												<Trash className="h-4 w-4" />
+											</DropdownMenuShortcut>
+										</DropdownMenuItem>
+									</AlertDialogTrigger>
+								</DropdownMenuContent>
+							</DropdownMenu>
+							<EditRewardForm reward={reward} />
+							<DeleteRewardAlertDialog reward={reward} />
+						</AlertDialog>
+					</Dialog>
+				);
+			},
+		},
 	];
+
+	const table = useReactTable({
+		data: filteredRewards,
+		columns: columns,
+		getCoreRowModel: getCoreRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
+		onSortingChange: setSorting,
+		getSortedRowModel: getSortedRowModel(),
+		state: {
+			sorting,
+		},
+	});
 
 	function getLevelFilterLabel(levels: number[]): string {
 		if (levels.length === 0) return "All";
@@ -156,14 +339,8 @@ export const RewardsGrid = () => {
 		setSelectedFilterRewardType([]);
 	}
 
-	function handleEditReward(reward: battlepass_seasons_rewards) {
-		console.log(reward);
-	}
-	function handleDeleteReward(reward: battlepass_seasons_rewards) {
-		console.log(reward);
-	}
-
-	useEffect(() => {
+	function filterRewards() {
+		if (!rewards || rewards.length === 0) return;
 		const newRewards = rewards.filter((reward) => {
 			return (
 				(selectedFilterSeason === null ||
@@ -181,12 +358,20 @@ export const RewardsGrid = () => {
 			);
 		});
 		setFilteredRewards(newRewards);
+	}
+
+	useEffect(() => {
+		filterRewards();
 	}, [
 		selectedFilterSeason,
 		selectedFilterLevel,
 		selectedFilterRankAccess,
 		selectedFilterRewardType,
 	]);
+
+	useEffect(() => {
+		filterRewards();
+	}, [rewards]);
 
 	return (
 		<TooltipProvider>
@@ -492,93 +677,155 @@ export const RewardsGrid = () => {
 						</Popover>
 					</div>
 				</div>
-				<Table>
-					<TableHeader>
-						<TableRow>
-							{tableHeaders.map((header, index) => {
-								return <TableCell key={header}>{header}</TableCell>;
-							})}
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{filteredRewards.map((reward) => {
-							return (
-								
-									
-										<TableRow key={reward.id}>
-                                            <TableCell><img src={getRewardPath(reward.reward_type, reward.reward_img)} alt="reward-image" /></TableCell>
-											<TableCell>{reward.id}</TableCell>
-											<TableCell >
-												{
-													seasons.find(
-														(season) => season.id === reward.season_id,
-													)?.season_name
-												}
-											</TableCell>
-											<TableCell >{reward.reward_name}</TableCell>
-											<TableCell>{reward.reward_type}</TableCell>
-											<TableCell>{reward.reward_amount}</TableCell>
-											<TableCell>{reward.reward_value}</TableCell>
-											<TableCell>
-												{reward.reward_should_plus_amount ? "Yes" : "No"}
-											</TableCell>
-											<TableCell>{reward.reward_required_access}</TableCell>
-											<TableCell className="line-clamp-2">{reward.description}</TableCell>
-											<TableCell>{reward.visible ? "Yes" : "No"}</TableCell>
-											<TableCell>
-												<div className="flex h-full w-full flex-row items-center gap-2">
-													<Dialog>
-														<DialogTrigger asChild>
-															<Button
-																variant="blue"
-																size="iconsm"
-															>
-																<Pencil1Icon className="h-4 w-4" />
-															</Button>
-														</DialogTrigger>
-														<DialogContent>
-															<EditRewardForm reward={reward} />
-														</DialogContent>
-													</Dialog>
-													<AlertDialog>
-														<AlertDialogTrigger asChild>
-															<Button
-																variant="destructive"
-																size="iconsm"
-															>
-																<CrossCircledIcon className="h-4 w-4" />
-															</Button>
-														</AlertDialogTrigger>
-                                                        <DeleteRewardAlertDialog reward={reward} />
-													</AlertDialog>
-												</div>
-											</TableCell>
+				<div className="rounded-md border">
+					<Table>
+						<TableHeader>
+							{table.getHeaderGroups().map((headerGroup) => (
+								<TableRow key={headerGroup.id}>
+									{headerGroup.headers.map((header) => {
+										return (
+											<TableHead key={header.id}>
+												{header.isPlaceholder
+													? null
+													: flexRender(
+															header.column.columnDef.header,
+															header.getContext(),
+														)}
+											</TableHead>
+										);
+									})}
+								</TableRow>
+							))}
+						</TableHeader>
+						<TableBody>
+							{table.getRowModel().rows?.length ? (
+								table.getRowModel().rows.map((row) => {
+									return (
+										<TableRow
+											key={row.id}
+											data-state={row.getIsSelected() && "selected"}
+										>
+											{row.getVisibleCells().map((cell) => {
+												return (
+													<TableCell key={cell.id}>
+														{flexRender(
+															cell.column.columnDef.cell,
+															cell.getContext(),
+														)}
+													</TableCell>
+												);
+											})}
 										</TableRow>
-									
-							);
-						})}
-					</TableBody>
-				</Table>
+									);
+								})
+							) : (
+								<TableRow>
+									<TableCell
+										colSpan={columns.length}
+										className="h-24 text-center"
+									>
+										No results.
+									</TableCell>
+								</TableRow>
+							)}
+						</TableBody>
+					</Table>
+				</div>
+				<div className="flex items-center justify-between px-2">
+					<div className="flex-1 text-muted-foreground text-sm">
+						{table.getFilteredSelectedRowModel().rows.length} of{" "}
+						{table.getFilteredRowModel().rows.length} row(s) selected.
+					</div>
+					<div className="flex items-center space-x-6 lg:space-x-8">
+						<div className="flex items-center space-x-2">
+							<p className="font-medium text-sm">Rows per page</p>
+							<Select
+								value={`${table.getState().pagination.pageSize}`}
+								onValueChange={(value) => {
+									table.setPageSize(Number(value));
+								}}
+							>
+								<SelectTrigger className="h-8 w-[70px]">
+									<SelectValue
+										placeholder={table.getState().pagination.pageSize}
+									/>
+								</SelectTrigger>
+								<SelectContent side="top">
+									{[5, 10, 20, 30, 40, 50].map((pageSize) => (
+										<SelectItem key={pageSize} value={`${pageSize}`}>
+											{pageSize}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+						<div className="flex w-[100px] items-center justify-center font-medium text-sm">
+							Page {table.getState().pagination.pageIndex + 1} of{" "}
+							{table.getPageCount()}
+						</div>
+						<div className="flex items-center space-x-2">
+							<Button
+								variant="outline"
+								className="hidden h-8 w-8 p-0 lg:flex"
+								onClick={() => table.setPageIndex(0)}
+								disabled={!table.getCanPreviousPage()}
+							>
+								<span className="sr-only">Go to first page</span>
+								<ChevronsLeft className="h-4 w-4" />
+							</Button>
+							<Button
+								variant="outline"
+								className="h-8 w-8 p-0"
+								onClick={() => table.previousPage()}
+								disabled={!table.getCanPreviousPage()}
+							>
+								<span className="sr-only">Go to previous page</span>
+								<ChevronLeft className="h-4 w-4" />
+							</Button>
+							<Button
+								variant="outline"
+								className="h-8 w-8 p-0"
+								onClick={() => table.nextPage()}
+								disabled={!table.getCanNextPage()}
+							>
+								<span className="sr-only">Go to next page</span>
+								<ChevronRight className="h-4 w-4" />
+							</Button>
+							<Button
+								variant="outline"
+								className="hidden h-8 w-8 p-0 lg:flex"
+								onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+								disabled={!table.getCanNextPage()}
+							>
+								<span className="sr-only">Go to last page</span>
+								<ChevronsRight className="h-4 w-4" />
+							</Button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</TooltipProvider>
 	);
 };
 
 const EditRewardForm = ({ reward }: { reward: battlepass_seasons_rewards }) => {
+	const [showImagePreview, setShowImagePreview] = useState(true);
+	const [previewImageSrc, setPreviewImageSrc] = useState("");
+
 	const { toast } = useToast();
-	const { seasons, rewards } = useContext(
+	const { seasons, rewards, refetchSeasons } = useContext(
 		AdminBattlepassContext,
 	) as AdminBattlepassContextType;
 
 	const formSchema = z.object({
-		id: z.number(),
+		id: z.string(),
 		season_id: z.string(),
-		level: z.number(),
+		level: z.string(),
 		reward_name: z.string(),
 		reward_img: z.string(),
 		reward_type: z.string(),
-		reward_amount: z.number(),
-		reward_value: z.number(),
+		reward_amount: z.string(),
+		reward_value: z.string(),
 		reward_should_plus_amount: z.boolean(),
 		reward_required_access: z.string(),
 		description: z.string(),
@@ -590,14 +837,14 @@ const EditRewardForm = ({ reward }: { reward: battlepass_seasons_rewards }) => {
 	const methods = useForm<EditRewardFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			id: reward.id,
+			id: reward.id.toString(),
 			season_id: reward.season_id.toString(),
-			level: reward.level,
+			level: reward.level.toString(),
 			reward_name: reward.reward_name,
 			reward_img: reward.reward_img,
 			reward_type: reward.reward_type,
-			reward_amount: reward.reward_amount,
-			reward_value: reward.reward_value,
+			reward_amount: reward.reward_amount.toString(),
+			reward_value: reward.reward_value.toString(),
 			reward_should_plus_amount: reward.reward_should_plus_amount,
 			reward_required_access: reward.reward_required_access,
 			description: reward.description,
@@ -611,10 +858,56 @@ const EditRewardForm = ({ reward }: { reward: battlepass_seasons_rewards }) => {
 		formState: { isSubmitting },
 		trigger,
 	} = methods;
+	const values = watch();
 
 	async function onSubmit(data: EditRewardFormValues) {
-		console.log("data: ", data);
+		fetch("/api/battlepass/rewards/update", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				id: data.id,
+				season_id: data.season_id,
+				level: data.level,
+				reward_name: data.reward_name,
+				reward_img: data.reward_img,
+				reward_type: data.reward_type,
+				reward_amount: data.reward_amount,
+				reward_value: data.reward_value,
+				reward_should_plus_amount: data.reward_should_plus_amount,
+				reward_required_access: data.reward_required_access,
+				description: data.description,
+				visible: data.visible,
+			}),
+		})
+			.then(async (res) => {
+				if (res.status === 200) {
+					toast({
+						title: "Updated reward",
+						description: <div>{data.reward_name} has been updated.</div>,
+					});
+					refetchSeasons();
+				}
+			})
+			.catch((error) => {
+				error;
+				toast({
+					title: "Error",
+					variant: "destructive",
+					description: <div>{error}</div>,
+				});
+			});
 	}
+
+	useEffect(() => {
+		setPreviewImageSrc(
+			getRewardPath(
+				watch("reward_type").toUpperCase() as BATTLEPASS_TYPE_REWARDS,
+				watch("reward_img"),
+			),
+		);
+	}, [values.reward_img, showImagePreview]);
 
 	return (
 		<DialogContent>
@@ -685,6 +978,22 @@ const EditRewardForm = ({ reward }: { reward: battlepass_seasons_rewards }) => {
 							trigger("reward_img");
 						}}
 					/>
+
+					<div className="flex items-center gap-2">
+						<Checkbox
+							id="show-image-preview"
+							checked={showImagePreview}
+							onCheckedChange={() => {
+								setShowImagePreview(!showImagePreview);
+							}}
+							title="Show image preview"
+						/>
+						<Label htmlFor="show-image-preview">Show preview</Label>
+					</div>
+
+					{showImagePreview && methods.getValues("reward_img").length > 0 && (
+						<img src={previewImageSrc} alt="reward-image" />
+					)}
 
 					<div className="grid grid-cols-2 gap-4">
 						<RHFTextField

@@ -1,9 +1,3 @@
-
 export default function AdminSettings() {
-
-  return (
-    <>
-      CONTENT
-    </>
-  )
+	return <>CONTENT</>;
 }

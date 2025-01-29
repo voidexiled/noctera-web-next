@@ -15,6 +15,8 @@ import Link from "next/link";
 
 import { IconiFy } from "@/components/Iconify";
 import { Typography } from "@/components/Typography";
+import { FloatingAdminToolbar } from "@/components/admin/FloatingAdminToolbar";
+import { AdminToolbarProvider } from "@/components/admin/context/AdminToolbarContext";
 import Boosted from "@/components/animations/boosted";
 import CountDown from "@/components/count-down";
 import LoginBox from "@/components/login-box";
@@ -24,6 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import configLua from "@/hooks/configLua";
 import { prisma } from "@/lib/prisma";
 import { StatusServer } from "@/utils/statusServer";
+import { useSession } from "next-auth/react";
 import { cn } from "../lib/utils";
 
 const lua = configLua();
@@ -43,7 +46,6 @@ export async function status() {
 		const host = lua.ip.split(" ")[0];
 		const port = +lua.statusProtocolPort;
 		const status = await statusServer.getStatus(host, port);
-		console.log("status: ", status);
 		return {
 			status: !!status,
 		};
@@ -124,9 +126,9 @@ export default async function RootLayout({
 	const globalServerSaveNotifyDuration: string =
 		lua.globalServerSaveNotifyDuration;
 
-	console.log(globalServerSaveTime);
-	console.log(globalServerSaveNotifyMessage);
-	console.log(globalServerSaveNotifyDuration);
+	globalServerSaveTime;
+	globalServerSaveNotifyMessage;
+	globalServerSaveNotifyDuration;
 
 	const globalServerSaveTimeHours = Number.parseInt(
 		globalServerSaveTime.split(":")[0],
@@ -139,7 +141,7 @@ export default async function RootLayout({
 	);
 
 	const isGlobalServerSaveNotificationEnabled =
-		globalServerSaveNotifyMessage  === "true";
+		globalServerSaveNotifyMessage === "true";
 	const globalServerSaveNotifyDurationMinutes =
 		isGlobalServerSaveNotificationEnabled
 			? Number.parseInt(globalServerSaveNotifyDuration)
@@ -152,7 +154,7 @@ export default async function RootLayout({
 		(isGlobalServerSaveNotificationEnabled
 			? globalServerSaveNotifyDurationMinutes * 60
 			: 0);
-			
+
 	const serverSaveHours = Math.floor(serverSaveTotalSeconds / 3600);
 	const serverSaveMinutes = Math.floor((serverSaveTotalSeconds % 3600) / 60);
 	const serverSaveSeconds = Math.floor((serverSaveTotalSeconds % 3600) % 60);
@@ -393,6 +395,9 @@ export default async function RootLayout({
 								</div>
 							</div>
 						</ScrollArea>
+						<AdminToolbarProvider>
+							<FloatingAdminToolbar />
+						</AdminToolbarProvider>
 					</Provider>
 					<Toaster />
 				</>

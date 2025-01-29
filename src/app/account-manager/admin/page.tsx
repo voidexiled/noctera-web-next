@@ -118,7 +118,7 @@ export default async function AdminManager() {
 									stroke="none"
 								/>
 								<path
-                  className="stroke-card-foreground group-hover:stroke-card-foreground"
+									className="stroke-card-foreground group-hover:stroke-card-foreground"
 									fill="none"
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -147,7 +147,7 @@ export default async function AdminManager() {
 									stroke="none"
 								/>
 								<path
-                  className="stroke-card-foreground group-hover:stroke-card-foreground"
+									className="stroke-card-foreground group-hover:stroke-card-foreground"
 									fill="none"
 									strokeLinecap="round"
 									strokeLinejoin="round"

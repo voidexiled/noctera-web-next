@@ -9,11 +9,11 @@ export const BattlepassNav = () => {
 
 	const partes = pathname.split("/");
 	const selectedPath = partes[4];
-    console.log(selectedPath)
+	selectedPath;
 
-    function shouldBeActive(path: string) {
-        return selectedPath === path;
-    }
+	function shouldBeActive(path: string) {
+		return selectedPath === path;
+	}
 
 	return (
 		<nav className="flex items-center space-x-4 border-b p-2 lg:space-x-6">

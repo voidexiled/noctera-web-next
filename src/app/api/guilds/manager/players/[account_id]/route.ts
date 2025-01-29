@@ -1,32 +1,46 @@
+import type { PlayerResponse } from "@/app/(community)/guilds/guilds";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { convertBigIntsToNumbers } from "@/utils/functions/convertBigIntsToNumbers";
+import type { players } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-type Params = { account_id: string }
+type Params = { account_id: string };
 
 const ListPlayer = async (request: Request, { params }: { params: Params }) => {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+	try {
+		const session = await getServerSession(authOptions);
+		if (!session)
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const account = await prisma.accounts.findUnique({
-      where: { id: +params.account_id }, include: {
-        players: {
-          where: {
-            level: { gte: 8 },
-            guild_membership: null
-          }
-        }
-      }
-    })
+		const account: PlayerResponse = await prisma.accounts.findUnique({
+			where: { id: +params.account_id },
+			include: {
+				players: {
+					where: {
+						level: { gte: 8 },
+						guild_membership: null,
+					},
+				},
+			},
+		});
 
-    return NextResponse.json({ player: account?.players ? convertBigIntsToNumbers(account?.players) : [] });
-  } catch (error) {
-    console.log('error on create guild', error)
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
-  }
-}
+		const convertedPlayer = account?.players
+			? convertBigIntsToNumbers<players[]>(account?.players)
+			: [];
 
-export { ListPlayer as GET }
+		console.log(convertedPlayer);
+
+		return NextResponse.json({
+			player: convertedPlayer,
+		});
+	} catch (error) {
+		return NextResponse.json(
+			{ message: "Internal server error" },
+			{ status: 500 },
+		);
+	}
+};
+
+export { ListPlayer as GET };

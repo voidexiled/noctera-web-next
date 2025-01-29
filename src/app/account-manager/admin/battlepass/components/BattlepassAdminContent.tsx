@@ -8,7 +8,7 @@ export const BattlepassAdminContent = () => {
 
 	const partes = pathname.split("/");
 	const ultimoPath = partes[partes.length - 1];
-    
+
 	return (
 		<div className="p-2">
 			{ultimoPath === "rewards" ? (
