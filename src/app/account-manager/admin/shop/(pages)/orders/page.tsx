@@ -9,19 +9,20 @@ const ORDER_STATUS = [
 	{ value: "CANCELED", label: "CANCELED" },
 ];
 
-export default async function Page({
-	searchParams,
-}: { searchParams?: { search?: string; page?: string; status: string } }) {
-	const query = searchParams?.search || "";
-	const currentPage = Number(searchParams?.page) || 1;
-	const status = searchParams?.status;
+export default async function Page(
+    props: { searchParams?: Promise<{ search?: string; page?: string; status: string }> }
+) {
+    const searchParams = await props.searchParams;
+    const query = searchParams?.search || "";
+    const currentPage = Number(searchParams?.page) || 1;
+    const status = searchParams?.status;
 
-	const { orders, totalPage } = await fetchPayments({
+    const { orders, totalPage } = await fetchPayments({
 		currentPage,
 		search: query,
 		statusFilter: status,
 	});
-	return (
+    return (
 		<>
 			<div className="flex flex-col rounded-sm border">
 				<Search

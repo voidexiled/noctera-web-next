@@ -54,10 +54,9 @@ async function isOnline(player_id: number) {
 	return false;
 }
 
-export default async function Character({
-	params,
-}: { params: { name: string } }) {
-	const player = await prisma.players.findFirst({
+export default async function Character(props: { params: Promise<{ name: string }> }) {
+    const params = await props.params;
+    const player = await prisma.players.findFirst({
 		where: {
 			AND: [
 				{
@@ -113,15 +112,15 @@ export default async function Character({
 		},
 	});
 
-	if (!player) redirect("/characters");
+    if (!player) redirect("/characters");
 
-	const deaths = await prisma.player_deaths.findMany({
+    const deaths = await prisma.player_deaths.findMany({
 		where: { player_id: player.id },
 		take: 5,
 		orderBy: { time: "desc" },
 	});
 
-	const LoyaltRaking = (raking: number) => {
+    const LoyaltRaking = (raking: number) => {
 		if (raking >= 5000 && raking < 10000) {
 			return "John Cena";
 		}
@@ -155,21 +154,21 @@ export default async function Character({
 		return "No Ranking";
 	};
 
-	const playerInventory = player.player_items.filter(
+    const playerInventory = player.player_items.filter(
 		(item) => item.pid >= 1 && item.pid <= 10,
 	);
 
-	function getEmptySlotImage(pid: number) {
+    function getEmptySlotImage(pid: number) {
 		return EMPTY_SLOTS.find((slot) => slot.pid === pid)?.imageName ?? "";
 	}
 
-	function getItemImage(pid: number): string {
+    function getItemImage(pid: number): string {
 		const itemType = playerInventory.find((item) => item.pid === pid)?.itemtype;
 		if (!itemType) return `/animated-items/${getEmptySlotImage(pid)}.gif`;
 		return `/animated-items/${itemType}.gif`;
 	}
 
-	const inventoryImages: {
+    const inventoryImages: {
 		pid: number;
 		imageName: string;
 	}[] = [
@@ -212,11 +211,11 @@ export default async function Character({
 		},
 	];
 
-	function getInventoryImage(pid: number) {
+    function getInventoryImage(pid: number) {
 		return inventoryImages.find((slot) => slot.pid === pid)?.imageName ?? "";
 	}
 
-	function getExpForLevel(level: number): number {
+    function getExpForLevel(level: number): number {
 		const tempLevel = level - 1;
 		return Math.floor(
 			(50 * tempLevel * tempLevel * tempLevel -
@@ -226,7 +225,7 @@ export default async function Character({
 		);
 	}
 
-	function calculateExperience(playerExperience: bigint, playerLevel: number) {
+    function calculateExperience(playerExperience: bigint, playerLevel: number) {
 		const expCurrent = BigInt(getExpForLevel(playerLevel));
 		const expNext = BigInt(getExpForLevel(playerLevel + 1));
 		const expLeft = expNext - playerExperience;
@@ -246,7 +245,7 @@ export default async function Character({
 		};
 	}
 
-	return (
+    return (
 		<>
 			<Card>
 				<CardHeader className="border-b">

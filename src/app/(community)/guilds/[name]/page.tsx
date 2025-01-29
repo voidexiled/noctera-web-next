@@ -28,21 +28,20 @@ import ToCreateOrJoinGuild from "./toCreateOrJoinGuild";
 
 const lua = configLua();
 
-export default async function GuildData({
-	params,
-}: { params: { name: string } }) {
-	const session = await getServerSession(authOptions);
+export default async function GuildData(props: { params: Promise<{ name: string }> }) {
+    const params = await props.params;
+    const session = await getServerSession(authOptions);
 
-	const sessionPlayer = session?.user.id
+    const sessionPlayer = session?.user.id
 		? await prisma.players.findMany({
 				where: { account_id: Number(session?.user.id) },
 				select: { id: true },
 			})
 		: [];
 
-	const sessionPlayerId = sessionPlayer.map((player) => player.id);
+    const sessionPlayerId = sessionPlayer.map((player) => player.id);
 
-	const guild = await prisma.guilds.findFirst({
+    const guild = await prisma.guilds.findFirst({
 		where: {
 			AND: [{ name: decodeURIComponent(params.name) }],
 		},
@@ -80,15 +79,15 @@ export default async function GuildData({
 		},
 	});
 
-	const ids = guild?.guild_membership.map((i) => i.player_id);
+    const ids = guild?.guild_membership.map((i) => i.player_id);
 
-	if (!guild) redirect(`/guilds/${params.name}`);
+    if (!guild) redirect(`/guilds/${params.name}`);
 
-	const { manager, level, player_id, isLogged } = await ToCreateOrJoinGuild(
+    const { manager, level, player_id, isLogged } = await ToCreateOrJoinGuild(
 		guild.id,
 	);
 
-	async function isOnline(player_id: number) {
+    async function isOnline(player_id: number) {
 		const query = await prisma.players_online.findFirst({
 			where: { player_id },
 		});
@@ -98,7 +97,7 @@ export default async function GuildData({
 		return false;
 	}
 
-	return (
+    return (
 		<Suspense key={guild.guild_ranks.length + guild.guild_membership.length}>
 			<Card>
 				<div className="flex flex-row items-center justify-between p-4">

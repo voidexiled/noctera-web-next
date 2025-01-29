@@ -40,14 +40,13 @@ const PlayersCasts = async ({
 	};
 };
 
-export default async function Casts({
-	searchParams,
-}: { searchParams?: { search?: string; page?: string } }) {
-	const currentPage = Number(searchParams?.page) || 1;
-	const search = searchParams?.search || "";
+export default async function Casts(props: { searchParams?: Promise<{ search?: string; page?: string }> }) {
+    const searchParams = await props.searchParams;
+    const currentPage = Number(searchParams?.page) || 1;
+    const search = searchParams?.search || "";
 
-	const { players, totalPage } = await PlayersCasts({ search, currentPage });
-	return (
+    const { players, totalPage } = await PlayersCasts({ search, currentPage });
+    return (
 		<>
 			<Card>
 				<CardHeader className="border-b">

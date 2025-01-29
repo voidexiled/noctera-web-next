@@ -2,7 +2,7 @@
 import useDisclosure from "@/hooks/useDisclosure";
 import type { accounts } from "@prisma/client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import { ErrorCode } from "../utils/ErrorCode";
 import TwoFactAuth from "./TwoFactAuth";
 import { Button } from "./ui/button";
