@@ -46,7 +46,7 @@ export default function UploadShopImage({
 
 				<div
 					className={cn(
-						"absolute z-[7] flex h-full w-full flex-col items-center justify-center rounded text-sm hover:opacity-70",
+						"absolute z-7 flex h-full w-full flex-col items-center justify-center rounded text-sm hover:opacity-70",
 						hasFile && "z-10 bg-gray-900/70 text-white opacity-0",
 						isError && "bg-red-200 text-red-500",
 					)}

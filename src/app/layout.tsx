@@ -171,7 +171,7 @@ export default async function RootLayout({
               <source src="/movies/logo.webm" type="video/webm" />
             </video> */}
 						<ScrollArea className="h-screen w-full px-2">
-							<div className="mx-auto mt-10 mb-4 hidden max-w-screen-xl grid-cols-1 space-y-2 sm:grid sm:grid-cols-12 sm:space-x-2 sm:space-y-0">
+							<div className="mx-auto mt-10 mb-4 hidden max-w-(--breakpoint-xl) grid-cols-1 space-y-2 sm:grid sm:grid-cols-12 sm:space-x-2 sm:space-y-0">
 								<div className="col-span-2 space-y-2">
 									{/* <Link href="/">
                     <Image src={'/testlogo2.png'} priority width={212} height={200} className='w-auto h-auto' alt='Logo' />
@@ -195,7 +195,7 @@ export default async function RootLayout({
 
 								{/* <div className='sm:col-span-2 col-span-1 hidden sm:block gap-2'>
                   <div className='flex flex-row justify-center items-end h-full pb-2 gap-2'>
-                    <div className='bg-background/10 shadow rounded-sm backdrop-blur-[6px] p-3'>
+                    <div className='bg-background/10 shadow-sm rounded-sm backdrop-blur-[6px] p-3'>
                       <Boosted boosted={{
                         boostname: boostedCreature[0].looktype.toString(),
                         lookaddons: 0,
@@ -207,7 +207,7 @@ export default async function RootLayout({
                         looktype: boostedCreature[0].looktype
                       }} kind="creature" />
                     </div>
-                    <div className='bg-background/10 shadow rounded-sm backdrop-blur-[6px] p-3'>
+                    <div className='bg-background/10 shadow-sm rounded-sm backdrop-blur-[6px] p-3'>
                       <Boosted boosted={{
                         boostname: boostedBoss[0].looktype.toString(),
                         lookaddons: 0,
@@ -222,16 +222,21 @@ export default async function RootLayout({
                   </div>
                 </div> */}
 							</div>
-							<div className="mx-auto grid max-w-screen-xl grid-cols-1 space-y-2 sm:grid-cols-12 sm:space-x-2 sm:space-y-0">
+							<div className="mx-auto grid max-w-(--breakpoint-xl) grid-cols-1 space-y-2 sm:grid-cols-12 sm:space-x-2 sm:space-y-0">
 								<div className="col-span-1 gap-2 space-y-2 sm:col-span-2 ">
 									<LoginBox />
 
-									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 										<div className="flex flex-col space-y-2">
-											<Button size={"lg"} variant={"green"} asChild>
+											<Button
+												size="lg"
+												variant="green"
+												className="text-center"
+												asChild
+											>
 												<Link
 													href={"/download"}
-													className="justify-start gap-2"
+													className="justify-center gap-2"
 												>
 													Download
 												</Link>
@@ -239,13 +244,13 @@ export default async function RootLayout({
 										</div>
 									</div>
 
-									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 										<MainMenu />
 									</div>
 								</div>
 
 								<div className="col-span-8 space-y-2 pb-8">
-									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 										<div className="flex items-center justify-between rounded-sm bg-background p-1">
 											<div className="flex flex-row gap-4">
 												<Link
@@ -296,7 +301,7 @@ export default async function RootLayout({
 										</div>
 									</div>
 
-									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 										{children}
 									</div>
 
@@ -339,7 +344,7 @@ export default async function RootLayout({
 								</div>
 
 								<div className="col-span-1 gap-2 space-y-2 sm:col-span-2 ">
-									<div className="w-full rounded-sm bg-background/10 p-1 shadow backdrop-blur-[6px]">
+									<div className="w-full rounded-sm bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 										<Card>
 											<CardHeader className="border-b">
 												<CardTitle className="grid grid-cols-2 text-center">
@@ -382,14 +387,14 @@ export default async function RootLayout({
 											</CardContent>
 										</Card>
 									</div>
-									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 										<CountDown
 											hour={serverSaveHours}
 											min={serverSaveMinutes}
 											sec={serverSaveSeconds}
 										/>
 									</div>
-									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+									<div className="flex flex-col gap-2 rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 										<RashidBox />
 									</div>
 								</div>

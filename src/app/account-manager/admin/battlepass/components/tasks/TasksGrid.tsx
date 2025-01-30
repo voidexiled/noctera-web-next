@@ -67,7 +67,7 @@ export const TasksGrid = () => {
 					{tasks.map((task) => {
 						return (
 							<div
-								className="group no-draggable no-selectable relative mr-4 grid h-[140px] w-[150px] grid-cols-1 grid-rows-[20px_1fr] overflow-hidden rounded-md bg-secondary/40 shadow-sm transition-all duration-300 hover:bg-secondary/60"
+								className="group no-draggable no-selectable relative mr-4 grid h-[140px] w-[150px] grid-cols-1 grid-rows-[20px_1fr] overflow-hidden rounded-md bg-secondary/40 shadow-xs transition-all duration-300 hover:bg-secondary/60"
 								key={task.id}
 							>
 								<div className="relative flex w-full flex-row items-center justify-center bg-background/50 text-card-foreground/80 text-sm">

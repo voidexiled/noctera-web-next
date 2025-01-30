@@ -15,7 +15,7 @@ export default function TermsAndConditions() {
 					<Typography className="py-5 text-center">
 						Termos e Condições
 					</Typography>
-					<div className="space-y-3 rounded border p-2 shadow ">
+					<div className="space-y-3 rounded border p-2 shadow-sm ">
 						<Typography variant={"h5"}>1. TERMOS</Typography>
 						<Typography variant={"body1"} component={"p"}>
 							Todos os titulares de contas do {lua.serverName} são responsáveis

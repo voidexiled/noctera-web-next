@@ -45,18 +45,20 @@ async function getPlayers(account_id: number) {
 	return { players };
 }
 
-export default async function Guilds(props: { searchParams?: Promise<{ search?: string; page?: string }> }) {
-    const searchParams = await props.searchParams;
-    const session = await getServerSession(authOptions);
-    const search = searchParams?.search || "";
-    const page = Number(searchParams?.page) || 1;
-    const { guilds, totalPage } = await fetchGuilds({ page, search });
+export default async function Guilds(props: {
+	searchParams?: Promise<{ search?: string; page?: string }>;
+}) {
+	const searchParams = await props.searchParams;
+	const session = await getServerSession(authOptions);
+	const search = searchParams?.search || "";
+	const page = Number(searchParams?.page) || 1;
+	const { guilds, totalPage } = await fetchGuilds({ page, search });
 
-    const { players } = session?.user.id
+	const { players } = session?.user.id
 		? await getPlayers(+session?.user.id)
 		: { players: [] };
 
-    return (
+	return (
 		<Card>
 			<CardHeader className="border-b">
 				<CardTitle>Guilds</CardTitle>

@@ -29,9 +29,9 @@ export const BattlepassProgressBar = () => {
 	return (
 		<div className="flex h-full w-full flex-row items-center justify-center gap-4 px-2 pt-3 pb-1 text-center text-card-foreground/80">
 			<span>{playerCurrentBattlepassLevel}</span>
-			<div className="relative flex h-8 grow flex-row items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-background/80 to-card/80">
+			<div className="relative flex h-8 grow flex-row items-center justify-center overflow-hidden rounded-full bg-linear-to-br from-background/80 to-card/80">
 				<motion.div
-					className="absolute top-0 left-0 h-full bg-gradient-to-r from-accent/80 to-primary/80 transition-all "
+					className="absolute top-0 left-0 h-full bg-linear-to-r from-accent/80 to-primary/80 transition-all "
 					initial={{ width: "0%" }}
 					animate={{
 						width: `${playerExp % battlepassRequiredExperienceForLevelUp}%`,

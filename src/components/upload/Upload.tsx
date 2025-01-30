@@ -45,7 +45,7 @@ export default function Upload({
 			<div
 				{...getRootProps()}
 				className={cn(
-					"block cursor-pointer select-none rounded-sm border border-gray-300 border-dashed p-1 outline-none",
+					"block cursor-pointer select-none rounded-sm border border-gray-300 border-dashed p-1 outline-hidden",
 					isError && "border-red-500",
 					isDragActive && "border-gray-300/75 opacity-75",
 					disabled && "pointer-events-none opacity-50",
@@ -64,7 +64,7 @@ export default function Upload({
 				<Button
 					size="sm"
 					onClick={onDelete}
-					className="p absolute top-2 right-2 z-[9] m-0 h-auto rounded-full p-1 opacity-75"
+					className="p absolute top-2 right-2 z-9 m-0 h-auto rounded-full p-1 opacity-75"
 				>
 					<IconiFy icon="eva:close-fill" size={"sm"} className="leading-none" />
 				</Button>

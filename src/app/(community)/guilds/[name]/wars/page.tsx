@@ -10,18 +10,20 @@ import {
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
-export default async function War(props: { params: Promise<{ name: string }> }) {
-    const params = await props.params;
-    const guild = await prisma.guilds.findFirst({
+export default async function War(props: {
+	params: Promise<{ name: string }>;
+}) {
+	const params = await props.params;
+	const guild = await prisma.guilds.findFirst({
 		where: { name: decodeURIComponent(params.name) },
 	});
-    if (!guild) return redirect("/guilds");
+	if (!guild) return redirect("/guilds");
 
-    const guildWar = await prisma.guild_wars.findMany({
+	const guildWar = await prisma.guild_wars.findMany({
 		where: { OR: [{ guild1: guild.id }, { guild2: guild.id }] },
 	});
 
-    return (
+	return (
 		<>
 			<Card>
 				<CardHeader className="border-b">

@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { use } from "react";
 import { FormProvider, RHFTextField } from "@/components/hook-form";
 import { Button } from "@/components/ui/button";
@@ -12,29 +12,29 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function Character(props: { params: Promise<{ key: string }> }) {
-    const params = use(props.params);
-    const router = useRouter();
-    const characterFormSchema = z.object({
+	const params = use(props.params);
+	const router = useRouter();
+	const characterFormSchema = z.object({
 		code: z.string(),
 		token: z.string(),
 	});
 
-    type CharacterFormValues = z.infer<typeof characterFormSchema>;
+	type CharacterFormValues = z.infer<typeof characterFormSchema>;
 
-    const methods = useForm<CharacterFormValues>({
+	const methods = useForm<CharacterFormValues>({
 		resolver: zodResolver(characterFormSchema),
 		defaultValues: {
 			token: params.key,
 		},
 	});
 
-    const {
+	const {
 		reset,
 		handleSubmit,
 		formState: { isSubmitting },
 	} = methods;
 
-    async function onSubmit(data: CharacterFormValues) {
+	async function onSubmit(data: CharacterFormValues) {
 		try {
 			const response = await fetch("/api/auth/active-email", {
 				method: "POST",
@@ -61,7 +61,7 @@ export default function Character(props: { params: Promise<{ key: string }> }) {
 		}
 	}
 
-    return (
+	return (
 		<>
 			<Card>
 				<CardHeader className="border-b">

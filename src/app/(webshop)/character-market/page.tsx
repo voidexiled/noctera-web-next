@@ -70,21 +70,21 @@ function paginationGetVocation(value: string): number[] | undefined {
 	return vocationMap[`${value}`];
 }
 
-export default async function CharacterMarket(
-    props: { searchParams?: Promise<{ search?: string; vocation?: string; page?: string }> }
-) {
-    const searchParams = await props.searchParams;
-    const currentPage = Number(searchParams?.page) || 1;
-    const vocation = searchParams?.vocation || "";
-    const search = searchParams?.search || "";
+export default async function CharacterMarket(props: {
+	searchParams?: Promise<{ search?: string; vocation?: string; page?: string }>;
+}) {
+	const searchParams = await props.searchParams;
+	const currentPage = Number(searchParams?.page) || 1;
+	const vocation = searchParams?.vocation || "";
+	const search = searchParams?.search || "";
 
-    const { players, totalPage } = await getCharacterMarket({
+	const { players, totalPage } = await getCharacterMarket({
 		search,
 		currentPage,
 		vocation,
 	});
 
-    return (
+	return (
 		<>
 			<Card>
 				<CardHeader className="border-b">

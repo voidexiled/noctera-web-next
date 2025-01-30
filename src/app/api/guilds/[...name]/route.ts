@@ -6,9 +6,12 @@ type Params = {
 	name: string;
 };
 
-export async function GET(request: Request, props: { params: Promise<Params> }) {
-    const params = await props.params;
-    const characters = await prisma.guilds.findMany({
+export async function GET(
+	request: Request,
+	props: { params: Promise<Params> },
+) {
+	const params = await props.params;
+	const characters = await prisma.guilds.findMany({
 		where: {
 			AND: [{ name: { contains: decodeURIComponent(params.name) } }],
 		},
@@ -21,5 +24,5 @@ export async function GET(request: Request, props: { params: Promise<Params> }) 
 		},
 		take: 25,
 	});
-    return NextResponse.json(convertBigIntsToNumbers(characters));
+	return NextResponse.json(convertBigIntsToNumbers(characters));
 }

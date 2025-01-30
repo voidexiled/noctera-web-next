@@ -746,8 +746,6 @@ async function seed() {
 		skipDuplicates: true,
 	});
 
-		
-
 	await prisma.players.createMany({
 		data: [sampleRook, sampleSorcerer, druidSample, paladinSample, knighSample, sampleAdmin],
 		skipDuplicates: true,

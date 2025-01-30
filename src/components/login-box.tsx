@@ -10,9 +10,9 @@ export default async function LoginBox() {
 	if (!session?.user) {
 		return (
 			<>
-				<div className="rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+				<div className="rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 					<div className="flex flex-row gap-2">
-						<div className="flex flex-grow flex-col space-y-1">
+						<div className="flex grow flex-col space-y-1">
 							<Button asChild>
 								<Link href={"/account-manager/login"}>Login</Link>
 							</Button>
@@ -28,9 +28,9 @@ export default async function LoginBox() {
 
 	return (
 		<>
-			<div className="rounded-md bg-background/10 p-1 shadow backdrop-blur-[6px]">
+			<div className="rounded-md bg-background/10 p-1 shadow-sm backdrop-blur-[6px]">
 				<div className="flex flex-row gap-2">
-					<div className="flex flex-grow flex-col space-y-1">
+					<div className="flex grow flex-col space-y-1">
 						{session?.user?.role === "admin" && (
 							<Button variant={"destructive"} asChild>
 								<Link href={"/account-manager/admin"}>Admin Panel</Link>

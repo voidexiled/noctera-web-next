@@ -12,7 +12,7 @@ export default function TwoFactAuth({
 		onChange,
 	});
 
-	const className = "h-12 w-12 !text-xl text-center";
+	const className = "h-12 w-12 text-xl! text-center";
 
 	return (
 		<div className="flex flex-row justify-between p-4">

@@ -67,71 +67,71 @@ type Params = {
 };
 
 export default async function Dashboard(props: Params) {
-    const searchParams = await props.searchParams;
-    const session = await getServerSession(authOptions);
-    const user = session?.user;
-    if (!user) redirect("/");
+	const searchParams = await props.searchParams;
+	const session = await getServerSession(authOptions);
+	const user = session?.user;
+	if (!user) redirect("/");
 
-    const acc = await getAccount(Number(user?.id));
-    if (!acc) redirect("/");
+	const acc = await getAccount(Number(user?.id));
+	if (!acc) redirect("/");
 
-    const ids = acc.players.map((i) => i.id);
+	const ids = acc.players.map((i) => i.id);
 
-    const playersOnline = await prisma.players_online.findMany({
+	const playersOnline = await prisma.players_online.findMany({
 		where: { AND: [{ player_id: { in: ids } }] },
 		select: { player_id: true },
 	});
 
-    const lastLogin = acc.players.sort(
+	const lastLogin = acc.players.sort(
 		(a, b) => Number(b.lastlogin) - Number(a.lastlogin),
 	);
 
-    // if (!acc.account_bans) {
-    //   return (
-    //     <Card>
-    //       <CardHeader className="border-b">
-    //         <CardTitle>Account Manager</CardTitle>
-    //       </CardHeader>
-    //       <CardContent className="p-2 space-y-2">
-    //         <div className="rounded-sm border">
-    //           <div className='flex p-2 items-start justify-start bg-red-100 text-sm text-red-500'>
-    //             Roles Violation Record Details
-    //           </div>
-    //           <Table>
-    //             <TableBody>
-    //               <TableRow>
-    //                 <TableCell className="w-[140px]">Date:</TableCell>
-    //                 <TableCell>AA</TableCell>
-    //               </TableRow>
-    //               <TableRow>
-    //                 <TableCell className="w-[140px]">Last Edit date:</TableCell>
-    //                 <TableCell>AA</TableCell>
-    //               </TableRow>
-    //               <TableRow>
-    //                 <TableCell className="w-[140px]">Reason:</TableCell>
-    //                 <TableCell>AA</TableCell>
-    //               </TableRow>
-    //                 <TableCell className="w-[140px]">Comment:</TableCell>
-    //                 <TableCell>AA</TableCell>
-    //               </TableRow>
-    //               <TableRow>
-    //                 <TableCell className="w-[140px]">Statement:</TableCell>
-    //                 <TableCell>AA</TableCell>
-    //               </TableRow>
-    //             </TableBody>
-    //           </Table>
-    //         </div >
-    //         <div className="flex justify-end pt-2">
-    //           <Button>Contact</Button>
-    //         </div>
-    //       </CardContent>
-    //     </Card>
-    //   )
-    // }
+	// if (!acc.account_bans) {
+	//   return (
+	//     <Card>
+	//       <CardHeader className="border-b">
+	//         <CardTitle>Account Manager</CardTitle>
+	//       </CardHeader>
+	//       <CardContent className="p-2 space-y-2">
+	//         <div className="rounded-sm border">
+	//           <div className='flex p-2 items-start justify-start bg-red-100 text-sm text-red-500'>
+	//             Roles Violation Record Details
+	//           </div>
+	//           <Table>
+	//             <TableBody>
+	//               <TableRow>
+	//                 <TableCell className="w-[140px]">Date:</TableCell>
+	//                 <TableCell>AA</TableCell>
+	//               </TableRow>
+	//               <TableRow>
+	//                 <TableCell className="w-[140px]">Last Edit date:</TableCell>
+	//                 <TableCell>AA</TableCell>
+	//               </TableRow>
+	//               <TableRow>
+	//                 <TableCell className="w-[140px]">Reason:</TableCell>
+	//                 <TableCell>AA</TableCell>
+	//               </TableRow>
+	//                 <TableCell className="w-[140px]">Comment:</TableCell>
+	//                 <TableCell>AA</TableCell>
+	//               </TableRow>
+	//               <TableRow>
+	//                 <TableCell className="w-[140px]">Statement:</TableCell>
+	//                 <TableCell>AA</TableCell>
+	//               </TableRow>
+	//             </TableBody>
+	//           </Table>
+	//         </div >
+	//         <div className="flex justify-end pt-2">
+	//           <Button>Contact</Button>
+	//         </div>
+	//       </CardContent>
+	//     </Card>
+	//   )
+	// }
 
-    const InitialTab = searchParams?.tab ?? "status";
+	const InitialTab = searchParams?.tab ?? "status";
 
-    return (
+	return (
 		<>
 			<Card>
 				<CardHeader className="border-b">
@@ -141,7 +141,7 @@ export default async function Dashboard(props: Params) {
 				<div className="space-y-2 p-2">
 					<div className="rounded-sm border">
 						<div className="flex gap-2 p-2 sm:flex-row sm:justify-between">
-							<div className="flex-grow">
+							<div className="grow">
 								<div className="mb-2 flex items-start justify-start rounded-sm bg-background/60 p-2 text-sm">
 									Account Status
 								</div>

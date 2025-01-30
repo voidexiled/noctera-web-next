@@ -33,7 +33,7 @@ export default function FileThumbnail({
 		format === "image" && imageView ? (
 			<Image
 				src={preview}
-				className="flex-shrink-0 object-cover"
+				className="shrink-0 object-cover"
 				alt={""}
 				width={300}
 				height={300}
@@ -42,7 +42,7 @@ export default function FileThumbnail({
 		) : (
 			<Image
 				src={fileThumb(format)}
-				className="w-8 flex-shrink-0"
+				className="w-8 shrink-0"
 				alt={""}
 				width={32}
 				height={32}
@@ -53,7 +53,7 @@ export default function FileThumbnail({
 	if (tooltip) {
 		return (
 			<div title={name}>
-				<span className="h-[inherit] w-fit flex-shrink-0 items-center justify-center">
+				<span className="h-[inherit] w-fit shrink-0 items-center justify-center">
 					{renderContent}
 					{onDownload && <DownloadButton onDownload={onDownload} />}
 				</span>

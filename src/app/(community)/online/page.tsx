@@ -13,12 +13,14 @@ import { getVocation } from "@/utils/functions/getVocations";
 import Link from "next/link";
 import { fetchOnline } from "./actions";
 
-export default async function Online(props: { searchParams?: Promise<{ page?: string }> }) {
-    const searchParams = await props.searchParams;
-    const currentPage = Number(searchParams?.page) || 1;
-    const { players, totalPage } = await fetchOnline({ currentPage });
+export default async function Online(props: {
+	searchParams?: Promise<{ page?: string }>;
+}) {
+	const searchParams = await props.searchParams;
+	const currentPage = Number(searchParams?.page) || 1;
+	const { players, totalPage } = await fetchOnline({ currentPage });
 
-    return (
+	return (
 		<>
 			<Card>
 				<CardHeader className="border-b">

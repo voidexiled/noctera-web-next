@@ -43,7 +43,7 @@ export default function Rules() {
 						</Typography>
 					</div>
 
-					<div className="flex flex-col rounded-sm border p-2 shadow ">
+					<div className="flex flex-col rounded-sm border p-2 shadow-sm ">
 						<table className="w-full max-w-full table-auto text-xs">
 							<thead>
 								<tr>

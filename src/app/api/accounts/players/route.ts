@@ -16,11 +16,15 @@ const CreatePlayersSchema = z
 	})
 	.strict();
 
-const handleCreate = async (req: Request) => {
+export async function POST(req: Request) {
 	try {
-		const { name, sex, world_id, vocation } = CreatePlayersSchema.parse(
-			await req.json(),
-		);
+		const data: {
+			name: string;
+			sex: number;
+			vocation: string;
+		} = await req.json();
+
+		const { name, sex, vocation } = data;
 		const session = await getServerSession(authOptions);
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
@@ -29,12 +33,13 @@ const handleCreate = async (req: Request) => {
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const findPlayers = await prisma.accounts.findFirst({ where: { name } });
-		if (findPlayers)
+
+		if (findPlayers) {
 			return NextResponse.json(
 				{ message: "Player name already exists" },
 				{ status: 400 },
 			);
-
+		}
 		const initialPlayerName =
 			vocation === "1"
 				? "Sorcerer Sample"
@@ -50,29 +55,41 @@ const handleCreate = async (req: Request) => {
 			where: { name: initialPlayerName },
 		});
 
-		if (!findInitialPlayer)
+		if (!findInitialPlayer) {
 			return NextResponse.json(
 				{ error: "Initial Player not exist." },
 				{ status: 500 },
 			);
+		}
 
 		const { id, account_id, ...restInitialPlayer } = findInitialPlayer || {
 			id: undefined,
 			account_id: undefined,
 		};
+		const playerData = {
+			...restInitialPlayer,
+			account_id: Number(session?.user?.id),
+			name,
+			sex,
+			//world_id: world_id ?? 1,
+			created: dayjs().unix(),
+			conditions: Buffer.alloc(1024),
+			comment: "",
+		};
+		const playerCreated = await prisma.players
+			.create({
+				data: playerData,
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 
-		const playerCreated = await prisma.players.create({
-			data: {
-				...restInitialPlayer,
-				account_id: Number(session?.user?.id),
-				name,
-				sex,
-				//world_id: world_id ?? 1,
-				created: dayjs().unix(),
-				conditions: Buffer.alloc(1024),
-				comment: "",
-			},
-		});
+		if (!playerCreated) {
+			return NextResponse.json(
+				{ error: "Error creating character." },
+				{ status: 500 },
+			);
+		}
 
 		const battlepassSeasons = await prisma.battlepass_seasons.findMany({
 			select: { id: true, season_number: true },
@@ -82,13 +99,17 @@ const handleCreate = async (req: Request) => {
 			(a, b) => Number(b.season_number) - Number(a.season_number),
 		)[0];
 
-		await prisma.player_battlepass_progress.create({
-			data: {
-				current_exp: 0,
-				season_id: latestSeason.id,
-				player_id: playerCreated.id,
-			},
-		});
+		await prisma.player_battlepass_progress
+			.create({
+				data: {
+					current_exp: 0,
+					season_id: latestSeason.id,
+					player_id: playerCreated.id,
+				},
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 
 		const latestSeasonTasks = await prisma.battlepass_seasons_tasks.findMany({
 			where: { season_id: latestSeason.id },
@@ -116,6 +137,4 @@ const handleCreate = async (req: Request) => {
 		}
 		return NextResponse.json({ err }, { status: 500 });
 	}
-};
-
-export { handleCreate as POST };
+}
