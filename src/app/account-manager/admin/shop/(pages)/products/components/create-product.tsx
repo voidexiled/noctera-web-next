@@ -1,4 +1,5 @@
 "use client";
+import { createProduct } from "@/app/account-manager/admin/shop/(pages)/products/data";
 import { IconiFy } from "@/components/Iconify";
 import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
 import { RHFUploadShopImage } from "@/components/hook-form/RHFUpload";
@@ -82,18 +83,20 @@ export default function CreateProduct({
 	async function onSubmit(formData: CharacterFormValues) {
 		try {
 			const data = new FormData();
+
 			data.set("img", values.img);
 			data.set("title", formData.title);
 			data.set("price", formData.price);
 			data.set("category", formData.category);
 			data.set("quantity", formData.quantity);
 			data.set("currency", formData.currency);
+			const res = await createProduct(data);
 
-			const res = await fetch("/api/administration/shop/products", {
-				method: "POST",
-				body: data,
-			});
-			if (res.ok) {
+			// const res = await fetch("/api/administration/shop/products", {
+			// 	method: "POST",
+			// 	body: data,
+			// });
+			if (res) {
 				route.refresh();
 				toast({
 					title: "Success!",
@@ -116,22 +119,22 @@ export default function CreateProduct({
 				</DialogTrigger>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Crate Product</DialogTitle>
+						<DialogTitle>Create Product</DialogTitle>
 					</DialogHeader>
 
 					<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-						{/* <RHFUploadShopImage
-            name="img"
-            accept={{ 'image': ['.png', '.gif'] }}
-            maxSize={3145728}
-            onDrop={handleDrop}
-          /> */}
-						<RHFTextField
+						<RHFUploadShopImage
+							name="img"
+							accept={{ image: [".png", ".gif"] }}
+							maxSize={3145728}
+							onDrop={handleDrop}
+						/>
+						{/* <RHFTextField
 							name="img"
 							label="Image name file"
 							autoFocus
 							required
-						/>
+						/> */}
 
 						<RHFTextField name="title" label="Title" autoFocus />
 						<div className="grid gap-2 sm:grid-cols-3">

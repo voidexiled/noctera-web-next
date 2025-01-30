@@ -129,7 +129,7 @@ export default async function HighScores(props: {
 								{players.map((character, index, array) => {
 									return (
 										// <TableRow className="cursor-pointer" key={index} onClick={() => (`/characters/${character.name}`)}>
-										<TableRow key={startIndex}>
+										<TableRow key={character.id}>
 											<TableCell className="w-[30px]">
 												{startIndex + index + 1}
 											</TableCell>

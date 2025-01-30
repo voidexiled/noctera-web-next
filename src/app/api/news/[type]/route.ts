@@ -7,10 +7,11 @@ enum types {
 	ticker = "TICKER",
 	roadmap = "ROADMAP",
 }
-type Params = { type: types };
+type Params = Promise<{ type: types }>;
 
-const listNews = async (request: Request, { params }: { params: Params }) => {
+const listNews = async (request: Request, segmentData: { params: Params }) => {
 	try {
+		const params = await segmentData.params;
 		const url = new URL(request.url);
 
 		const page = Number.parseInt(url.searchParams.get("page") || "1");

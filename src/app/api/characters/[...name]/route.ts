@@ -2,9 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { convertBigIntsToNumbers } from "@/utils/functions/convertBigIntsToNumbers";
 import { NextResponse } from "next/server";
 
-type Params = { name: string };
+type Params = Promise<{ name: string }>;
 
-const find = async (request: Request, { params }: { params: Params }) => {
+const find = async (request: Request, segmentData: { params: Params }) => {
+	const params = await segmentData.params;
 	const characters = await prisma.players.findMany({
 		where: {
 			AND: [

@@ -65,7 +65,7 @@ export default function PremiumHistory() {
 	const methods = useForm<shopStepFormValues>({
 		resolver: zodResolver(ShopStepFormSchema),
 		defaultValues: {
-			category: "premdays",
+			category: "coins_transferable",
 		},
 	});
 
@@ -110,6 +110,7 @@ export default function PremiumHistory() {
 					img_url: `/shop/${p.img_url}`,
 				})),
 			);
+			console.log("Products", data.products);
 		} catch (error) {
 			toast({ variant: "destructive", title: "Error loading products" });
 		}
@@ -123,7 +124,7 @@ export default function PremiumHistory() {
 			values.category === CATEGORIES.PREMDAYS.value
 				? CATEGORIES.PREMDAYS.id
 				: CATEGORIES.COINS.id;
-
+		console.log("Getting category", categoryId);
 		GetProducts(categoryId);
 
 		// GetProducts(values.category.toString())
@@ -171,7 +172,7 @@ export default function PremiumHistory() {
 													defaultValue={watch("category")}
 													options={[
 														// { label: 'Transferable Coins', value: 'coins_transferable' },
-														{ label: "Vip days", value: "premdays" },
+														// { label: "Vip days", value: "premdays" },
 														{
 															label: "Noctera coins",
 															value: "coins_transferable",

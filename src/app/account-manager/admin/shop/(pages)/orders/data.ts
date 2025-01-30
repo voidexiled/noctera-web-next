@@ -7,6 +7,7 @@ export async function fetchPayments({
 	currentPage,
 	search,
 	statusFilter,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 }: { search: string; currentPage: number; statusFilter: any }) {
 	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 

@@ -6,10 +6,14 @@ import type { players } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-type Params = { account_id: string };
+type Params = Promise<{ account_id: string }>;
 
-const ListPlayer = async (request: Request, { params }: { params: Params }) => {
+const ListPlayer = async (
+	request: Request,
+	segmentData: { params: Params },
+) => {
 	try {
+		const params = await segmentData.params;
 		const session = await getServerSession(authOptions);
 		if (!session)
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -29,8 +33,6 @@ const ListPlayer = async (request: Request, { params }: { params: Params }) => {
 		const convertedPlayer = account?.players
 			? convertBigIntsToNumbers<players[]>(account?.players)
 			: [];
-
-		console.log(convertedPlayer);
 
 		return NextResponse.json({
 			player: convertedPlayer,

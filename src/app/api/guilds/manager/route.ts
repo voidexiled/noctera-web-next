@@ -30,17 +30,14 @@ const CreateSchema = z.object({
 const CreateGuild = async (request: Request) => {
 	try {
 		const { guild_name, player_id } = CreateSchema.parse(await request.json());
-		console.log("step1");
 		const session = await getServerSession(authOptions);
 		if (!session || !session.user)
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-		console.log("step2");
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session.user.id) },
 			include: { players: true },
 		});
-		console.log("step3");
 
 		if (!acc)
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -50,33 +47,26 @@ const CreateGuild = async (request: Request) => {
 		// 		{ status: 401 },
 		// 	);
 
-		console.log("step4");
-
 		const findGuild = await prisma.guilds.findFirst({
 			where: { name: guild_name },
 		});
-		console.log("step5");
 		if (findGuild)
 			return NextResponse.json(
 				{ message: "Guild already exist." },
 				{ status: 400 },
 			);
-		console.log("step6");
 
 		const currentPlayer = acc.players.find((p) => p.id === player_id);
-		console.log("step7");
 		if (!currentPlayer)
 			return NextResponse.json(
 				{ message: "Player not found." },
 				{ status: 400 },
 			);
-		console.log("step8");
 		if (currentPlayer.level < 8)
 			return NextResponse.json(
 				{ message: "Insufficient player level." },
 				{ status: 400 },
 			);
-		console.log("step9");
 
 		const defaultRanks = [
 			{ name: "Leader", level: 3 },
@@ -97,7 +87,6 @@ const CreateGuild = async (request: Request) => {
 			},
 			include: { guild_ranks: { where: { level: 3 }, select: { id: true } } },
 		});
-		console.log("step10");
 
 		await prisma.guild_membership.create({
 			data: {
@@ -106,7 +95,6 @@ const CreateGuild = async (request: Request) => {
 				rank_id: guild.guild_ranks[0].id,
 			},
 		});
-		console.log("step11");
 
 		return NextResponse.json({}, { status: 201 });
 	} catch (error) {

@@ -3,10 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-type Params = { category: string };
+type Params = Promise<{ category: string }>;
 
-const List = async (request: Request, { params }: { params: Params }) => {
+const List = async (request: Request, segmentData: { params: Params }) => {
 	try {
+		const params = await segmentData.params;
 		const session = await getServerSession(authOptions);
 		if (!session?.user)
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

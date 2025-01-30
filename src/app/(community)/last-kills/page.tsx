@@ -60,15 +60,6 @@ export default async function LastKills() {
 										</TableRow>
 									);
 								})}
-								<TableRow>
-									<TableCell className="text-right">1</TableCell>
-									<TableCell className="whitespace-nowrap">
-										5/12/2023, 09:55
-									</TableCell>
-									<TableCell className="w-full">
-										[PLAYERNAME] died at level <b>123</b> by a{" "}
-									</TableCell>
-								</TableRow>
 							</TableBody>
 						</Table>
 					</div>
