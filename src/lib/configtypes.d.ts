@@ -7,4 +7,10 @@ export type ConfigType = {
 		coins: number;
 		vip_days: number;
 	};
+	paths: {
+		animated_items: string;
+	};
+	guilds: {
+		minimum_level_to_create: number;
+	};
 };

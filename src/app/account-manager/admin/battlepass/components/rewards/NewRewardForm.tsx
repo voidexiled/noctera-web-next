@@ -11,9 +11,9 @@ import {
 	AdminBattlepassContext,
 	type AdminBattlepassContextType,
 } from "@/app/account-manager/admin/battlepass/components/context/AdminBattlepassProvider";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
-import RHFCheckbox from "@/components/hook-form/RHFCheckbox";
-import RHFDatePicker from "@/components/hook-form/RHFDatePicker";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
+import RHFCheckbox from "@/components/common/hook-form/RHFCheckbox";
+import RHFDatePicker from "@/components/common/hook-form/RHFDatePicker";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
@@ -22,24 +22,15 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import RHFTextarea from "@/components/hook-form/RHFTextarea";
-import {
-	BATTLEPASS_RANK_ACCESS,
-	BATTLEPASS_TYPE_REWARDS,
-} from "@prisma/client";
+import RHFTextarea from "@/components/common/hook-form/RHFTextarea";
+import { BATTLEPASS_RANK_ACCESS, BATTLEPASS_TYPE_REWARDS } from "@prisma/client";
 import { format, fromZonedTime, toZonedTime } from "date-fns-tz";
 import dayjs from "dayjs";
 import { isFinite as validateIsFinite } from "lodash";
 
 export const NewRewardForm = () => {
-	const {
-		seasons,
-		rewards,
-		tasks,
-		refetchSeasons,
-		mostUsedSeasonId,
-		setMostUsedSeasonId,
-	} = useContext(AdminBattlepassContext) as AdminBattlepassContextType;
+	const { seasons, rewards, tasks, refetchSeasons, mostUsedSeasonId, setMostUsedSeasonId } =
+		useContext(AdminBattlepassContext) as AdminBattlepassContextType;
 	const { toast } = useToast();
 
 	const formSchema = z.object({
@@ -166,14 +157,12 @@ export const NewRewardForm = () => {
 						LabelOption="label"
 						keyValue="value"
 						defaultValue={watch("reward_type")}
-						options={Object.values(BATTLEPASS_TYPE_REWARDS).map(
-							(rewardType) => {
-								return {
-									label: rewardType,
-									value: rewardType,
-								};
-							},
-						)}
+						options={Object.values(BATTLEPASS_TYPE_REWARDS).map((rewardType) => {
+							return {
+								label: rewardType,
+								value: rewardType,
+							};
+						})}
 					/>
 
 					<RHFSelect

@@ -1,5 +1,5 @@
 "use client";
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -22,10 +22,7 @@ export function ChangePasswordForm() {
 
 	const passwordUppercase = z
 		.string()
-		.regex(
-			/[A-Z]/,
-			"The password should contain at least 1 uppercase character",
-		);
+		.regex(/[A-Z]/, "The password should contain at least 1 uppercase character");
 	const passwordLowercase = z
 		.string()
 		.regex(/[a-z]/, "The password must contain at least one lowercase letter");
@@ -110,11 +107,7 @@ export function ChangePasswordForm() {
 
 	return (
 		<>
-			<Button
-				size={"sm"}
-				className="whitespace-nowrap"
-				onClick={() => setShowNewTeamDialog(true)}
-			>
+			<Button size={"sm"} className="whitespace-nowrap" onClick={() => setShowNewTeamDialog(true)}>
 				Change Password
 			</Button>
 
@@ -159,10 +152,7 @@ export function ChangePasswordForm() {
 								</Button>
 								<Button disabled={isSubmitting || !isDirty} type="submit">
 									{isSubmitting ? (
-										<Icon
-											icon="eos-icons:loading"
-											className="h-4 w-4 animate-spin"
-										/>
+										<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 									) : (
 										"Submit"
 									)}

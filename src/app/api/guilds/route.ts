@@ -2,9 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { convertBigIntsToNumbers } from "@/utils/functions/convertBigIntsToNumbers";
 import { NextResponse } from "next/server";
 
-type Params = {
+type Params = Promise<{
 	name: string;
-};
+}>;
 
 export async function GET(request: Request, { params }: { params: Params }) {
 	const characters = await prisma.guilds.findMany({

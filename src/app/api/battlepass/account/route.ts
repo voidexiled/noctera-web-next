@@ -1,4 +1,3 @@
-import { status } from "@/app/layout";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
@@ -8,8 +7,7 @@ export async function POST(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
-		if (!user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const { id, season_id } = (await request.json()) as {
 			id: number;

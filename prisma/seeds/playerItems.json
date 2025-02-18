@@ -1,0 +1,50 @@
+[
+  {
+    "player_id": 1,
+    "pid": 11,
+    "sid": 101,
+    "itemtype": 23396,
+    "count": 1,
+    "attributes": {}
+  },
+  {
+    "player_id": 2,
+    "pid": 11,
+    "sid": 101,
+    "itemtype": 23396,
+    "count": 1,
+    "attributes": {}
+  },
+  {
+    "player_id": 3,
+    "pid": 11,
+    "sid": 101,
+    "itemtype": 23396,
+    "count": 1,
+    "attributes": {}
+  },
+  {
+    "player_id": 4,
+    "pid": 11,
+    "sid": 101,
+    "itemtype": 23396,
+    "count": 1,
+    "attributes": {}
+  },
+  {
+    "player_id": 5,
+    "pid": 11,
+    "sid": 101,
+    "itemtype": 23396,
+    "count": 1,
+    "attributes": {}
+  },
+  {
+    "player_id": 6,
+    "pid": 11,
+    "sid": 101,
+    "itemtype": 23396,
+    "count": 1,
+    "attributes": {}
+  }
+]

@@ -1,9 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import type {
-	BATTLEPASS_RANK_ACCESS,
-	BATTLEPASS_TYPE_REWARDS,
-} from "@prisma/client";
+import type { BATTLEPASS_RANK_ACCESS, BATTLEPASS_TYPE_REWARDS } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -33,9 +30,7 @@ export async function POST(request: NextRequest) {
 			level: Number.parseInt(data.level),
 			reward_name: data.reward_name,
 			reward_img: data.reward_img,
-			reward_type: (
-				data.reward_type as string
-			).toUpperCase() as BATTLEPASS_TYPE_REWARDS,
+			reward_type: (data.reward_type as string).toUpperCase() as BATTLEPASS_TYPE_REWARDS,
 			reward_amount: Number.parseInt(data.reward_amount),
 			reward_value: Number.parseInt(data.reward_value),
 			reward_should_plus_amount: data.reward_should_plus_amount,

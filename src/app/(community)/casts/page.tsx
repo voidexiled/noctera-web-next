@@ -1,4 +1,4 @@
-import AnimatedOutfit from "@/components/animations/AnimatedOutfit";
+import AnimatedOutfit from "@/components/animations/OutfitComponent";
 import Pagination from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,15 +14,12 @@ import { prisma } from "@/lib/prisma";
 import { convertBigIntsToNumbers } from "@/utils/functions/convertBigIntsToNumbers";
 import { getVocation } from "@/utils/functions/getVocations";
 import type { players } from "@prisma/client";
-import Search from "./components/search";
+import SearchInput from "../../../components/(community)/casts/SearchInput";
 
 export const revalidate = 0;
 const ITEMS_PER_PAGE = 25;
 
-const PlayersCasts = async ({
-	currentPage,
-	search,
-}: { search: string; currentPage: number }) => {
+const PlayersCasts = async ({ currentPage, search }: { search: string; currentPage: number }) => {
 	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
 	const count = await prisma.players.count({
@@ -57,7 +54,7 @@ export default async function Casts(props: {
 				<CardContent className="space-y-2 p-2">
 					<div className="rounded border">
 						<div className="flex flex-row gap-2 border-b p-2">
-							<Search placeholder="Search player name..." />
+							<SearchInput placeholder="Search player name..." />
 							<Pagination totalPages={totalPage} />
 						</div>
 						<Table>
@@ -164,9 +161,7 @@ export default async function Casts(props: {
 									<TableCell>
 										<b>!cast show</b>
 									</TableCell>
-									<TableCell>
-										displays the amount of current spectators
-									</TableCell>
+									<TableCell>displays the amount of current spectators</TableCell>
 								</TableRow>
 
 								<TableRow className="text-xs">
@@ -180,9 +175,7 @@ export default async function Casts(props: {
 									<TableCell>
 										<b>Watch a cast without password</b>
 									</TableCell>
-									<TableCell>
-										Login with 1/1 and select the character you want to watch
-									</TableCell>
+									<TableCell>Login with 1/1 and select the character you want to watch</TableCell>
 								</TableRow>
 
 								<TableRow className="text-xs">
@@ -190,8 +183,7 @@ export default async function Casts(props: {
 										<b>Watch a cast with password</b>
 									</TableCell>
 									<TableCell>
-										Login with 1/password and select the character you want to
-										watch
+										Login with 1/password and select the character you want to watch
 									</TableCell>
 								</TableRow>
 

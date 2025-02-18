@@ -5,17 +5,12 @@ import { prisma } from "@/lib/prisma";
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, NODE_ENV } = process.env;
 
 const base =
-	NODE_ENV === "development"
-		? "https://api.sandbox.paypal.com"
-		: "https://api.paypal.com";
+	NODE_ENV === "development" ? "https://api.sandbox.paypal.com" : "https://api.paypal.com";
 
 const generateAccessToken = async () => {
 	try {
-		if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET)
-			throw new Error("MISSING_API_CREDENTIALS");
-		const auth = Buffer.from(
-			`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`,
-		).toString("base64");
+		if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) throw new Error("MISSING_API_CREDENTIALS");
+		const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64");
 		const response = await fetch(`${base}/v1/oauth2/token`, {
 			method: "POST",
 			body: "grant_type=client_credentials",

@@ -1,347 +1,42 @@
-import { IconiFy } from "@/components/Iconify";
-import { Typography } from "@/components/Typography";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getVocation } from "@/utils/functions/getVocations";
-import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
-import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { CancelInvite } from "../data";
-import TableActions from "./components/actionsTable";
-import InvitePlayerTo from "./components/invite-player-guild";
-import { ManagerPanal } from "./components/manager-painel";
-import ToCreateOrJoinGuild from "./toCreateOrJoinGuild";
 
-const lua = configLua();
+import { CancelInvite } from "@/actions/guilds/actions";
+import { GuildLayout } from "@/components/(community)/guilds/guild-page/GuildLayout";
+import { GuildBody } from "@/components/(community)/guilds/guild-page/guild-body/GuildBody";
+import { GuildHeader } from "@/components/(community)/guilds/guild-page/guild-header/GuildHeader";
+import { InvitedTable } from "@/components/(community)/guilds/guild-page/guild-invited-table/InvitedTable";
+import { MembersTable } from "@/components/(community)/guilds/guild-page/guild-members-table/MembersTable";
+import { getGuildByName } from "@/services/guilds/GuildsService";
+import getUserGuildStatus from "../../../../services/guilds/UserGuildStatusService";
 
-export default async function GuildData(props: {
+export default async function GuildDataPage(props: {
 	params: Promise<{ name: string }>;
 }) {
 	const params = await props.params;
-	const session = await getServerSession(authOptions);
 
-	const sessionPlayer = session?.user.id
-		? await prisma.players.findMany({
-				where: { account_id: Number(session?.user.id) },
-				select: { id: true },
-			})
-		: [];
-
-	const sessionPlayerId = sessionPlayer.map((player) => player.id);
-
-	const guild = await prisma.guilds.findFirst({
-		where: {
-			AND: [{ name: decodeURIComponent(params.name) }],
-		},
-		include: {
-			players: {
-				select: {
-					id: true,
-					name: true,
-				},
-			},
-			guild_membership: {
-				include: {
-					players: {
-						select: {
-							id: true,
-							name: true,
-							vocation: true,
-							level: true,
-						},
-					},
-					guild_ranks: true,
-				},
-			},
-			guild_invites: {
-				include: {
-					players: {
-						select: {
-							name: true,
-							id: true,
-						},
-					},
-				},
-			},
-			guild_ranks: true,
-		},
-	});
-
-	const ids = guild?.guild_membership.map((i) => i.player_id);
+	const guild = await getGuildByName(decodeURIComponent(params.name));
 
 	if (!guild) redirect(`/guilds/${params.name}`);
 
-	const { manager, level, player_id, isLogged } = await ToCreateOrJoinGuild(
-		guild.id,
-	);
-
-	async function isOnline(player_id: number) {
-		const query = await prisma.players_online.findFirst({
-			where: { player_id },
-		});
-		if (query) {
-			return true;
-		}
-		return false;
-	}
+	const userStatus = await getUserGuildStatus(guild.id);
 
 	return (
-		<Suspense key={guild.guild_ranks.length + guild.guild_membership.length}>
-			<Card>
-				<div className="flex flex-row items-center justify-between p-4">
-					<div className="hidden sm:flex">
-						<picture>
-							<img
-								src={`/guilds/${guild.logo_name}`}
-								alt=" logo name "
-								width={64}
-								height={64}
-							/>
-						</picture>
-					</div>
-					<div className="flex flex-col justify-center">
-						<Typography variant="h3" className="font-bold text-2xl">
-							{guild.name}
-						</Typography>
-					</div>
-					<div>
-						<picture>
-							<img
-								src={`/guilds/${guild.logo_name}`}
-								alt=" logo name "
-								width={64}
-								height={64}
-							/>
-						</picture>
-					</div>
-				</div>
-
-				<CardContent className="space-y-2 p-2">
-					<div className="flex gap-2 rounded border p-2 sm:justify-between">
-						<div className="flex w-full flex-col">
-							<div className="flex rounded-sm bg-background p-2 text-sm">
-								Guild information
-							</div>
-							<div className="p-2">
-								<Typography
-									variant="body1"
-									component={"blockquote"}
-									className="my-4 font-medium text-sm"
-								>{`${guild.description.toString()}`}</Typography>
-								<Typography variant="body1" className="text-sm">
-									<Link
-										href={`/characters/${guild.players.name}`}
-										className="text-blue-500 hover:underline"
-									>
-										{guild.players.name}
-									</Link>{" "}
-									is guild leader of {guild.name}.
-								</Typography>
-								<Typography variant="body1" className="text-sm">
-									The guild founded on {lua.serverName} in{" "}
-									{dayjs.unix(Number(guild.creationdata)).format("MMMM D YYYY")}
-									.
-								</Typography>
-								<Typography variant="body1" className="font-bold text-sm">
-									Guild Bank Account Balance: {Number(guild.balance)} Gold
-								</Typography>
-							</div>
-						</div>
-
-						<div className="flex flex-col space-y-2 whitespace-nowrap">
-							<Button asChild>
-								<Link href={`/guilds/${params.name}/wars`}>Guild Wars</Link>
-							</Button>
-							<Button>Guild Events</Button>
-							<Button>Guild Offence</Button>
-						</div>
-
-						<Suspense key={guild.guild_ranks.length}>
-							{manager && (
-								<ManagerPanal
-									guild_id={guild.id}
-									isOwner={manager === "owner"}
-									accessLevel={level}
-								/>
-							)}
-						</Suspense>
-					</div>
-
-					<div className="flex flex-col rounded-sm border">
-						<div className="flex items-center justify-between bg-background p-2 text-sm">
-							Guild Members
-						</div>
-						<Table>
-							{guild.guild_membership.length > 0 && (
-								<TableHeader className="pointer-events-none">
-									<TableRow>
-										<TableCell>Rank</TableCell>
-										<TableCell>Name</TableCell>
-										<TableCell>Vocation</TableCell>
-										<TableCell>Level</TableCell>
-										<TableCell className="w-[90px] text-center">
-											Status
-										</TableCell>
-										<TableCell />
-									</TableRow>
-								</TableHeader>
-							)}
-							<TableBody>
-								{guild.guild_membership
-									.sort((a, b) => {
-										const nameA = String(a.players.name);
-										const nameB = String(b.players.name);
-										return nameA.localeCompare(nameB);
-									})
-									.sort((a, b) => b.guild_ranks.level - a.guild_ranks.level)
-
-									.map((member, index) => {
-										return (
-											<TableRow key={member.player_id}>
-												<TableCell className="flex flex-row items-center gap-2 whitespace-nowrap">
-													<IconiFy
-														icon={`game-icons:rank-${member.guild_ranks.level}`}
-														className="h-8 w-8"
-													/>{" "}
-													{member.guild_ranks.name}
-												</TableCell>
-												<TableCell className="w-full">
-													<Link
-														href={`/characters/${member.players.name}`}
-														className="text-blue-500 hover:underline"
-													>
-														{member.players.name}
-													</Link>
-													{member.nick && ` ( ${member.nick} )`}
-												</TableCell>
-												<TableCell className="whitespace-nowrap">
-													{getVocation(member.players.vocation)}
-												</TableCell>
-												<TableCell>{member.players.level}</TableCell>
-												<TableCell className="w-[90px] text-center">
-													{isOnline(member.players.id).then((online) => (
-														<Badge variant={online ? "success" : "destructive"}>
-															{online ? "ONLINE" : "OFFLINE"}
-														</Badge>
-													))}
-												</TableCell>
-												{/* <TableCell className="text-center w-[90px]">{member.guild_ranks.level !== 1 && (<RemovePlayer guild_id={member.guild_id} player_id={member.player_id} />)}</TableCell> */}
-												<TableCell className="w-[90px] text-center">
-													{level && (
-														<TableActions
-															row={member}
-															ranks={guild.guild_ranks}
-															accessLevel={level ?? 0}
-															disabled={
-																guild.ownerid === member.player_id ||
-																(level === 1 && member.player_id !== player_id)
-															}
-														/>
-													)}
-												</TableCell>
-											</TableRow>
-										);
-									})}
-								{guild.guild_membership.length === 0 && (
-									<TableRow>
-										<TableCell colSpan={5}>
-											<Typography variant="overline" className="text-center">
-												No guild members.
-											</Typography>
-										</TableCell>
-									</TableRow>
-								)}
-							</TableBody>
-						</Table>
-					</div>
-					<div className="flex flex-col rounded-sm border">
-						<div className="flex items-center justify-between bg-background p-2 text-sm">
-							Invited Characters
-							{level && level >= 2 && (
-								<InvitePlayerTo
-									guild_id={guild.id}
-									rank_id={guild.guild_ranks.filter((f) => f.level === 1)[0].id}
-								/>
-							)}
-						</div>
-						<Table>
-							<TableBody>
-								{guild.guild_invites.map((invite, index) => {
-									const showBtnLeave = sessionPlayerId.includes(
-										invite.player_id,
-									);
-									return (
-										<TableRow key={invite.player_id}>
-											<TableCell className="w-full">
-												<Link
-													href={`/characters/${invite.players.name}`}
-													className="text-blue-500 hover:underline"
-												>
-													{invite.players.name}
-												</Link>
-											</TableCell>
-											<TableCell>
-												{session?.user.id && showBtnLeave && !manager && (
-													<CancelInvitation
-														guild_id={invite.guild_id}
-														player_id={invite.player_id}
-													/>
-												)}
-												{manager && (
-													<CancelInvitation
-														guild_id={invite.guild_id}
-														player_id={invite.player_id}
-													/>
-												)}
-											</TableCell>
-										</TableRow>
-									);
-								})}
-								{guild.guild_invites.length === 0 && (
-									<TableRow>
-										<TableCell>
-											<Typography variant="overline" className="text-center">
-												No pending invite members.
-											</Typography>
-										</TableCell>
-									</TableRow>
-								)}
-							</TableBody>
-						</Table>
-					</div>
-				</CardContent>
-			</Card>
-		</Suspense>
-	);
-}
-
-function CancelInvitation({
-	guild_id,
-	player_id,
-}: { guild_id: number; player_id: number }) {
-	const deleteInvitationWithId = CancelInvite.bind(null, {
-		guild_id,
-		player_id,
-	});
-	return (
-		<form action={deleteInvitationWithId} className="w-full">
-			<Button variant={"destructive"} className="whitespace-nowrap">
-				Cancel Invite
-			</Button>
-		</form>
+		<GuildLayout
+			header={<GuildHeader guild={guild} />}
+			body={<GuildBody guild={guild} ownerPlayer={guild.players} userStatus={userStatus} />}
+			membersTable={
+				<MembersTable
+					members={guild.guild_membership}
+					ranks={guild.guild_ranks}
+					userStatus={userStatus}
+				/>
+			}
+			invitedTable={<InvitedTable guild={guild} userStatus={userStatus} />}
+		/>
 	);
 }

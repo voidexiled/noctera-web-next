@@ -1,4 +1,4 @@
-import { isDateActive } from "@/app/(battlepass)/battlepass/lib/utils";
+import { isDateActive } from "@/components/(battlepass)/battlepass/lib/utils";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import dayjs from "dayjs";

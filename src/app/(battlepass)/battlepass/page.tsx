@@ -1,9 +1,9 @@
-import { CharacterBattlepass } from "@/app/(battlepass)/battlepass/components/character-battlepass";
-import { BattlepassProvider } from "@/app/(battlepass)/battlepass/components/context/BattlepassContext";
-import { LastSeasonCard } from "@/app/(battlepass)/battlepass/components/info/LastSeasonCard";
-import { NextSeasonCard } from "@/app/(battlepass)/battlepass/components/info/NextSeasonCard";
-import { isDateActive } from "@/app/(battlepass)/battlepass/lib/utils";
-import { ErrorCardMessage } from "@/components/common/ErrorCardMessage";
+import { CharacterBattlepass } from "@/components/(battlepass)/battlepass/character-battlepass";
+import { BattlepassProvider } from "@/components/(battlepass)/battlepass/context/BattlepassContext";
+import { LastSeasonCard } from "@/components/(battlepass)/battlepass/info/LastSeasonCard";
+import { NextSeasonCard } from "@/components/(battlepass)/battlepass/info/NextSeasonCard";
+import { isDateActive } from "@/components/(battlepass)/battlepass/lib/utils";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authOptions } from "@/lib/auth";
 import { ERROR, ERROR_TYPE } from "@/lib/errors";
@@ -80,13 +80,11 @@ async function getAccount(
 	// Check if the player has added all the tasks for the current season
 	if (
 		account.players.some(
-			(p) =>
-				p.player_battlepass_tasks.length < cs.battlepass_seasons_tasks.length,
+			(p) => p.player_battlepass_tasks.length < cs.battlepass_seasons_tasks.length,
 		)
 	) {
 		const playersWithoutAllTasks = account.players.filter(
-			(p) =>
-				p.player_battlepass_tasks.length < cs.battlepass_seasons_tasks.length,
+			(p) => p.player_battlepass_tasks.length < cs.battlepass_seasons_tasks.length,
 		);
 
 		for (const player of playersWithoutAllTasks) {
@@ -134,10 +132,9 @@ async function initPlayerProgressForSeason(playerId: number, seasonId: number) {
 
 	if (!player) return;
 
-	const playerBattlepassProgress =
-		await prisma.player_battlepass_progress.findMany({
-			where: { player_id: playerId, season_id: seasonId },
-		});
+	const playerBattlepassProgress = await prisma.player_battlepass_progress.findMany({
+		where: { player_id: playerId, season_id: seasonId },
+	});
 
 	if (playerBattlepassProgress.length > 0) return;
 
@@ -198,13 +195,16 @@ export default async function BattlepassPage() {
 
 	if (!cs) {
 		const seasons = await getSeasons();
+		// if (!seasons || seasons.length === 0) {
+		// 	return (
+		// 		<ErrorCardMessage
+		// 			errorType={ERROR_TYPE.BATTLEPASS}
+		// 			errorMessage={ERROR.BATTLEPASS_CURRENT_SEASON_INFO_NOT_FOUND}
+		// 		/>
+		// 	);
+		// }
 		if (!seasons || seasons.length === 0) {
-			return (
-				<ErrorCardMessage
-					errorType={ERROR_TYPE.BATTLEPASS}
-					errorMessage={ERROR.BATTLEPASS_CURRENT_SEASON_INFO_NOT_FOUND}
-				/>
-			);
+			return <div className="text-3xl">No battlepass season found</div>;
 		}
 
 		const currentTimestamp = dayjs().unix();
@@ -246,13 +246,7 @@ export default async function BattlepassPage() {
 
 	const acc = await getAccount(user.id, cs);
 
-	if (!acc)
-		return (
-			<ErrorCardMessage
-				errorType={ERROR_TYPE.BATTLEPASS}
-				errorMessage={ERROR.BATTLEPASS_ACCOUNT_INFO_NOT_FOUND}
-			/>
-		);
+	if (!acc) return <div className="text-3xl">No battlepass season found</div>;
 
 	return (
 		<BattlepassProvider acc={acc} cs={cs}>

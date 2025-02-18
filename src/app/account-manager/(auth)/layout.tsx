@@ -6,9 +6,7 @@ interface SettingsLayoutProps {
 	children: React.ReactNode;
 }
 
-export default async function SettingsLayout({
-	children,
-}: SettingsLayoutProps) {
+export default async function SettingsLayout({ children }: SettingsLayoutProps) {
 	const session = await getServerSession(authOptions);
 	if (session) redirect("/account-manager");
 

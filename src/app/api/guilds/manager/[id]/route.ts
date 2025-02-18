@@ -1,14 +1,16 @@
+import type { DeleteGuildResponse } from "@/components/(community)/guilds/types/guilds";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-type Params = { id: string };
+type Params = Promise<{ id: string }>;
 const GetGuild = async (request: Request, { params }: { params: Params }) => {
 	try {
+		const guildId = (await params).id;
 		const guild = await prisma.guilds.findFirst({
-			where: { id: Number(params.id) },
+			where: { id: Number(guildId) },
 			include: {
 				guild_membership: true,
 				guild_invites: true,
@@ -20,10 +22,7 @@ const GetGuild = async (request: Request, { params }: { params: Params }) => {
 			guild_invites: guild?.guild_invites,
 		});
 	} catch (error) {
-		return NextResponse.json(
-			{ message: "Internal server error" },
-			{ status: 500 },
-		);
+		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
 	}
 };
 
@@ -32,13 +31,14 @@ const UpdateSchema = z.object({
 	motd: z.string(),
 });
 
+// This is not used
+// replaced by actions/guilds/actions.ts -> updateGuild
 const UpdateGuild = async (request: Request) => {
 	try {
 		const { description, motd } = UpdateSchema.parse(await request.json());
 
 		const session = await getServerSession(authOptions);
-		if (!session)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		// const findGuild = await prisma.guilds.findUnique({ where: { id } })
 		// if (!findGuild) return NextResponse.json({ message: 'Guild not found.' }, { status: 400 });
@@ -47,45 +47,50 @@ const UpdateGuild = async (request: Request) => {
 
 		return NextResponse.json({});
 	} catch (error) {
-		return NextResponse.json(
-			{ message: "Internal server error" },
-			{ status: 500 },
-		);
+		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
 	}
 };
 
-const DeleteGuild = async (
-	request: Request,
-	{ params }: { params: Params },
-) => {
+const DeleteGuild = async (request: Request, { params }: { params: Params }) => {
 	try {
 		const session = await getServerSession(authOptions);
-		if (!session)
-			return NextResponse.json({ message: "Unauthorized1" }, { status: 401 });
+		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+		const guildId = (await params).id;
 
 		const findGuild = await prisma.guilds.findUnique({
-			where: { id: +params.id },
+			where: { id: +guildId },
 		});
-		if (!findGuild)
-			return NextResponse.json({ message: "Unauthorized2" }, { status: 401 });
+		if (!findGuild) return NextResponse.json({ message: "Guild not found" }, { status: 404 });
 
 		const findPlayer = await prisma.players.findUnique({
 			where: { id: findGuild.ownerid },
 		});
 		if (!findPlayer)
-			return NextResponse.json({ message: "Unauthorized3" }, { status: 401 });
+			return NextResponse.json({ message: "Guild owner not found" }, { status: 404 });
 
 		if (+session.user.id !== findPlayer.account_id)
-			return NextResponse.json({ message: "Unauthorized4" }, { status: 401 });
+			return NextResponse.json(
+				{ message: "You need to be the owner of the guild to delete it" },
+				{ status: 403 },
+			);
 
-		await prisma.guilds.delete({ where: { id: +params.id } });
+		await prisma.guilds.delete({
+			where: { id: +guildId },
+			select: {
+				id: true,
+				name: true,
+			},
+		});
 
-		return NextResponse.json({});
+		const dataResponse: DeleteGuildResponse = {
+			guild_id: +guildId,
+			guild_name: findGuild.name,
+		};
+
+		return NextResponse.json(dataResponse, { status: 200 });
 	} catch (error) {
-		return NextResponse.json(
-			{ message: "Internal server error" },
-			{ status: 500 },
-		);
+		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
 	}
 };
 

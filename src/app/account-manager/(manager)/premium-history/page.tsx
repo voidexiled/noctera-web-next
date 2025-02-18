@@ -68,25 +68,19 @@ export default async function PremiumHistory() {
 								<TableRow>
 									<TableHead className="">Payment ID</TableHead>
 									<TableHead className="w-full">Description</TableHead>
-									<TableHead className="whitespace-nowrap">
-										Order Create
-									</TableHead>
+									<TableHead className="whitespace-nowrap">Order Create</TableHead>
 									<TableHead className="whitespace-nowrap">Provider</TableHead>
-									<TableHead className="w-[100px] text-center">
-										Status
-									</TableHead>
+									<TableHead className="w-[100px] text-center">Status</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{history.map((order, i) => (
 									<TableRow key={i.toString()}>
 										<TableCell className="font-medium text-xs">
-											{order.paymentID}
+											{order.paymentClientSecret}
 										</TableCell>
 										<TableCell>{order.description}</TableCell>
-										<TableCell>
-											{dayjs(order.createdAt).format("DD/MM/YYYY")}
-										</TableCell>
+										<TableCell>{dayjs(order.createdAt).format("DD/MM/YYYY")}</TableCell>
 										<TableCell className="text-center">
 											<Image
 												src="/payments/paymentmethodcategory31.gif"
@@ -96,10 +90,7 @@ export default async function PremiumHistory() {
 											/>
 										</TableCell>
 										<TableCell>
-											<Badge
-												variant={STATUS_TYPE[order.status]}
-												className="w-full"
-											>
+											<Badge variant={STATUS_TYPE[order.status]} className="w-full">
 												{order.status}
 											</Badge>
 										</TableCell>

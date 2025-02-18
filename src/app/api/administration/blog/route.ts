@@ -18,8 +18,7 @@ const create = async (req: Request) => {
 	try {
 		const body = validationPOST.parse(await req.json());
 		const session = await getServerSession(authOptions);
-		if (!session?.user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session?.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
 		});
@@ -44,8 +43,7 @@ const update = async (req: Request) => {
 	try {
 		const body = validationPOST.parse(await req.json());
 		const session = await getServerSession(authOptions);
-		if (!session?.user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session?.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
 		});
@@ -72,8 +70,7 @@ const list = async (req: Request) => {
 	try {
 		const session = await getServerSession(authOptions);
 
-		if (!session?.user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session?.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
@@ -111,8 +108,7 @@ const list = async (req: Request) => {
 const remove = async (req: Request) => {
 	try {
 		const session = await getServerSession(authOptions);
-		if (!session?.user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session?.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
 		});

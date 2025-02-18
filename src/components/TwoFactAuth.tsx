@@ -24,36 +24,11 @@ export default function TwoFactAuth({
 				autoFocus
 				autoComplete="one-time-code"
 			/>
-			<Input
-				className={className}
-				name="2fa2"
-				inputMode="decimal"
-				{...digits[1]}
-			/>
-			<Input
-				className={className}
-				name="2fa3"
-				inputMode="decimal"
-				{...digits[2]}
-			/>
-			<Input
-				className={className}
-				name="2fa4"
-				inputMode="decimal"
-				{...digits[3]}
-			/>
-			<Input
-				className={className}
-				name="2fa5"
-				inputMode="decimal"
-				{...digits[4]}
-			/>
-			<Input
-				className={className}
-				name="2fa6"
-				inputMode="decimal"
-				{...digits[5]}
-			/>
+			<Input className={className} name="2fa2" inputMode="decimal" {...digits[1]} />
+			<Input className={className} name="2fa3" inputMode="decimal" {...digits[2]} />
+			<Input className={className} name="2fa4" inputMode="decimal" {...digits[3]} />
+			<Input className={className} name="2fa5" inputMode="decimal" {...digits[4]} />
+			<Input className={className} name="2fa6" inputMode="decimal" {...digits[5]} />
 		</div>
 	);
 }

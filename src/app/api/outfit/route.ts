@@ -1,13 +1,9 @@
-import {
-	type OutfitData,
-	loadData,
-	outfit,
-} from "@/components/animations/outfits";
+import { type OutfitData, loadData, outfit } from "@/components/animations/lib/outfits";
 import { type NextRequest, NextResponse } from "next/server";
 
 import { existsSync, readdirSync, writeFileSync } from "node:fs";
 import path, { relative, resolve } from "node:path";
-import { outfitImagesPath, walkSpeeds } from "@/components/animations/config";
+import { outfitImagesPath, walkSpeeds } from "@/components/animations/lib/config";
 import invariant from "tiny-invariant";
 
 const CACHE_FILE_PATH = "./cache.generated.txt";
@@ -57,11 +53,7 @@ function generateCacheIfNeeded(): boolean {
 		for (const outfitId in outfits) {
 			const outfit = outfits[outfitId];
 			const serializedOutfit = JSON.stringify(outfit);
-			const outfitDataFilePath = path.join(
-				outfitImagesPath,
-				outfitId,
-				"outfit.data.json",
-			);
+			const outfitDataFilePath = path.join(outfitImagesPath, outfitId, "outfit.data.json");
 
 			try {
 				writeFileSync(outfitDataFilePath, serializedOutfit);
@@ -137,11 +129,7 @@ export async function GET(request: NextRequest) {
 
 	const moveAnimFrames: number = outfitData?.framesNumber;
 
-	for (
-		let moveAnimFrame = 1;
-		moveAnimFrame <= moveAnimFrames;
-		++moveAnimFrame
-	) {
+	for (let moveAnimFrame = 1; moveAnimFrame <= moveAnimFrames; ++moveAnimFrame) {
 		const frame = await outfit(
 			outfitData,
 			outfitImagesPath,
@@ -157,10 +145,7 @@ export async function GET(request: NextRequest) {
 			resize === 1,
 		);
 		if (!frame) {
-			return Response.json(
-				{ error: "Failed to create canvas frame" },
-				{ status: 500 },
-			);
+			return Response.json({ error: "Failed to create canvas frame" }, { status: 500 });
 		}
 		frames.push(frame as unknown as CanvasRenderingContext2D);
 		durations.push(walkSpeeds[moveAnimFrames]);

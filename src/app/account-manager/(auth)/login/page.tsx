@@ -8,31 +8,26 @@ import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
 	title: "Login",
-	description: "Login forms built using the components.",
+	description: "Noctera global - Login.",
 };
 
 export default function Login() {
 	return (
 		<div className="space-y-2">
-			<Card>
+			{/* <Card>
 				<CardHeader className="border-b">
 					<CardTitle>Important Information!</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-2 p-2">
 					<Typography variant={"body2"} component={"p"}>
-						We have changed the login process! Account names have been
-						abolished. To log in, you only need your password and the
-						account&apos;s email address.
-					</Typography>
-					<Typography variant={"body2"} component={"p"}>
-						You have forgotten your email address but you still know the account
-						name which had been used for your Tibia account?
+						You have forgotten your email address but you still know the account name which had been
+						used for your Tibia account?
 					</Typography>
 					<Typography variant={"body2"} component={"p"}>
 						Get your email address here: link
 					</Typography>
 				</CardContent>
-			</Card>
+			</Card> */}
 			<Card className="text-card-foreground">
 				<CardHeader className="border-b">
 					<CardTitle>Account Login</CardTitle>

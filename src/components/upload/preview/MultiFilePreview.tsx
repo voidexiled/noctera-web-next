@@ -1,16 +1,12 @@
 import FileThumbnail, { fileData } from "../../file-thumbnail";
 
-import { IconiFy } from "@/components/Iconify";
 import { Typography } from "@/components/Typography";
+import { IconiFy } from "@/components/common/Iconify";
 import { Button } from "@/components/ui/button";
 import { fData } from "@/utils/formatNumber";
 import type { UploadProps } from "../types";
 
-export default function MultiFilePreview({
-	thumbnail,
-	files,
-	onRemove,
-}: UploadProps) {
+export default function MultiFilePreview({ thumbnail, files, onRemove }: UploadProps) {
 	if (!files?.length) {
 		return null;
 	}

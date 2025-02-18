@@ -17,12 +17,15 @@ import {
 } from "@/components/ui/table";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { ORDER_STATUS } from "@prisma/client";
 import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CancelOrderButton } from "./components/cancel-order-button";
+
+import { CancelOrderButton } from "@/app/account-manager/(manager)/payments-history/components/CancelOrderButton";
+import { CompleteOrderButton } from "@/app/account-manager/(manager)/payments-history/components/CompleteOrderButton";
 import PaymentDetails from "./components/payment-details";
 
 async function getPaymentsHistory(id: number) {
@@ -74,53 +77,31 @@ export default async function PaymentsHistory() {
 									<TableHead className="">Order ID</TableHead>
 									{/* <TableHead className="">Payment ID</TableHead> */}
 									<TableHead className="w-full">Description</TableHead>
-									<TableHead className="whitespace-nowrap">
-										Order Create
-									</TableHead>
+									<TableHead className="whitespace-nowrap">Order Create</TableHead>
 									<TableHead className="whitespace-nowrap">Provider</TableHead>
-									<TableHead className="w-[100px] text-center">
-										Status
-									</TableHead>
-									<TableHead className="w-[100px] text-center">
-										Action
-									</TableHead>
+									<TableHead className="w-[100px] text-center">Status</TableHead>
+									<TableHead className="w-[100px] text-center">Action</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{history.map((order, i) => (
 									<TableRow key={i.toString()}>
-										<TableCell className="font-medium text-xs">
-											{order.orderID}
-										</TableCell>
+										<TableCell className="font-medium text-xs">{order.orderID}</TableCell>
 										{/* <TableCell className="text-xs font-medium">{order.paymentID}</TableCell> */}
 										<TableCell>{order.description}</TableCell>
-										<TableCell>
-											{dayjs(order.createdAt).format("DD/MM/YYYY")}
+										<TableCell>{dayjs(order.createdAt).format("DD/MM/YYYY")}</TableCell>
+										<TableCell className="text-center">
+											<Image src="/payments/stripe.webp" width={42} height={42} alt="Stripe" />
 										</TableCell>
 										<TableCell className="text-center">
-											<Image
-												src="/payments/paymentmethodcategory31.gif"
-												width={69}
-												height={23}
-												alt="PayPal"
-											/>
-										</TableCell>
-										<TableCell className="text-center">
-											<Badge
-												variant={STATUS_TYPE[order.status]}
-												className="w-full justify-center"
-											>
+											<Badge variant={STATUS_TYPE[order.status]} className="w-full justify-center">
 												{order.status}
 											</Badge>
 										</TableCell>
 										<TableCell className="text-center">
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
-													<Button
-														variant="ghost"
-														className="h-8 w-8 p-0"
-														size={"sm"}
-													>
+													<Button variant="ghost" className="h-8 w-8 p-0" size={"sm"}>
 														<span className="sr-only">Open menu</span>
 														<svg
 															xmlns="http://www.w3.org/2000/svg"
@@ -136,14 +117,29 @@ export default async function PaymentsHistory() {
 													</Button>
 												</DropdownMenuTrigger>
 												<DropdownMenuContent align="end" className="space-y-1">
-													<DropdownMenuItem asChild>
+													<DropdownMenuItem>View details</DropdownMenuItem>
+													{order.status === ORDER_STATUS.PROCESSING && (
+														<DropdownMenuItem asChild>
+															<CompleteOrderButton
+																paymentIntentId={order.orderID}
+																paymentIntentClientSecret={order.paymentClientSecret}
+															/>
+														</DropdownMenuItem>
+													)}
+													{order.status === ORDER_STATUS.PENDING && (
+														<DropdownMenuItem asChild>
+															<CancelOrderButton paymentIntentId={order.orderID} />
+														</DropdownMenuItem>
+													)}
+
+													{/* <DropdownMenuItem asChild>
 														<PaymentDetails orderID={order.orderID} />
 													</DropdownMenuItem>
 													{order.status === "PENDING" && (
 														<DropdownMenuItem>
 															<CancelOrderButton order={order.orderID} />
 														</DropdownMenuItem>
-													)}
+													)} */}
 												</DropdownMenuContent>
 											</DropdownMenu>
 										</TableCell>

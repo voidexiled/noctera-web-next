@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import Image from "next/image";
 
-import TableEmptyState from "@/components/table-empty-state";
+import TableEmptyState from "@/components/common/TableEmptyState";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,12 +56,8 @@ export default async function DataTable({ orders = [] }: { orders: any[] }) {
 				<TableBody>
 					{orders.map((order) => (
 						<TableRow key={order.id}>
-							<TableCell className="font-medium text-xs">
-								{order.account_id}
-							</TableCell>
-							<TableCell className="font-medium text-xs">
-								{order.paymentID}
-							</TableCell>
+							<TableCell className="font-medium text-xs">{order.account_id}</TableCell>
+							<TableCell className="font-medium text-xs">{order.paymentID}</TableCell>
 							<TableCell className="w-full">{order.description}</TableCell>
 							<TableCell className="">
 								<Image
@@ -99,10 +95,7 @@ export default async function DataTable({ orders = [] }: { orders: any[] }) {
 									</DropdownMenuTrigger>
 									<DropdownMenuContent align="end" className="space-y-1">
 										<DropdownMenuItem asChild>
-											<PaymentDetails
-												orderID={order.orderID}
-												account_id={order.account_id}
-											/>
+											<PaymentDetails orderID={order.orderID} account_id={order.account_id} />
 										</DropdownMenuItem>
 										{order.status === "PENDING" && (
 											<DropdownMenuItem asChild>

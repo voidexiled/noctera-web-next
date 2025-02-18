@@ -193,7 +193,7 @@
     @apply bg-background text-foreground p-0 m-0 box-border;
     remover bg-[url('/backgrounds/background-artwork.jpg')] para remover a imagen de backgroud
     */
-		@apply bg-[url('/backgrounds/wallpaper6.jpg')] bg-no-repeat bg-top bg-cover bg-[#051122] text-[12pt];
+		@apply bg-[url('/backgrounds/wallpaper6_0.jpg')] bg-no-repeat bg-top bg-cover bg-[#051122] text-[12pt];
 	}
 	p {
 		@apply text-[12pt];
@@ -322,3 +322,13 @@ input:-webkit-autofill:active {
 [data-radix-scroll-area-viewport]::-webkit-scrollbar {
   display: none;
 } */
+
+
+.transparent-container {
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	transform: translate3d(0, 0, 0);
+	-webkit-transform: translate3d(0, 0, 0);
+	position: relative;
+}
+

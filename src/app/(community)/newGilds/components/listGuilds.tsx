@@ -1,5 +1,5 @@
 import { Typography } from "@/components/Typography";
-import TableEmptyState from "@/components/table-empty-state";
+import TableEmptyState from "@/components/common/TableEmptyState";
 import {
 	Table,
 	TableBody,
@@ -8,12 +8,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { guild_membership, guilds, players } from "@prisma/client";
 import Image from "next/image";
 
@@ -73,11 +68,7 @@ export default function ListGuilds({ guilds }: Props) {
 										<Typography component={"span"} variant={"h6"}>
 											{guild.name}
 										</Typography>
-										<Typography
-											component={"p"}
-											variant={"body1"}
-											className=" line-clamp-2 text-sm"
-										>
+										<Typography component={"p"} variant={"body1"} className=" line-clamp-2 text-sm">
 											{guild.description}
 										</Typography>
 									</TableCell>

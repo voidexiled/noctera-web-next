@@ -7,10 +7,7 @@ export function encryptPassword(senha: string): string {
 	return senhaCriptografada;
 }
 
-export function comparePassword(
-	password: string,
-	encPassword: string,
-): boolean {
+export function comparePassword(password: string, encPassword: string): boolean {
 	const senhaCriptografadaInput = encryptPassword(password);
 	return encPassword === senhaCriptografadaInput;
 }

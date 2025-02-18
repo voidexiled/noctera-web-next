@@ -17,9 +17,7 @@ const CreatePlayersSchema = z
 
 const handleCreate = async (req: Request) => {
 	try {
-		const { instagram, twitch, youtube, password } = CreatePlayersSchema.parse(
-			await req.json(),
-		);
+		const { instagram, twitch, youtube, password } = CreatePlayersSchema.parse(await req.json());
 		const session = await getServerSession(authOptions);
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },

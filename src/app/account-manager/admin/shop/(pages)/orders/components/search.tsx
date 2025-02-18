@@ -1,6 +1,6 @@
 "use client";
 
-import { IconiFy } from "@/components/Iconify";
+import { IconiFy } from "@/components/common/Iconify";
 import Pagination from "@/components/pagination";
 import { Input } from "@/components/ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

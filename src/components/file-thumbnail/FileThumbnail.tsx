@@ -1,11 +1,6 @@
 import Image from "next/image";
 import { Button } from "../ui/button";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import DownloadButton from "./DownloadButton";
 //
 import { fileData, fileFormat, fileThumb } from "./utils";
@@ -19,12 +14,7 @@ type FileIconProps = {
 	onDownload?: VoidFunction;
 };
 
-export default function FileThumbnail({
-	file,
-	tooltip,
-	imageView,
-	onDownload,
-}: FileIconProps) {
+export default function FileThumbnail({ file, tooltip, imageView, onDownload }: FileIconProps) {
 	const { name = "", path = "", preview = "" } = fileData(file);
 
 	const format = fileFormat(path || preview);

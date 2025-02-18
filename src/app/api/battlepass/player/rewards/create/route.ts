@@ -13,8 +13,7 @@ export async function POST(req: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
-		if (!user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const { player_id, season_id, reward_id } = (await req.json()) as Params;
 
@@ -22,14 +21,13 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ status: 400 });
 		}
 
-		const alreadyClaimed =
-			await prisma.player_battlepass_rewards_claimed.findFirst({
-				where: {
-					player_id: Number(player_id),
-					season_id: Number(season_id),
-					reward_id: Number(reward_id),
-				},
-			});
+		const alreadyClaimed = await prisma.player_battlepass_rewards_claimed.findFirst({
+			where: {
+				player_id: Number(player_id),
+				season_id: Number(season_id),
+				reward_id: Number(reward_id),
+			},
+		});
 
 		if (alreadyClaimed) {
 			return NextResponse.json({

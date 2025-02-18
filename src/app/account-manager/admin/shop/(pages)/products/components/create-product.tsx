@@ -1,16 +1,11 @@
 "use client";
 import { createProduct } from "@/app/account-manager/admin/shop/(pages)/products/data";
-import { IconiFy } from "@/components/Iconify";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
-import { RHFUploadShopImage } from "@/components/hook-form/RHFUpload";
+import { IconiFy } from "@/components/common/Iconify";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
+import { RHFUploadShopImage } from "@/components/common/hook-form/RHFUpload";
 import { Button } from "@/components/ui/button";
 import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import {
-	Dialog,
-	DialogContent,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import type { CustomFile } from "@/components/upload/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -175,16 +170,11 @@ export default function CreateProduct({
 								Cancel
 							</Button>
 							<Button
-								disabled={
-									!values.img || !values.price || !values.title || isSubmitting
-								}
+								disabled={!values.img || !values.price || !values.title || isSubmitting}
 								type="submit"
 							>
 								{isSubmitting ? (
-									<IconiFy
-										icon="eos-icons:loading"
-										className="h-4 w-4 animate-spin"
-									/>
+									<IconiFy icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 								) : (
 									"Submit"
 								)}

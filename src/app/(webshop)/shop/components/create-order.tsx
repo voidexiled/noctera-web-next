@@ -1,5 +1,5 @@
 "use client";
-import { FormProvider } from "@/components/hook-form";
+import { FormProvider } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -139,17 +139,11 @@ export function CharacterOrder() {
 													<label htmlFor="terms" className="cursor-pointer">
 														{" "}
 														I have read and I agree to the{" "}
-														<Link
-															href={"#"}
-															className="text-blue-500 hover:underline"
-														>
+														<Link href={"#"} className="text-blue-500 hover:underline">
 															Extended Tibia Service Agreement
 														</Link>{" "}
 														and the{" "}
-														<Link
-															href={"#"}
-															className="text-blue-500 hover:underline"
-														>
+														<Link href={"#"} className="text-blue-500 hover:underline">
 															Tibia Privacy Policy
 														</Link>
 														.
@@ -173,10 +167,7 @@ export function CharacterOrder() {
 								</Button>
 								<Button disabled={isSubmitting} type="submit">
 									{isSubmitting ? (
-										<Icon
-											icon="eos-icons:loading"
-											className="h-4 w-4 animate-spin"
-										/>
+										<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 									) : (
 										"Buy Now"
 									)}

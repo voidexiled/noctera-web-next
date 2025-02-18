@@ -58,9 +58,8 @@ export default async function AdminManager() {
 						<TableRow>
 							<TableCell className="w-[200px]">Accounts:</TableCell>
 							<TableCell className="w-full">
-								<strong>{countAccounts.length}</strong> /{" "}
-								<strong>{totalUnregister}</strong> Unregistered /{" "}
-								<strong>{totalPremium}</strong> Premium
+								<strong>{countAccounts.length}</strong> / <strong>{totalUnregister}</strong>{" "}
+								Unregistered / <strong>{totalPremium}</strong> Premium
 							</TableCell>
 							<TableCell className="w-[200px] whitespace-nowrap">
 								<Link
@@ -103,20 +102,8 @@ export default async function AdminManager() {
 							variant={"outline"}
 							className="stroke h-[24px] w-[24px] bg-card/50 p-0 hover:bg-card"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-							>
-								<rect
-									x="0"
-									y="0"
-									width="24"
-									height="24"
-									fill="none"
-									stroke="none"
-								/>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+								<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 								<path
 									className="stroke-card-foreground group-hover:stroke-card-foreground"
 									fill="none"
@@ -128,24 +115,9 @@ export default async function AdminManager() {
 							</svg>
 						</Button>
 						<span>0 of 5</span>
-						<Button
-							variant={"outline"}
-							className="h-[24px] w-[24px] bg-card/50 p-0 hover:bg-card"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-							>
-								<rect
-									x="0"
-									y="0"
-									width="24"
-									height="24"
-									fill="none"
-									stroke="none"
-								/>
+						<Button variant={"outline"} className="h-[24px] w-[24px] bg-card/50 p-0 hover:bg-card">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+								<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 								<path
 									className="stroke-card-foreground group-hover:stroke-card-foreground"
 									fill="none"
@@ -193,14 +165,7 @@ export default async function AdminManager() {
 												height="16"
 												viewBox="0 0 24 24"
 											>
-												<rect
-													x="0"
-													y="0"
-													width="24"
-													height="24"
-													fill="none"
-													stroke="none"
-												/>
+												<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 												<path
 													fill="none"
 													stroke="currentColor"
@@ -222,14 +187,7 @@ export default async function AdminManager() {
 												height="16"
 												viewBox="0 0 24 24"
 											>
-												<rect
-													x="0"
-													y="0"
-													width="24"
-													height="24"
-													fill="none"
-													stroke="none"
-												/>
+												<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 												<path
 													fill="none"
 													stroke="currentColor"

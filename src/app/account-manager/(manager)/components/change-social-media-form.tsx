@@ -1,5 +1,5 @@
 "use client";
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -68,14 +68,11 @@ export function ChangeSocialMediaForm({
 	} = methods;
 
 	async function onSubmit(data: LoginFormValues) {
-		const response = await fetch(
-			"/api/auth/manager/account/social-midia-data",
-			{
-				method: "PUT",
-				headers: { "Content-type": "application/json; charset=UTF-8" },
-				body: JSON.stringify(data),
-			},
-		);
+		const response = await fetch("/api/auth/manager/account/social-midia-data", {
+			method: "PUT",
+			headers: { "Content-type": "application/json; charset=UTF-8" },
+			body: JSON.stringify(data),
+		});
 
 		if (response.ok) {
 			toast({
@@ -97,11 +94,7 @@ export function ChangeSocialMediaForm({
 
 	return (
 		<>
-			<Button
-				size={"sm"}
-				className="whitespace-nowrap"
-				onClick={() => setShowNewTeamDialog(true)}
-			>
+			<Button size={"sm"} className="whitespace-nowrap" onClick={() => setShowNewTeamDialog(true)}>
 				Change Social Media
 			</Button>
 
@@ -119,29 +112,15 @@ export function ChangeSocialMediaForm({
 									type="text"
 									disabled={isSubmitting}
 								/>
-								<RHFTextField
-									label="YouTube:"
-									name="youTube"
-									type="text"
-									disabled={isSubmitting}
-								/>
-								<RHFTextField
-									label="Twitch:"
-									name="twitch"
-									type="text"
-									disabled={isSubmitting}
-								/>
+								<RHFTextField label="YouTube:" name="youTube" type="text" disabled={isSubmitting} />
+								<RHFTextField label="Twitch:" name="twitch" type="text" disabled={isSubmitting} />
 							</div>
 							<div className="space-y-3 rounded-sm border p-2 text-sm">
 								<p>
-									Please enter your <strong>Password</strong> to confirm the
-									request to change your social medias.
+									Please enter your <strong>Password</strong> to confirm the request to change your
+									social medias.
 								</p>
-								<RHFTextField
-									name="password"
-									type="password"
-									disabled={isSubmitting}
-								/>
+								<RHFTextField name="password" type="password" disabled={isSubmitting} />
 							</div>
 							<DialogFooter>
 								<Button
@@ -155,10 +134,7 @@ export function ChangeSocialMediaForm({
 								</Button>
 								<Button disabled={isSubmitting || !isDirty} type="submit">
 									{isSubmitting ? (
-										<Icon
-											icon="eos-icons:loading"
-											className="h-4 w-4 animate-spin"
-										/>
+										<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 									) : (
 										"Submit"
 									)}

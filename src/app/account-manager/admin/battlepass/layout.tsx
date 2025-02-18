@@ -9,9 +9,7 @@ export const metadata: Metadata = {
 	title: "Admin Panel - Battlepass",
 };
 
-export default async function AdminBattlepass({
-	children,
-}: { children: React.ReactNode }) {
+export default async function AdminBattlepass({ children }: { children: React.ReactNode }) {
 	return (
 		<Card>
 			<CardHeader className="border-b bg-background">

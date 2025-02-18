@@ -20,28 +20,19 @@ type NewPlayer = Omit<players, "id" | "account_id">;
 const create = async (request: Request) => {
 	try {
 		const session = await getServerSession(authOptions);
-		if (!session)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-		const { name, sex, world_id } = CreatePlayersSchema.parse(
-			await request.json(),
-		);
+		const { name, sex, world_id } = CreatePlayersSchema.parse(await request.json());
 
 		const findPlayers = await prisma.accounts.findFirst({ where: { name } });
 		if (findPlayers)
-			return NextResponse.json(
-				{ message: "Player name already exists" },
-				{ status: 400 },
-			);
+			return NextResponse.json({ message: "Player name already exists" }, { status: 400 });
 
 		const findInitialPlayer = await prisma.players.findFirst({
 			where: { name: "Rook Sample" },
 		});
 		if (!findInitialPlayer)
-			return NextResponse.json(
-				{ message: "Initial Player not exist." },
-				{ status: 500 },
-			);
+			return NextResponse.json({ message: "Initial Player not exist." }, { status: 500 });
 
 		const { id, account_id, ...restInitialPlayer } = findInitialPlayer || {
 			id: undefined,
@@ -55,7 +46,7 @@ const create = async (request: Request) => {
 				account_id: Number(session?.user?.id),
 				name,
 				sex,
-				created: dayjs().unix(),
+				//created: dayjs().unix(),
 				comment: "",
 			},
 		});

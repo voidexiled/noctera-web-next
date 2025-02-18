@@ -37,3 +37,5 @@ next-env.d.ts
 
 cache.generated.txt
 *.rar
+
+certificates

@@ -1,15 +1,11 @@
-import { getTaskPath } from "@/app/(battlepass)/battlepass/lib/utils";
 import {
 	AdminBattlepassContext,
 	type AdminBattlepassContextType,
 } from "@/app/account-manager/admin/battlepass/components/context/AdminBattlepassProvider";
+import { getTaskPath } from "@/components/(battlepass)/battlepass/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { battlepass_seasons } from "@prisma/client";
@@ -58,10 +54,7 @@ export const TasksGrid = () => {
 
 	return (
 		<TooltipProvider>
-			<ScrollArea
-				className="h-full w-full scroll-smooth border-b pb-2"
-				scrollHideDelay={3000}
-			>
+			<ScrollArea className="h-full w-full scroll-smooth border-b pb-2" scrollHideDelay={3000}>
 				<ScrollBar orientation="horizontal" className="z-50" />
 				<div className="flex flex-row gap-2 p-2">
 					{tasks.map((task) => {

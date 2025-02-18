@@ -12,9 +12,7 @@ interface BattlepassLayoutProps {
 	children: React.ReactNode;
 }
 
-export default async function BattlepassLayout({
-	children,
-}: BattlepassLayoutProps) {
+export default async function BattlepassLayout({ children }: BattlepassLayoutProps) {
 	const session = await getServerSession(authOptions);
 	!session ? "NotSession" : "Session";
 	if (!session) redirect("/account-manager/login");

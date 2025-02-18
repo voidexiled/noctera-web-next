@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path, { dirname } from "node:path";
 
-interface ConfigLua<T> {
+export interface ConfigLua<T> {
 	[key: string]: T;
 }
 
@@ -27,9 +27,7 @@ export class readConfigLua {
 	}
 
 	public readLua<T>(): ConfigLua<T> {
-		const result = this.jsonString
-			.split("\n")
-			.map((item: string) => item.split(" = "));
+		const result = this.jsonString.split("\n").map((item: string) => item.split(" = "));
 
 		const configLua: ConfigLua<T | null> = {};
 

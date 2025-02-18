@@ -1,4 +1,4 @@
-import { IconiFy } from "@/components/Iconify";
+import { IconiFy } from "@/components/common/Iconify";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 import type { orders } from "@prisma/client";
@@ -11,17 +11,12 @@ function calculatePercentageChange(previousMonth = 0, currentMonth = 0) {
 		}
 		return "No change from no previous data";
 	}
-	const percentageChange =
-		((currentMonth - previousMonth) / previousMonth) * 100;
+	const percentageChange = ((currentMonth - previousMonth) / previousMonth) * 100;
 	const changeType = percentageChange > 0 ? "+" : "-";
 	return (
 		<div className="flex">
 			<IconiFy
-				icon={
-					percentageChange < 0
-						? "eva:trending-down-fill"
-						: "eva:trending-up-fill"
-				}
+				icon={percentageChange < 0 ? "eva:trending-down-fill" : "eva:trending-up-fill"}
 				className={percentageChange > 0 ? "text-green-500" : "text-red-500"}
 			/>
 			{changeType}
@@ -30,10 +25,7 @@ function calculatePercentageChange(previousMonth = 0, currentMonth = 0) {
 	);
 }
 
-async function getMonthlyData(
-	orders: orders[],
-	status: orders["status"] = "DELIVERED",
-) {
+async function getMonthlyData(orders: orders[], status: orders["status"] = "DELIVERED") {
 	const currentYear = new Date().getFullYear();
 	const months = [
 		"Jan",
@@ -104,8 +96,7 @@ async function getProducts() {
 }
 
 export default async function ProductsAdminManager() {
-	const { revenue, totalPending, totalSales, pending, graphic } =
-		await getProducts();
+	const { revenue, totalPending, totalSales, pending, graphic } = await getProducts();
 	console.log(pending);
 	const now = new Date();
 
@@ -174,10 +165,7 @@ export default async function ProductsAdminManager() {
 					<CardContent>
 						<div className="font-bold text-2xl">{totalSales}</div>
 						<p className="text-muted-foreground text-xs">
-							{calculatePercentageChange(
-								graphicPreviousMonthTotal,
-								graphicCurrentMonthTotal,
-							)}
+							{calculatePercentageChange(graphicPreviousMonthTotal, graphicCurrentMonthTotal)}
 						</p>
 					</CardContent>
 				</Card>
@@ -201,10 +189,7 @@ export default async function ProductsAdminManager() {
 					<CardContent>
 						<div className="font-bold text-2xl">{totalPending}</div>
 						<p className="text-muted-foreground text-xs">
-							{calculatePercentageChange(
-								pendingPreviousMonthTotal,
-								pendingCurrentMonthTotal,
-							)}
+							{calculatePercentageChange(pendingPreviousMonthTotal, pendingCurrentMonthTotal)}
 						</p>
 					</CardContent>
 				</Card>

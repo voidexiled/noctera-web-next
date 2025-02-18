@@ -1,4 +1,4 @@
-import TableEmptyState from "@/components/table-empty-state";
+import TableEmptyState from "@/components/common/TableEmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {

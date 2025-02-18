@@ -1,3 +1,5 @@
+import { ShopContextProvider } from "@/app/(webshop)/shop/components/ShopContext";
+import { StepFormContextProvider } from "@/app/(webshop)/shop/components/StepFormContext";
 import { authOptions } from "@/lib/auth";
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth/next";

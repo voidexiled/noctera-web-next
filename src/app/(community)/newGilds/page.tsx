@@ -2,6 +2,7 @@ import Pagination from "@/components/pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getManyPlayers } from "@/services/players/PlayersService";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -38,13 +39,6 @@ async function fetchGuilds({ page, search }: { search: string; page: number }) {
 	}
 }
 
-async function getPlayers(account_id: number) {
-	const players = await prisma.players.findMany({
-		where: { account_id, level: { gte: 8 }, guild_membership: null },
-	});
-	return { players };
-}
-
 export default async function Guilds(props: {
 	searchParams?: Promise<{ search?: string; page?: string }>;
 }) {
@@ -54,9 +48,11 @@ export default async function Guilds(props: {
 	const page = Number(searchParams?.page) || 1;
 	const { guilds, totalPage } = await fetchGuilds({ page, search });
 
-	const { players } = session?.user.id
-		? await getPlayers(+session?.user.id)
-		: { players: [] };
+	const players = session?.user.id
+		? ((await getManyPlayers({
+				where: { account_id: +session?.user.id, level: { gte: 8 }, guild_membership: null },
+			})) ?? [])
+		: [];
 
 	return (
 		<Card>
@@ -66,14 +62,11 @@ export default async function Guilds(props: {
 			<CardContent className="space-y-2 p-2">
 				<Suspense key={session?.user.id}>
 					<div className="flex items-center justify-between text-sm">
-						Can&apos;t find the guild you&apos;re looking for?
+						Can't find the guild you're looking for?
 						{session?.user.id ? (
 							<CreateGuild players={players} />
 						) : (
-							<Link
-								href={"/account-manager/login"}
-								className="py-2 text-blue-500"
-							>
+							<Link href={"/account-manager/login"} className="py-2 text-blue-500">
 								Log in to create
 							</Link>
 						)}

@@ -3,15 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-type Params = { orderID: string };
+type Params = Promise<{ orderID: string }>;
 
 const Checkout = async (request: Request, { params }: { params: Params }) => {
 	try {
-		const { orderID } = params;
+		const { orderID } = await params;
 
 		const session = await getServerSession(authOptions);
-		if (!session?.user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session?.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const findOrder = await prisma.orders.findFirst({ where: { orderID } });
 
@@ -23,10 +22,7 @@ const Checkout = async (request: Request, { params }: { params: Params }) => {
 		return NextResponse.json({});
 	} catch (error) {
 		console.error("Failed to create order:", error);
-		return NextResponse.json(
-			{ error: "Failed to cancel order." },
-			{ status: 500 },
-		);
+		return NextResponse.json({ error: "Failed to cancel order." }, { status: 500 });
 	}
 };
 

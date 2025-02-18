@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 
-const fUnixToDate = (date: number) =>
-	dayjs.unix(date).format("MMM D YYYY h:mm");
+const fUnixToDate = (date: number) => dayjs.unix(date).format("MMM D YYYY h:mm");
 
 interface Player {
 	name: string;
@@ -15,11 +14,7 @@ function recentDate(players: Player[]): dayjs.Dayjs[] {
 		const lastLogin = dayjs.unix(player.lastLogin);
 		date.push(lastLogin);
 	}
-	date.sort(
-		(a, b) =>
-			Math.abs(actualDate.diff(a, "days")) -
-			Math.abs(actualDate.diff(b, "days")),
-	);
+	date.sort((a, b) => Math.abs(actualDate.diff(a, "days")) - Math.abs(actualDate.diff(b, "days")));
 	return date;
 }
 

@@ -1,4 +1,4 @@
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import nodemailer, { type TestAccount } from "nodemailer";
 const lua = configLua();
 

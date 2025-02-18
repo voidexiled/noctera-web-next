@@ -35,10 +35,7 @@ export async function POST(req: Request) {
 		const findPlayers = await prisma.accounts.findFirst({ where: { name } });
 
 		if (findPlayers) {
-			return NextResponse.json(
-				{ message: "Player name already exists" },
-				{ status: 400 },
-			);
+			return NextResponse.json({ message: "Player name already exists" }, { status: 400 });
 		}
 		const initialPlayerName =
 			vocation === "1"
@@ -56,10 +53,7 @@ export async function POST(req: Request) {
 		});
 
 		if (!findInitialPlayer) {
-			return NextResponse.json(
-				{ error: "Initial Player not exist." },
-				{ status: 500 },
-			);
+			return NextResponse.json({ error: "Initial Player not exist." }, { status: 500 });
 		}
 
 		const { id, account_id, ...restInitialPlayer } = findInitialPlayer || {
@@ -72,23 +66,16 @@ export async function POST(req: Request) {
 			name,
 			sex,
 			//world_id: world_id ?? 1,
-			created: dayjs().unix(),
-			conditions: Buffer.alloc(1024),
+			// created: dayjs().unix(),
+			conditions: Uint8Array.from({ length: 1024 }),
 			comment: "",
 		};
-		const playerCreated = await prisma.players
-			.create({
-				data: playerData,
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		const playerCreated = await prisma.players.create({
+			data: playerData,
+		});
 
 		if (!playerCreated) {
-			return NextResponse.json(
-				{ error: "Error creating character." },
-				{ status: 500 },
-			);
+			return NextResponse.json({ error: "Error creating character." }, { status: 500 });
 		}
 
 		const battlepassSeasons = await prisma.battlepass_seasons.findMany({
@@ -98,6 +85,8 @@ export async function POST(req: Request) {
 		const latestSeason = battlepassSeasons.sort(
 			(a, b) => Number(b.season_number) - Number(a.season_number),
 		)[0];
+
+		if (!latestSeason) return NextResponse.json({}, { status: 200 });
 
 		await prisma.player_battlepass_progress
 			.create({

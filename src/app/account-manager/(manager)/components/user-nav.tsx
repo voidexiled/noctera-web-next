@@ -27,9 +27,7 @@ export async function UserNav() {
 				<DropdownMenuLabel className="font-normal">
 					<div className="flex flex-col space-y-1">
 						<p className="font-medium text-sm leading-none">{"Nome"}</p>
-						<p className="text-muted-foreground text-xs leading-none">
-							{"email@example.com"}
-						</p>
+						<p className="text-muted-foreground text-xs leading-none">{"email@example.com"}</p>
 					</div>
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />

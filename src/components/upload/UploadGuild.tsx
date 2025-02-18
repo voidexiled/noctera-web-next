@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useDropzone } from "react-dropzone";
-import { IconiFy } from "../Iconify";
+import { IconiFy } from "../common/Iconify";
 import RejectionFiles from "./errors/RejectionFiles";
 import ShopPreview from "./preview/GuildPreview";
 import type { UploadProps } from "./types";
@@ -12,13 +12,7 @@ export default function UploadGuildImage({
 	helperText,
 	...other
 }: UploadProps) {
-	const {
-		getRootProps,
-		getInputProps,
-		isDragActive,
-		isDragReject,
-		fileRejections,
-	} = useDropzone({
+	const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
 		multiple: false,
 		disabled,
 		...other,

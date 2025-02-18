@@ -10,15 +10,17 @@ export default function JoinGuild({
 	const router = useRouter();
 
 	async function JoinInGuild() {
-		const res = await fetch(
-			`/api/guilds/manager/${guild_id}/join/${player_id}`,
-			{ method: "PATCH" },
-		);
+		const res = await fetch(`/api/guilds/manager/${guild_id}/join/${player_id}`, {
+			method: "PATCH",
+		});
 
 		if (res.ok) {
+			const data: {
+				guild_name: string;
+			} = await res.json();
 			toast({
 				title: "Success!",
-				description: <div>Update player rank.</div>,
+				description: <div>You have joined to {data.guild_name}.</div>,
 				variant: "success",
 			});
 			router.refresh();
@@ -32,14 +34,8 @@ export default function JoinGuild({
 	}
 
 	return (
-		<>
-			<Button
-				variant={"green"}
-				className="whitespace-nowrap"
-				onClick={JoinInGuild}
-			>
-				Agree
-			</Button>
-		</>
+		<Button variant="green" className="whitespace-nowrap" onClick={JoinInGuild}>
+			Join Guild
+		</Button>
 	);
 }

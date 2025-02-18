@@ -27,20 +27,8 @@ export default function AdminManagerPlayer() {
 							variant={"outline"}
 							className="h-[24px] w-[24px] bg-white p-0 hover:bg-slate-50"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-							>
-								<rect
-									x="0"
-									y="0"
-									width="24"
-									height="24"
-									fill="none"
-									stroke="none"
-								/>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+								<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 								<path
 									fill="none"
 									stroke="currentColor"
@@ -56,20 +44,8 @@ export default function AdminManagerPlayer() {
 							variant={"outline"}
 							className="h-[24px] w-[24px] bg-white p-0 hover:bg-slate-50"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-							>
-								<rect
-									x="0"
-									y="0"
-									width="24"
-									height="24"
-									fill="none"
-									stroke="none"
-								/>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+								<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 								<path
 									fill="none"
 									stroke="currentColor"
@@ -105,65 +81,47 @@ export default function AdminManagerPlayer() {
 						<TableRow>
 							<TableCell>00002</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00003</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00004</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00005</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00006</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00007</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00008</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00009</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell>00010</TableCell>
 							<TableCell>I</TableCell>
-							<TableCell className="w-[30px] text-right">
-								{/* <ActionsDropdown /> */}
-							</TableCell>
+							<TableCell className="w-[30px] text-right">{/* <ActionsDropdown /> */}</TableCell>
 						</TableRow>
 					</TableBody>
 				</Table>

@@ -1,4 +1,4 @@
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import { prisma } from "@/lib/prisma";
 import { StatusServer } from "@/utils/statusServer";
 import { type NextRequest, NextResponse } from "next/server";

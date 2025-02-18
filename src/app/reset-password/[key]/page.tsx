@@ -1,12 +1,12 @@
 "use client";
-import { use } from "react";
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { use } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -74,10 +74,7 @@ export default function Character(props: { params: Promise<{ key: string }> }) {
 						<DialogFooter>
 							<Button disabled={isSubmitting} type="submit">
 								{isSubmitting ? (
-									<Icon
-										icon="eos-icons:loading"
-										className="h-4 w-4 animate-spin"
-									/>
+									<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 								) : (
 									"Submit"
 								)}

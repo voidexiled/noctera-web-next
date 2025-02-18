@@ -5,17 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ConfirmDeletionAccount } from "./components/ConfirmDeletionAccount";
 import { ChangePasswordForm } from "./components/change-password-form";
 import CharactersList from "./components/characters-list";
 
-import { LogoutButton } from "@/components/logout";
+import { LogoutButton } from "@/components/base-layout/left-sidebar/LogoutButton";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { fUnixToDate } from "@/utils/functions/formatDate";
@@ -27,11 +22,16 @@ import { ChangeEmailForm } from "./components/change-email-form";
 import { ChangeSocialMediaForm } from "./components/change-social-media-form";
 import { CharacterForm } from "./components/create-character-form";
 
-import { IconiFy } from "@/components/Iconify";
+import { countries } from "@/app/account-manager/(manager)/components/data/countries";
 import TwoFactSettings from "@/components/TwoFactSettings";
+import { IconiFy } from "@/components/common/Iconify";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+
+import { ResendVerificationEmailButton } from "@/app/account-manager/(manager)/components/ResendVerificationEmailButton";
+import InvitedToGuildAlert from "@/components/kokonutui/InvitedToGuildAlert";
 import { convertBigIntsToNumbers } from "@/utils/functions/convertBigIntsToNumbers";
+import { Info } from "lucide-react";
 import ActiveEmailRequest from "./components/acitver-email-request";
 import JoinGuild from "./components/join-guild";
 
@@ -82,9 +82,7 @@ export default async function Dashboard(props: Params) {
 		select: { player_id: true },
 	});
 
-	const lastLogin = acc.players.sort(
-		(a, b) => Number(b.lastlogin) - Number(a.lastlogin),
-	);
+	const lastLogin = acc.players.sort((a, b) => Number(b.lastlogin) - Number(a.lastlogin));
 
 	// if (!acc.account_bans) {
 	//   return (
@@ -138,6 +136,51 @@ export default async function Dashboard(props: Params) {
 					<CardTitle>Account Manager</CardTitle>
 				</CardHeader>
 
+				{!acc.key && (
+					<div className="p-2 pb-0">
+						<Alert variant="destructive" className="rounded-sm">
+							<AlertTitle>Warning!</AlertTitle>
+							<AlertDescription>
+								<div className="flex flex-row gap-2">
+									<ResendVerificationEmailButton accountName={acc.name} accountEmail={acc.email} />
+								</div>
+							</AlertDescription>
+						</Alert>
+					</div>
+				)}
+
+				{acc.players.filter((player) => player.guild_invites.length).length ? (
+					<div className="rounded-md p-2 pb-0">
+						<InvitedToGuildAlert
+							characterName={
+								acc.players.filter((player) => player.guild_invites.length)[0].guild_invites[0]
+									.players.name
+							}
+							guildName={
+								acc.players.filter((player) => player.guild_invites.length)[0].guild_invites[0]
+									.guilds.name
+							}
+							guildLogo={
+								acc.players.filter((player) => player.guild_invites.length)[0].guild_invites[0]
+									.guilds.logo_name
+							}
+							guildId={
+								acc.players.filter((player) => player.guild_invites.length)[0].guild_invites[0]
+									.guilds.id
+							}
+							playerId={
+								acc.players.filter((player) => player.guild_invites.length)[0].guild_invites[0]
+									.player_id
+							}
+							invitedAt={
+								acc.players.filter((player) => player.guild_invites.length)[0].guild_invites[0].date
+							}
+						/>
+					</div>
+				) : (
+					<></>
+				)}
+
 				<div className="space-y-2 p-2">
 					<div className="rounded-sm border">
 						<div className="flex gap-2 p-2 sm:flex-row sm:justify-between">
@@ -145,37 +188,20 @@ export default async function Dashboard(props: Params) {
 								<div className="mb-2 flex items-start justify-start rounded-sm bg-background/60 p-2 text-sm">
 									Account Status
 								</div>
-								<div className="flex items-center gap-2 leading-none">
+								<div className="flex items-center gap-2 py-2 leading-none">
 									{acc?.premdays ? (
-										<Image
-											src={"/account/status_green.gif"}
-											width={32}
-											height={32}
-											alt="Premium"
-										/>
+										<Image src={"/account/status_green.gif"} width={42} height={42} alt="Premium" />
 									) : (
-										<Image
-											src={"/account/status_red.gif"}
-											width={32}
-											height={32}
-											alt="Free"
-										/>
+										<Image src={"/account/status_red.gif"} width={42} height={42} alt="Free" />
 									)}
 									<div>
 										{acc?.premdays ? (
 											<>
-												<Typography
-													variant={"h6"}
-													className="text-green-500 leading-none"
-												>
+												<Typography variant={"h6"} className="text-2xl text-green-500">
 													VIP Account
 												</Typography>
-												<Typography
-													variant={"overline"}
-													className="text-sm leading-none"
-												>
-													( Balance of VIP Time:{" "}
-													<strong>{acc?.premdays}</strong> days )
+												<Typography variant={"overline"} className="text-sm dark:text-zinc-300 ">
+													Balance of VIP Time: <strong>{acc?.premdays}</strong> days
 												</Typography>
 											</>
 										) : (
@@ -183,9 +209,8 @@ export default async function Dashboard(props: Params) {
 												<Typography variant={"h6"} className="text-red-500">
 													Free Account
 												</Typography>
-												<Typography variant={"overline"} className="text-sm">
-													To benefit from our great VIP features, get VIP Time
-													for your account.
+												<Typography variant={"overline"} className="text-sm dark:text-zinc-300 ">
+													To benefit from our great VIP features, get VIP Time for your account.
 												</Typography>
 											</>
 										)}
@@ -195,11 +220,7 @@ export default async function Dashboard(props: Params) {
 
 							<div className="flex flex-col gap-1">
 								{user?.role === "admin" && (
-									<Button
-										variant={"destructive"}
-										className="whitespace-nowrap"
-										asChild
-									>
+									<Button variant={"destructive"} className="whitespace-nowrap" asChild>
 										<Link href={"/account-manager/admin"}>Admin Panel</Link>
 									</Button>
 								)}
@@ -209,79 +230,10 @@ export default async function Dashboard(props: Params) {
 								<LogoutButton />
 							</div>
 						</div>
-						{!acc.key && (
-							<div className="p-2 pt-0">
-								<Alert variant={"destructive"} className="rounded-sm">
-									<AlertTitle>Warning!</AlertTitle>
-									<AlertDescription>
-										<div className="flex flex-row gap-2">
-											<div>
-												You account is not register{" "}
-												<Link
-													href={"/account-manager"}
-													className="font-bold text-blue-600"
-												>
-													Recovery Key
-												</Link>
-												.
-											</div>
-										</div>
-									</AlertDescription>
-								</Alert>
-							</div>
-						)}
 					</div>
 				</div>
 
-				{acc.players.filter((player) => player.guild_invites.length).length ? (
-					<div className="rounded-sm p-2 pt-0">
-						<Alert className="rounded-sm" variant={"info"}>
-							<IconiFy icon={"ph:info"} />
-							<AlertTitle>Guild Invitation</AlertTitle>
-							<AlertDescription className="flex flex-row justify-between gap-2">
-								<p>
-									Hello{" "}
-									<strong>
-										{
-											acc.players.filter(
-												(player) => player.guild_invites.length,
-											)[0].guild_invites[0].players.name
-										}
-									</strong>
-									, you have been invited to join the{" "}
-									<strong>
-										{
-											acc.players.filter(
-												(player) => player.guild_invites.length,
-											)[0].guild_invites[0].guilds.name
-										}{" "}
-									</strong>
-									guild.
-								</p>
-								<JoinGuild
-									guild_id={
-										acc.players.filter(
-											(player) => player.guild_invites.length,
-										)[0].guild_invites[0].guilds.id
-									}
-									player_id={
-										acc.players.filter(
-											(player) => player.guild_invites.length,
-										)[0].guild_invites[0].player_id
-									}
-								/>
-							</AlertDescription>
-						</Alert>
-					</div>
-				) : (
-					<></>
-				)}
-
-				<Tabs
-					defaultValue={InitialTab}
-					className="rounded-sm p-2 pt-0"
-					activationMode="manual"
-				>
+				<Tabs defaultValue={InitialTab} className="rounded-sm p-2 pt-0" activationMode="manual">
 					<TabsList className="w-full rounded-sm border-[1px] bg-background/60">
 						<TabsTrigger value="status" className="rounded-sm">
 							Status
@@ -310,14 +262,36 @@ export default async function Dashboard(props: Params) {
 									<Table>
 										<TableBody>
 											<TableRow>
+												<TableCell>Full name:</TableCell>
+												<TableCell className="">{acc.rlname}</TableCell>
+											</TableRow>
+											<TableRow>
 												<TableCell>Email Address:</TableCell>
-												<TableCell className="">{acc?.email}</TableCell>
+												<TableCell className="">
+													{acc?.email}{" "}
+													<span className="text-rose-500">
+														{!acc?.email_verified && "(Not Verified)"}
+													</span>
+												</TableCell>
+											</TableRow>
+											<TableRow>
+												<TableCell>Phone:</TableCell>
+												<TableCell className="">{acc.phone}</TableCell>
+											</TableRow>
+
+											<TableRow>
+												<TableCell>Country:</TableCell>
+												<TableCell className="">
+													{
+														countries.find(
+															(c) => c.value.toLowerCase() === acc?.country.toLowerCase(),
+														)?.label
+													}
+												</TableCell>
 											</TableRow>
 											<TableRow>
 												<TableCell>Created:</TableCell>
-												<TableCell className="">
-													{fUnixToDate(acc.created)}
-												</TableCell>
+												<TableCell className="">{fUnixToDate(acc.creation)}</TableCell>
 											</TableRow>
 											<TableRow>
 												<TableCell>Last Login (Game):</TableCell>
@@ -327,16 +301,14 @@ export default async function Dashboard(props: Params) {
 											</TableRow>
 											<TableRow>
 												<TableCell>Last Login (Website):</TableCell>
-												<TableCell className="">
-													{fUnixToDate(acc.web_lastlogin)}
-												</TableCell>
+												<TableCell className="">{fUnixToDate(acc.web_lastlogin ?? 0)}</TableCell>
 											</TableRow>
 											<TableRow>
 												<TableCell>Noctera Coins:</TableCell>
 												<TableCell className="flex items-center gap-1">
 													{acc?.coins_transferable}{" "}
 													<TooltipProvider>
-														<Tooltip>
+														<Tooltip delayDuration={150}>
 															<TooltipTrigger>
 																<Image
 																	src="/icons/icon-tibiacointrusted.png"
@@ -347,13 +319,13 @@ export default async function Dashboard(props: Params) {
 																/>
 															</TooltipTrigger>
 															<TooltipContent>
-																<p>Noctera Coins</p>
+																<span className="text-xs">Noctera Coins</span>
 															</TooltipContent>
 														</Tooltip>
 													</TooltipProvider>{" "}
 													( include {acc?.coins.toString()}{" "}
 													<TooltipProvider>
-														<Tooltip>
+														<Tooltip delayDuration={150}>
 															<TooltipTrigger>
 																<Image
 																	src="/icons/icon-tibiacoin.png"
@@ -364,7 +336,7 @@ export default async function Dashboard(props: Params) {
 																/>
 															</TooltipTrigger>
 															<TooltipContent>
-																<p>No Transferable Coins</p>
+																<span className="text-xs">No Transferable Coins</span>
 															</TooltipContent>
 														</Tooltip>
 													</TooltipProvider>
@@ -394,22 +366,6 @@ export default async function Dashboard(props: Params) {
                         <TableCell className="w-[170px]">Loyalty Title:</TableCell>
                         <TableCell className="">(no title) (Promotion to: Scout of Tibia at 50 Loyalty Points)</TableCell>
                       </TableRow> */}
-											<TableRow>
-												<TableCell className="w-[170px]">Registered:</TableCell>
-												<TableCell className="uppercase">
-													<Badge
-														variant={
-															acc.email_verified === true
-																? "success"
-																: "destructive"
-														}
-													>
-														{acc.email_verified === true
-															? "Registered"
-															: "Unregistered"}
-													</Badge>
-												</TableCell>
-											</TableRow>
 										</TableBody>
 									</Table>
 								</div>
@@ -543,18 +499,12 @@ export default async function Dashboard(props: Params) {
 									<Typography variant={"h5"} className="text-sm">
 										VIP History
 									</Typography>
-									<Typography
-										variant={"body1"}
-										className="text-sm"
-										component={"p"}
-									>
+									<Typography variant={"body1"} className="text-sm" component={"p"}>
 										Contains all historical data about your VIP Times.
 									</Typography>
 								</div>
 								<Button size={"sm"} className="whitespace-nowrap" asChild>
-									<Link href={"/account-manager/premium-history"}>
-										View History
-									</Link>
+									<Link href={"/account-manager/premium-history"}>View History</Link>
 								</Button>
 							</div>
 							<div className="flex flex-row items-center justify-between space-x-2 rounded-md border p-2 leading-none">
@@ -562,18 +512,12 @@ export default async function Dashboard(props: Params) {
 									<Typography variant={"h5"} className="text-sm">
 										Payments History
 									</Typography>
-									<Typography
-										variant={"body1"}
-										className="text-sm"
-										component={"p"}
-									>
+									<Typography variant={"body1"} className="text-sm" component={"p"}>
 										Contains all historical data of your payments.
 									</Typography>
 								</div>
 								<Button size={"sm"} className="whitespace-nowrap" asChild>
-									<Link href={"/account-manager/payments-history"}>
-										View History
-									</Link>
+									<Link href={"/account-manager/payments-history"}>View History</Link>
 								</Button>
 							</div>
 							<div className="flex flex-row items-center justify-between space-x-2 rounded-md border p-2 leading-none">
@@ -582,14 +526,12 @@ export default async function Dashboard(props: Params) {
 										Coins History
 									</Typography>
 									<Typography variant={"body1"} className="text-sm">
-										Contains all historical data about your Tibia Coins and
-										products buyable with Tibia Coins.
+										Contains all historical data about your Tibia Coins and products buyable with
+										Tibia Coins.
 									</Typography>
 								</div>
 								<Button size={"sm"} className="whitespace-nowrap">
-									<Link href={"/account-manager/coins-history"}>
-										View History
-									</Link>
+									<Link href={"/account-manager/coins-history"}>View History</Link>
 								</Button>
 							</div>
 						</div>
@@ -604,44 +546,34 @@ export default async function Dashboard(props: Params) {
 					</TabsContent>
 
 					<TabsContent value="settings" className="space-y-2">
-						<div className="flex flex-row items-start justify-between space-x-2 rounded-md border p-2 leading-none">
+						{/* <div className="flex flex-row items-start justify-between space-x-2 rounded-md border p-2 leading-none">
 							<div>
 								<Typography variant={"h5"} className="text-sm">
 									Activate email code authentication for your account!
 								</Typography>
-								<Typography
-									variant={"body1"}
-									className="text-sm"
-									component={"p"}
-								>
-									As a first step to activate email code authentication for your
-									account, click on &quot;Request&quot;! An email code will be
-									sent to the email address assigned to your account. You will
-									be asked to enter this email code on the next page within 24
-									hours.
+								<Typography variant={"body1"} className="text-sm" component={"p"}>
+									As a first step to activate email code authentication for your account, click on
+									&quot;Request&quot;! An email code will be sent to the email address assigned to
+									your account. You will be asked to enter this email code on the next page within
+									24 hours.
 								</Typography>
 							</div>
 							<ActiveEmailRequest disabled={acc.email_verified} />
-						</div>
+						</div> */}
 
 						<div className="flex flex-row items-center justify-between space-x-2 rounded-md border p-2 leading-none">
 							<div>
-								<Typography
-									variant={"body1"}
-									className="text-sm"
-									component={"p"}
-								>
-									Two-Factor authentication offers you an additional layer of
-									security to help prevent unauthorised access to your Tibia
-									account. In Tibia you can select one of these two methods:
+								<Typography variant={"body1"} className="text-sm" component={"p"}>
+									Two-Factor authentication offers you an additional layer of security to help
+									prevent unauthorised access to your Tibia account. In Tibia you can select one of
+									these two methods:
 								</Typography>
 								<ul className="list-disc py-2 pl-8">
 									<li>
 										{" "}
 										<div className="flex flex-row justify-between">
 											{" "}
-											Two-Factor Authenticator App{" "}
-											<TwoFactSettings user={acc} />
+											Two-Factor Authenticator App <TwoFactSettings user={acc} />
 										</div>
 									</li>
 									{/* <li>Two-Factor Email Code Authentication</li> */}

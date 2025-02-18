@@ -1,14 +1,6 @@
 "use client";
 
-import {
-	Bar,
-	BarChart,
-	CartesianGrid,
-	ResponsiveContainer,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 interface Props {
 	data: { name: string; total: number }[];
@@ -54,13 +46,7 @@ export function Overview({ data }: Props) {
 				width={150}
 			>
 				<CartesianGrid stroke="#ffffffa5" strokeDasharray="3 3" />
-				<XAxis
-					dataKey="name"
-					stroke="#fff"
-					fontSize={12}
-					tickLine={false}
-					axisLine={false}
-				/>
+				<XAxis dataKey="name" stroke="#fff" fontSize={12} tickLine={false} axisLine={false} />
 				<YAxis
 					dataKey="total"
 					stroke="#fff"

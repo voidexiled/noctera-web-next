@@ -1,5 +1,5 @@
 import { Typography } from "@/components/Typography";
-import AnimatedOutfit from "@/components/animations/AnimatedOutfit";
+import AnimatedOutfit from "@/components/animations/OutfitComponent";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,7 +10,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import { prisma } from "@/lib/prisma";
 import dayjs from "dayjs";
 
@@ -49,9 +49,7 @@ export default async function SupportList() {
 									<TableHead className="w-[80px]">Outfit</TableHead>
 									<TableHead className="w-full">Name</TableHead>
 									<TableHead className="w-[50px] text-center">Status</TableHead>
-									<TableHead className="whitespace-nowrap">
-										Last Login
-									</TableHead>
+									<TableHead className="whitespace-nowrap">Last Login</TableHead>
 								</TableRow>
 							</TableHeader>
 
@@ -72,10 +70,7 @@ export default async function SupportList() {
 										return (
 											<TableRow key={character.id.toString()}>
 												<TableCell>
-													<AnimatedOutfit
-														outfit={character}
-														alt={character.name}
-													/>
+													<AnimatedOutfit outfit={character} alt={character.name} />
 												</TableCell>
 												<TableCell>
 													<Typography variant={"overline"} className="w-full">
@@ -90,9 +85,7 @@ export default async function SupportList() {
 													))}
 												</TableCell>
 												<TableCell className="whitespace-nowrap">
-													{dayjs
-														.unix(Number(character.lastlogin))
-														.format("D MMMM YYYY, h:mm")}
+													{dayjs.unix(Number(character.lastlogin)).format("D MMMM YYYY, h:mm")}
 												</TableCell>
 											</TableRow>
 										);
@@ -114,10 +107,7 @@ export default async function SupportList() {
 										return (
 											<TableRow key={character.id.toString()}>
 												<TableCell>
-													<AnimatedOutfit
-														outfit={character}
-														alt={character.name}
-													/>
+													<AnimatedOutfit outfit={character} alt={character.name} />
 												</TableCell>
 												<TableCell>
 													<Typography variant={"overline"} className="w-full">
@@ -132,9 +122,7 @@ export default async function SupportList() {
 													))}
 												</TableCell>
 												<TableCell className="whitespace-nowrap">
-													{dayjs
-														.unix(Number(character.lastlogin))
-														.format("D MMMM YYYY, h:mm")}
+													{dayjs.unix(Number(character.lastlogin)).format("D MMMM YYYY, h:mm")}
 												</TableCell>
 											</TableRow>
 										);
@@ -156,10 +144,7 @@ export default async function SupportList() {
 										return (
 											<TableRow key={character.id.toString()}>
 												<TableCell>
-													<AnimatedOutfit
-														outfit={character}
-														alt={character.name}
-													/>
+													<AnimatedOutfit outfit={character} alt={character.name} />
 												</TableCell>
 												<TableCell>
 													<Typography variant={"overline"} className="w-full">
@@ -174,9 +159,7 @@ export default async function SupportList() {
 													))}
 												</TableCell>
 												<TableCell className="whitespace-nowrap">
-													{dayjs
-														.unix(Number(character.lastlogin))
-														.format("D MMMM YYYY, h:mm")}
+													{dayjs.unix(Number(character.lastlogin)).format("D MMMM YYYY, h:mm")}
 												</TableCell>
 											</TableRow>
 										);
@@ -198,10 +181,7 @@ export default async function SupportList() {
 										return (
 											<TableRow key={character.id.toString()}>
 												<TableCell>
-													<AnimatedOutfit
-														outfit={character}
-														alt={character.name}
-													/>
+													<AnimatedOutfit outfit={character} alt={character.name} />
 												</TableCell>
 												<TableCell>
 													<Typography variant={"overline"} className="w-full">
@@ -216,9 +196,7 @@ export default async function SupportList() {
 													))}
 												</TableCell>
 												<TableCell className="whitespace-nowrap">
-													{dayjs
-														.unix(Number(character.lastlogin))
-														.format("D MMMM YYYY, h:mm")}
+													{dayjs.unix(Number(character.lastlogin)).format("D MMMM YYYY, h:mm")}
 												</TableCell>
 											</TableRow>
 										);
@@ -240,10 +218,7 @@ export default async function SupportList() {
 										return (
 											<TableRow key={character.id.toString()}>
 												<TableCell>
-													<AnimatedOutfit
-														outfit={character}
-														alt={character.name}
-													/>
+													<AnimatedOutfit outfit={character} alt={character.name} />
 												</TableCell>
 												<TableCell>
 													<Typography variant={"overline"} className="w-full">
@@ -258,9 +233,7 @@ export default async function SupportList() {
 													))}
 												</TableCell>
 												<TableCell className="whitespace-nowrap">
-													{dayjs
-														.unix(Number(character.lastlogin))
-														.format("D MMMM YYYY, h:mm")}
+													{dayjs.unix(Number(character.lastlogin)).format("D MMMM YYYY, h:mm")}
 												</TableCell>
 											</TableRow>
 										);

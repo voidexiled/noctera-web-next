@@ -56,7 +56,7 @@ export default async function CoinsHistory() {
 							<TableHeader className="pointer-events-none">
 								<TableRow>
 									<TableHead>Date</TableHead>
-									<TableHead>Amount</TableHead>
+									{/* <TableHead>Amount</TableHead> */}
 									<TableHead>Cost</TableHead>
 									<TableHead className="whitespace-nowrap">Coin</TableHead>
 									<TableHead>Description</TableHead>
@@ -68,17 +68,15 @@ export default async function CoinsHistory() {
 										<TableCell className="whitespace-nowrap">
 											{dayjs.unix(Number(store.time)).format("D-M-YYYY H:mm")}
 										</TableCell>
-										<TableCell className="whitespace-nowrap">
+										{/* <TableCell className="whitespace-nowrap">
 											<Badge variant="secondary" className="w-full justify-end">
 												{store.coins}
 											</Badge>
-										</TableCell>
+										</TableCell> */}
 										<TableCell className="whitespace-nowrap">
 											<div className="flex items-center gap-1">
 												<Badge
-													variant={
-														store.coin_amount < 0 ? "destructive" : "success"
-													}
+													variant={store.coin_amount < 0 ? "destructive" : "success"}
 													className="w-full justify-end"
 												>
 													{store.coin_amount > 0 && "+"}
@@ -95,9 +93,7 @@ export default async function CoinsHistory() {
 												alt=""
 											/>
 										</TableCell>
-										<TableCell className="w-full">
-											{store.description}
-										</TableCell>
+										<TableCell className="w-full">{store.description}</TableCell>
 									</TableRow>
 								))}
 							</TableBody>

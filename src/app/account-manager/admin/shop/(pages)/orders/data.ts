@@ -15,7 +15,7 @@ export async function fetchPayments({
 		const count = await prisma.orders.count({
 			where: {
 				AND: [
-					{ paymentID: { contains: search ? search : undefined } },
+					{ orderID: { contains: search ? search : undefined } },
 					{ status: statusFilter ? { equals: statusFilter } : undefined },
 				],
 			},
@@ -24,7 +24,7 @@ export async function fetchPayments({
 		const orders = await prisma.orders.findMany({
 			where: {
 				AND: [
-					{ paymentID: { contains: search ? search : undefined } },
+					{ orderID: { contains: search ? search : undefined } },
 					{ status: statusFilter ? { equals: statusFilter } : undefined },
 				],
 			},

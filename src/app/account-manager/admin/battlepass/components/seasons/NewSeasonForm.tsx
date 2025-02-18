@@ -11,9 +11,9 @@ import {
 	AdminBattlepassContext,
 	type AdminBattlepassContextType,
 } from "@/app/account-manager/admin/battlepass/components/context/AdminBattlepassProvider";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
-import RHFCheckbox from "@/components/hook-form/RHFCheckbox";
-import RHFDatePicker from "@/components/hook-form/RHFDatePicker";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
+import RHFCheckbox from "@/components/common/hook-form/RHFCheckbox";
+import RHFDatePicker from "@/components/common/hook-form/RHFDatePicker";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
@@ -22,7 +22,7 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import RHFTextarea from "@/components/hook-form/RHFTextarea";
+import RHFTextarea from "@/components/common/hook-form/RHFTextarea";
 import { format, fromZonedTime, toZonedTime } from "date-fns-tz";
 import dayjs from "dayjs";
 import { isFinite as validateIsFinite } from "lodash";
@@ -36,9 +36,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 	const router = useRouter();
 	const { toast } = useToast();
 
-	const lastSeasonNumber = seasons
-		? Math.max(...seasons.map((s) => Number(s.season_number)))
-		: 1;
+	const lastSeasonNumber = seasons ? Math.max(...seasons.map((s) => Number(s.season_number))) : 1;
 	const currentDate = new Date();
 
 	const formSchema = z.object({
@@ -53,9 +51,7 @@ export function NewSeasonForm({ className, ...props }: NewSeasonFormProps) {
 
 	type NewSeasonFormValues = z.infer<typeof formSchema>;
 
-	const nextSeasonNumber = validateIsFinite(lastSeasonNumber)
-		? lastSeasonNumber + 1
-		: 1;
+	const nextSeasonNumber = validateIsFinite(lastSeasonNumber) ? lastSeasonNumber + 1 : 1;
 	const methods = useForm<NewSeasonFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {

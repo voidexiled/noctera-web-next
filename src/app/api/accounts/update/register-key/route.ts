@@ -21,8 +21,7 @@ export async function PATCH(req: Request) {
 		const { password } = UpdateAccountsSchema.parse(await req.json());
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
-		if (!user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(user?.id) },

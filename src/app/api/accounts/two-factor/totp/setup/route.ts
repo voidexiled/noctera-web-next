@@ -21,9 +21,7 @@ const Uppercase = z
 const Lowercase = z
 	.string()
 	.regex(/[a-z]/, "The password must contain at least one lowercase letter");
-const Digit = z
-	.string()
-	.regex(/\d/, "The password must contain at least one numeric digit");
+const Digit = z.string().regex(/\d/, "The password must contain at least one numeric digit");
 const SpecialChar = z
 	.string()
 	.regex(
@@ -47,26 +45,15 @@ const Setup = async (request: NextRequest) => {
 	try {
 		const { password } = TwoFaSchema.parse(await request.json());
 		const session = await getServerSession(authOptions);
-		if (!session?.user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session?.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		const user = await prisma.accounts.findFirst({
 			where: { email: session.user?.email },
 		});
-		if (!user)
-			return NextResponse.json(
-				{ message: "Not authenticated" },
-				{ status: 401 },
-			);
+		if (!user) return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
 		if (user.secret_status)
-			return NextResponse.json(
-				{ error: ErrorCode.TwoFactorAlreadyEnabled },
-				{ status: 400 },
-			);
+			return NextResponse.json({ error: ErrorCode.TwoFactorAlreadyEnabled }, { status: 400 });
 		if (!comparePassword(password, user.password))
-			return NextResponse.json(
-				{ error: ErrorCode.UserMissingPassword },
-				{ status: 400 },
-			);
+			return NextResponse.json({ error: ErrorCode.UserMissingPassword }, { status: 400 });
 
 		const secret = authenticator.generateSecret();
 

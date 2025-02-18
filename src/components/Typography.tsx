@@ -43,17 +43,10 @@ export interface TypographyProps
 }
 
 const Typography = React.forwardRef<HTMLDivElement, TypographyProps>(
-	(
-		{ className, variant, colorText, component: Element = "p", ...props },
-		ref,
-	) => (
+	({ className, variant, colorText, component: Element = "p", ...props }, ref) => (
 		<Element
 			ref={ref}
-			className={cn(
-				"",
-				typographyPropsVariants({ variant, colorText }),
-				className,
-			)}
+			className={cn("", typographyPropsVariants({ variant, colorText }), className)}
 			{...props}
 		/>
 	),

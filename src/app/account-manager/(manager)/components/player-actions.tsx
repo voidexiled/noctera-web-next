@@ -18,10 +18,7 @@ const PlayerDataSchema = z
 	})
 	.strict();
 
-export const editPlayerAction = async (
-	id: number,
-	data: z.infer<typeof PlayerDataSchema>,
-) => {
+export const editPlayerAction = async (id: number, data: z.infer<typeof PlayerDataSchema>) => {
 	try {
 		return await prisma.players.update({ where: { id }, data });
 	} catch (error) {

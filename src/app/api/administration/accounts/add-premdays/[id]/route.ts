@@ -12,11 +12,11 @@ const CreatePlayersSchema = z
 	})
 	.strict();
 
-type Params = { id: string };
+type Params = Promise<{ id: string }>;
 
 const handleAddCoins = async (req: Request, { params }: { params: Params }) => {
 	try {
-		const id = params.id;
+		const id = (await params).id;
 
 		const data = CreatePlayersSchema.parse(await req.json());
 		const session = await getServerSession(authOptions);
@@ -30,10 +30,7 @@ const handleAddCoins = async (req: Request, { params }: { params: Params }) => {
 			},
 		});
 
-		return NextResponse.json(
-			{ message: `Add ${data.amount} to account.` },
-			{ status: 200 },
-		);
+		return NextResponse.json({ message: `Add ${data.amount} to account.` }, { status: 200 });
 	} catch (err) {
 		if (err instanceof ZodError) {
 			return NextResponse.json(

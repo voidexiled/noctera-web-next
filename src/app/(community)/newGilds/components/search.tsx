@@ -1,6 +1,6 @@
 "use client";
 
-import { IconiFy } from "@/components/Iconify";
+import { IconiFy } from "@/components/common/Iconify";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 

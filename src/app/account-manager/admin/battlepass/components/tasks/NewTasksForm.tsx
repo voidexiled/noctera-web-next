@@ -4,7 +4,7 @@ import {
 	AdminBattlepassContext,
 	type AdminBattlepassContextType,
 } from "@/app/account-manager/admin/battlepass/components/context/AdminBattlepassProvider";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BATTLEPASS_TYPE_TASKS } from "@prisma/client";

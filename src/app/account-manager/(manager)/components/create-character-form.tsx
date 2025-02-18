@@ -1,6 +1,6 @@
 "use client";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
-import RHFCheckbox from "@/components/hook-form/RHFCheckbox";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
+import RHFCheckbox from "@/components/common/hook-form/RHFCheckbox";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -70,7 +70,6 @@ export function CharacterForm() {
 					//tutorial: data.tutorial
 				}),
 			});
-
 			if (response.ok) {
 				toast({
 					title: "Account Manager",
@@ -112,10 +111,10 @@ export function CharacterForm() {
 							</DialogHeader>
 
 							<div className="flex flex-row items-center justify-between space-x-2 rounded-md border p-2 text-sm leading-none">
-								Please choose a name and gender for your character. If you
-								can&apos;t think of any fanciful name. In any case, the name
-								must not violate the naming conventions established in the Tibia
-								Rules, or your character may be deleted or the name blocked.
+								Please choose a name and gender for your character. If you can&apos;t think of any
+								fanciful name. In any case, the name must not violate the naming conventions
+								established in the Tibia Rules, or your character may be deleted or the name
+								blocked.
 							</div>
 
 							<div className="grid gap-4 py-2">
@@ -169,10 +168,7 @@ export function CharacterForm() {
 								</Button>
 								<Button disabled={isSubmitting} type="submit">
 									{isSubmitting ? (
-										<Icon
-											icon="eos-icons:loading"
-											className="h-4 w-4 animate-spin"
-										/>
+										<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 									) : (
 										"Create"
 									)}

@@ -1,4 +1,4 @@
-import AnimatedOutfit from "@/components/animations/AnimatedOutfit";
+import AnimatedOutfit from "@/components/animations/OutfitComponent";
 import Pagination from "@/components/pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -36,18 +36,14 @@ const getCharacterMarket = async ({
 	const count = await prisma.character_market.count({
 		where: {
 			name: { contains: search ? search : undefined },
-			AND: [
-				vocation ? { vocation: { in: paginationGetVocation(vocation) } } : {},
-			],
+			AND: [vocation ? { vocation: { in: paginationGetVocation(vocation) } } : {}],
 		},
 	});
 
 	const players: character_market[] = await prisma.character_market.findMany({
 		where: {
 			name: { contains: search ? search : undefined },
-			AND: [
-				vocation ? { vocation: { in: paginationGetVocation(vocation) } } : {},
-			],
+			AND: [vocation ? { vocation: { in: paginationGetVocation(vocation) } } : {}],
 		},
 		take: ITEMS_PER_PAGE,
 		skip: offset,
@@ -93,21 +89,18 @@ export default async function CharacterMarket(props: {
 				<CardContent className="space-y-2 p-2">
 					<div className="space-y-2 rounded border p-2 text-xs">
 						<div>
-							System for buying and selling characters within the game.{" "}
-							<b>Commands:</b>
+							System for buying and selling characters within the game. <b>Commands:</b>
 						</div>
 						<div className=" pl-4">
 							<li>
-								<b>!market sell</b> - Displays a list of your eligible
-								characters for sale
+								<b>!market sell</b> - Displays a list of your eligible characters for sale
 							</li>
 							<li>
-								<b>!market buy</b> - Lists characters available for sale (click
-								on them to see their skills)
+								<b>!market buy</b> - Lists characters available for sale (click on them to see their
+								skills)
 							</li>
 							<li>
-								<b>!market remove</b> - Displays your list of offers available
-								for removal
+								<b>!market remove</b> - Displays your list of offers available for removal
 							</li>
 						</div>
 
@@ -116,8 +109,7 @@ export default async function CharacterMarket(props: {
 							<div className=" pl-4">
 								<li>Only characters above level 100 can be added for sale</li>
 								<li>
-									When selling your character, an ingame fee of 5% is charged on
-									the total value.
+									When selling your character, an ingame fee of 5% is charged on the total value.
 								</li>
 							</div>
 						</div>
@@ -160,59 +152,50 @@ export default async function CharacterMarket(props: {
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{players.map(
-									async (character: character_market, index: number) => {
-										const player = convertBigIntsToNumbers(
-											await findPlayerById(character.player_id),
-										);
-										return (
-											<TableRow key={character.id}>
-												<TableCell className="whitespace-nowrap">
-													<div className="flex flex-col">
-														{player && (
-															<AnimatedOutfit
-																outfit={player}
-																alt={player.name}
-															/>
-														)}
-														<span>
-															<b>{character.name}</b>
-														</span>
-														<span>
-															<b>Level: </b>
-															{character.level}
-														</span>
-														<span>
-															<b>Vocation: </b>
-															{getVocation(character.vocation)}
-														</span>
-													</div>
-												</TableCell>
-												<TableCell>
-													<div className="flex flex-row items-center gap-3">
-														{character.price}{" "}
-														<Image
-															src="/icons/icon-tibiacointrusted.png"
-															alt="tibiacointrusted"
-															width={16}
-															height={16}
-															className=" h-[12px] w-[12px]"
-														/>
-													</div>
-												</TableCell>
-												<TableCell className="pl-6">
-													<li>Magic Level: {player?.maglevel}</li>
-													<li>Fist: {player?.skill_fist}</li>
-													<li>Club: {player?.skill_club}</li>
-													<li>Sword: {player?.skill_sword}</li>
-													<li>Axe: {player?.skill_axe}</li>
-													<li>Distance: {player?.skill_dist}</li>
-													<li>Shielding: {player?.skill_shielding}</li>
-												</TableCell>
-											</TableRow>
-										);
-									},
-								)}
+								{players.map(async (character: character_market, index: number) => {
+									const player = convertBigIntsToNumbers(await findPlayerById(character.player_id));
+									return (
+										<TableRow key={character.id}>
+											<TableCell className="whitespace-nowrap">
+												<div className="flex flex-col">
+													{player && <AnimatedOutfit outfit={player} alt={player.name} />}
+													<span>
+														<b>{character.name}</b>
+													</span>
+													<span>
+														<b>Level: </b>
+														{character.level}
+													</span>
+													<span>
+														<b>Vocation: </b>
+														{getVocation(character.vocation)}
+													</span>
+												</div>
+											</TableCell>
+											<TableCell>
+												<div className="flex flex-row items-center gap-3">
+													{character.price}{" "}
+													<Image
+														src="/icons/icon-tibiacointrusted.png"
+														alt="tibiacointrusted"
+														width={16}
+														height={16}
+														className=" h-[12px] w-[12px]"
+													/>
+												</div>
+											</TableCell>
+											<TableCell className="pl-6">
+												<li>Magic Level: {player?.maglevel}</li>
+												<li>Fist: {player?.skill_fist}</li>
+												<li>Club: {player?.skill_club}</li>
+												<li>Sword: {player?.skill_sword}</li>
+												<li>Axe: {player?.skill_axe}</li>
+												<li>Distance: {player?.skill_dist}</li>
+												<li>Shielding: {player?.skill_shielding}</li>
+											</TableCell>
+										</TableRow>
+									);
+								})}
 							</TableBody>
 						</Table>
 					</div>

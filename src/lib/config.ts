@@ -9,4 +9,10 @@ export const pageConfig: ConfigType = {
 		coins: 0,
 		vip_days: 4,
 	},
+	paths: {
+		animated_items: "/animated-items",
+	},
+	guilds: {
+		minimum_level_to_create: 100,
+	},
 };

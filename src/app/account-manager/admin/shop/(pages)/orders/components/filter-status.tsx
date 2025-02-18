@@ -12,9 +12,7 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-export default function FilterStatus({
-	options,
-}: { options: { value: string; label: string }[] }) {
+export default function FilterStatus({ options }: { options: { value: string; label: string }[] }) {
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const { replace } = useRouter();

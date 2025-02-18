@@ -1,18 +1,10 @@
 "use client";
-import { IconiFy } from "@/components/Iconify";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
-import {
-	RHFUpload,
-	RHFUploadShopImage,
-} from "@/components/hook-form/RHFUpload";
+import { IconiFy } from "@/components/common/Iconify";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
+import { RHFUpload, RHFUploadShopImage } from "@/components/common/hook-form/RHFUpload";
 import { Button } from "@/components/ui/button";
 import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import {
-	Dialog,
-	DialogContent,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import type { CustomFile } from "@/utils/getFileData";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -98,10 +90,10 @@ export default function EditProduct({
 			data.set("currency", formData.currency);
 			data.set("category", formData.category);
 			data.set("quantity", formData.quantity);
-			const res = await fetch(
-				`/api/administration/shop/products/${product.id}`,
-				{ method: "PUT", body: data },
-			);
+			const res = await fetch(`/api/administration/shop/products/${product.id}`, {
+				method: "PUT",
+				body: data,
+			});
 			if (res.ok) {
 				route.refresh();
 				toast({
@@ -120,11 +112,7 @@ export default function EditProduct({
 		<>
 			<Dialog open={showModal} onOpenChange={handle} defaultOpen={false}>
 				<DialogTrigger asChild>
-					<Button
-						variant={"ghost"}
-						size={"sm"}
-						className="w-full justify-start px-2 text-[14px]"
-					>
+					<Button variant={"ghost"} size={"sm"} className="w-full justify-start px-2 text-[14px]">
 						Edit
 					</Button>
 				</DialogTrigger>
@@ -140,12 +128,7 @@ export default function EditProduct({
             maxSize={3145728}
             onDrop={handleDrop}
           /> */}
-						<RHFTextField
-							name="img"
-							label="Image name file"
-							autoFocus
-							required
-						/>
+						<RHFTextField name="img" label="Image name file" autoFocus required />
 						<RHFTextField name="title" label="Title" />
 						<div className="grid gap-2 sm:grid-cols-3">
 							<RHFTextField name="price" label="Price" />
@@ -199,10 +182,7 @@ export default function EditProduct({
 								type="submit"
 							>
 								{isSubmitting ? (
-									<IconiFy
-										icon="eos-icons:loading"
-										className="h-4 w-4 animate-spin"
-									/>
+									<IconiFy icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 								) : (
 									"Submit"
 								)}

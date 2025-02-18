@@ -1,5 +1,5 @@
 "use client";
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -46,16 +46,13 @@ export function AddPremDaysForm({ children, id }: FormProps) {
 
 	async function onSubmit(data: AccountFormValues) {
 		try {
-			const response = await fetch(
-				`/api/administration/accounts/add-premdays/${id}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-type": "application/json; charset=UTF-8",
-					},
-					body: JSON.stringify(data),
+			const response = await fetch(`/api/administration/accounts/add-premdays/${id}`, {
+				method: "PUT",
+				headers: {
+					"Content-type": "application/json; charset=UTF-8",
 				},
-			);
+				body: JSON.stringify(data),
+			});
 
 			if (response.ok) {
 				toast({
@@ -88,12 +85,7 @@ export function AddPremDaysForm({ children, id }: FormProps) {
 					<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
 						<div className="grid gap-4 py-2">
 							<div className="grid gap-2 space-y-2">
-								<RHFTextField
-									label="Amount"
-									name="amount"
-									type="number"
-									disabled={isSubmitting}
-								/>
+								<RHFTextField label="Amount" name="amount" type="number" disabled={isSubmitting} />
 							</div>
 						</div>
 						<DialogFooter>
@@ -102,10 +94,7 @@ export function AddPremDaysForm({ children, id }: FormProps) {
 							</DialogClose>
 							<Button disabled={isSubmitting} type="submit">
 								{isSubmitting ? (
-									<Icon
-										icon="eos-icons:loading"
-										className="h-4 w-4 animate-spin"
-									/>
+									<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 								) : (
 									"Add"
 								)}

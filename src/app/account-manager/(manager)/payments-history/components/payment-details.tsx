@@ -26,8 +26,7 @@ export default function PaymentDetails({ orderID }: { orderID: string }) {
 					className="line-clamp-1 h-auto w-full px-2 py-1 text-left text-xs"
 					variant={"ghost"}
 					onClick={async () => {
-						const { jsonResponse, httpStatusCode } =
-							await detailsOrder(orderID);
+						const { jsonResponse, httpStatusCode } = await detailsOrder(orderID);
 						if (httpStatusCode === 200) {
 							setResponse(jsonResponse);
 							setShowDialog(true);
@@ -48,36 +47,24 @@ export default function PaymentDetails({ orderID }: { orderID: string }) {
 						<Table>
 							<TableBody>
 								<TableRow>
-									<TableCell className="w-[120px] font-medium text-xs">
-										OrderID:
-									</TableCell>
-									<TableCell className="font-medium text-xs">
-										{orderID}
-									</TableCell>
+									<TableCell className="w-[120px] font-medium text-xs">OrderID:</TableCell>
+									<TableCell className="font-medium text-xs">{orderID}</TableCell>
 								</TableRow>
 								<TableRow>
-									<TableCell className="w-[120px] font-medium text-xs">
-										Created:
-									</TableCell>
+									<TableCell className="w-[120px] font-medium text-xs">Created:</TableCell>
 									<TableCell className="font-medium text-xs">
 										{dayjs(response?.created_time).format("D/MM/YYYY HH:mm")}
 									</TableCell>
 								</TableRow>
 
 								<TableRow>
-									<TableCell className="font-medium text-xs">
-										Paypal Status:
-									</TableCell>
-									<TableCell className="font-medium text-xs">
-										{response?.status}
-									</TableCell>
+									<TableCell className="font-medium text-xs">Paypal Status:</TableCell>
+									<TableCell className="font-medium text-xs">{response?.status}</TableCell>
 								</TableRow>
 
 								{response?.payer && (
 									<TableRow>
-										<TableCell className="align-top font-medium text-xs">
-											Payer:
-										</TableCell>
+										<TableCell className="align-top font-medium text-xs">Payer:</TableCell>
 										<TableCell className="font-medium text-xs">
 											<ul>
 												<li>
@@ -86,8 +73,7 @@ export default function PaymentDetails({ orderID }: { orderID: string }) {
 												</li>
 												<li>
 													<b>Name: </b>
-													{response?.payer?.name.given_name}{" "}
-													{response?.payer?.name.surname}
+													{response?.payer?.name.given_name} {response?.payer?.name.surname}
 												</li>
 											</ul>
 										</TableCell>
@@ -100,21 +86,15 @@ export default function PaymentDetails({ orderID }: { orderID: string }) {
 										return (
 											<>
 												<TableRow key={index.toString()}>
-													<TableCell className="w-[120px] font-medium text-xs">
-														Currency:
-													</TableCell>
+													<TableCell className="w-[120px] font-medium text-xs">Currency:</TableCell>
 													<TableCell className="text-xs">
 														{purchase?.amount?.currency_code}
 													</TableCell>
 												</TableRow>
 												{/* biome-ignore lint/suspicious/noArrayIndexKey: <explanation> */}
 												<TableRow key={index}>
-													<TableCell className="w-[120px] font-medium text-xs">
-														Value:
-													</TableCell>
-													<TableCell className="text-xs">
-														{purchase?.amount?.value}
-													</TableCell>
+													<TableCell className="w-[120px] font-medium text-xs">Value:</TableCell>
+													<TableCell className="text-xs">{purchase?.amount?.value}</TableCell>
 												</TableRow>
 											</>
 										);

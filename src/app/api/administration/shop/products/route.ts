@@ -14,8 +14,7 @@ const Create = async (req: NextRequest) => {
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
 		});
-		if (!acc)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!acc) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const data = await req.formData();
 		//const file: File | null = data.get('img') as unknown as File

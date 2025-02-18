@@ -1,4 +1,4 @@
-import { isDateActive } from "@/app/(battlepass)/battlepass/lib/utils";
+import { isDateActive } from "@/components/(battlepass)/battlepass/lib/utils";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import dayjs from "dayjs";
@@ -9,8 +9,7 @@ export async function POST(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
-		if (!user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		const seasons = await prisma.battlepass_seasons.findMany({
 			include: {
 				battlepass_seasons_rewards: true,

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
 	AwardIcon,
 	BoxIcon,
@@ -32,12 +27,7 @@ import {
 	ContextMenuLabel,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -48,6 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useContext, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const Item = ({
 	children,
@@ -67,16 +58,13 @@ const Item = ({
 	);
 };
 const Separator = ({ className }: { className?: string }) => {
-	return (
-		<DropdownMenuSeparator
-			className={cn("my-0 bg-background p-0", className)}
-		/>
-	);
+	return <DropdownMenuSeparator className={cn("my-0 bg-background p-0", className)} />;
 };
 
 export const FloatingAdminToolbar = () => {
-	const { isOpenDialogViewAllAccounts, setIsOpenDialogViewAllAccounts } =
-		useContext(AdminToolbarContext) as AdminToolbarContextType;
+	const { isOpenDialogViewAllAccounts, setIsOpenDialogViewAllAccounts } = useContext(
+		AdminToolbarContext,
+	) as AdminToolbarContextType;
 
 	const { data: session } = useSession();
 	const user = session?.user;
@@ -96,9 +84,7 @@ export const FloatingAdminToolbar = () => {
 
 				<Item
 					className="hover:bg-secondary/80"
-					onClick={() =>
-						setIsOpenDialogViewAllAccounts(!isOpenDialogViewAllAccounts)
-					}
+					onClick={() => setIsOpenDialogViewAllAccounts(!isOpenDialogViewAllAccounts)}
 				>
 					<span>View all</span>
 				</Item>
@@ -112,16 +98,44 @@ export const FloatingAdminToolbar = () => {
 				<ToolbarItem tooltipText="Accounts" dropdownItems={accountsMenuItems()}>
 					<UserIcon />
 				</ToolbarItem>
-				<ToolbarItem tooltipText="Characters">
+				<ToolbarItem
+					tooltipText="Characters"
+					onClick={() => {
+						toast("Default toast");
+					}}
+				>
 					<UsersIcon />
 				</ToolbarItem>
-				<ToolbarItem tooltipText="News">
+				<ToolbarItem
+					tooltipText="News"
+					onClick={() => {
+						toast.success("Success toast");
+					}}
+				>
 					<NewspaperIcon />
 				</ToolbarItem>
-				<ToolbarItem tooltipText="Battlepass">
+				<ToolbarItem
+					tooltipText="Battlepass"
+					onClick={() => {
+						toast.error("Error toast");
+					}}
+				>
 					<AwardIcon />
 				</ToolbarItem>
-				<ToolbarItem tooltipText="Shop">
+				<ToolbarItem
+					tooltipText="Shop"
+					onClick={() => {
+						toast.info("Info toast");
+					}}
+				>
+					<StoreIcon />
+				</ToolbarItem>
+				<ToolbarItem
+					tooltipText="Shop"
+					onClick={() => {
+						toast.warning("Warning toast");
+					}}
+				>
 					<StoreIcon />
 				</ToolbarItem>
 			</TooltipProvider>
@@ -155,11 +169,7 @@ const ToolbarItem = ({
 					</DropdownMenuTrigger>
 				</TooltipTrigger>
 				{tooltipText && (
-					<TooltipContent
-						className="max-w-[150px]"
-						side="right"
-						sideOffset={12}
-					>
+					<TooltipContent className="max-w-[150px]" side="right" sideOffset={12}>
 						<div className="flex flex-col gap-2">{tooltipText}</div>
 					</TooltipContent>
 				)}
@@ -170,13 +180,11 @@ const ToolbarItem = ({
 };
 
 const DialogViewAllAccounts = () => {
-	const { isOpenDialogViewAllAccounts, setIsOpenDialogViewAllAccounts } =
-		useContext(AdminToolbarContext) as AdminToolbarContextType;
+	const { isOpenDialogViewAllAccounts, setIsOpenDialogViewAllAccounts } = useContext(
+		AdminToolbarContext,
+	) as AdminToolbarContextType;
 	return (
-		<Dialog
-			open={isOpenDialogViewAllAccounts}
-			onOpenChange={setIsOpenDialogViewAllAccounts}
-		>
+		<Dialog open={isOpenDialogViewAllAccounts} onOpenChange={setIsOpenDialogViewAllAccounts}>
 			<DialogContent>
 				<div>Hello all accounts</div>
 				<DialogClose asChild>

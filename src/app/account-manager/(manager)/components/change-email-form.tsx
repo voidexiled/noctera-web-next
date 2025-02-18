@@ -1,5 +1,5 @@
 "use client";
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -100,11 +100,7 @@ export function ChangeEmailForm() {
 
 	return (
 		<>
-			<Button
-				size={"sm"}
-				className="whitespace-nowrap"
-				onClick={() => setShowNewTeamDialog(true)}
-			>
+			<Button size={"sm"} className="whitespace-nowrap" onClick={() => setShowNewTeamDialog(true)}>
 				Change Email
 			</Button>
 
@@ -132,8 +128,8 @@ export function ChangeEmailForm() {
 								</div>
 								<div className="space-y-3 rounded-sm border p-2 text-sm">
 									<p>
-										Please enter your <strong>Recovery Key</strong> to confirm
-										the request to change your email.
+										Please enter your <strong>Recovery Key</strong> to confirm the request to change
+										your email.
 									</p>
 									<RHFTextField
 										name="key"
@@ -157,10 +153,7 @@ export function ChangeEmailForm() {
 								</Button>
 								<Button disabled={!(watch("key")?.length >= 23)} type="submit">
 									{isSubmitting ? (
-										<Icon
-											icon="eos-icons:loading"
-											className="h-4 w-4 animate-spin"
-										/>
+										<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 									) : (
 										"Submit"
 									)}

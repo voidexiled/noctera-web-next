@@ -1,4 +1,4 @@
-import { IconiFy } from "../Iconify";
+import { IconiFy } from "../common/Iconify";
 import { Button } from "../ui/button";
 
 type Props = {

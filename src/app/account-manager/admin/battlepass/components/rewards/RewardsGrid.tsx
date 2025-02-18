@@ -1,10 +1,10 @@
 "use client";
-import { getRewardPath } from "@/app/(battlepass)/battlepass/lib/utils";
 import {
 	AdminBattlepassContext,
 	type AdminBattlepassContextType,
 } from "@/app/account-manager/admin/battlepass/components/context/AdminBattlepassProvider";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
+import { getRewardPath } from "@/components/(battlepass)/battlepass/lib/utils";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -26,24 +26,10 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import {
 	Table,
 	TableBody,
@@ -52,12 +38,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -113,18 +94,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const RewardsGrid = () => {
-	const [filteredRewards, setFilteredRewards] = useState<
-		battlepass_seasons_rewards[]
-	>([]);
+	const [filteredRewards, setFilteredRewards] = useState<battlepass_seasons_rewards[]>([]);
 
 	const [openFilterSeason, setOpenFilterSeason] = useState(false);
 	const [openFilterRankAccess, setOpenFilterRankAccess] = useState(false);
 	const [openFilterRewardType, setOpenFilterRewardType] = useState(false);
 	const [openFilterLevel, setOpenFilterLevel] = useState(false);
 
-	const [selectedFilterSeason, setSelectedFilterSeason] = useState<
-		string | null
-	>(null);
+	const [selectedFilterSeason, setSelectedFilterSeason] = useState<string | null>(null);
 
 	const [selectedFilterRankAccess, setSelectedFilterRankAccess] = useState<
 		Array<BATTLEPASS_RANK_ACCESS>
@@ -134,13 +111,9 @@ export const RewardsGrid = () => {
 		Array<BATTLEPASS_TYPE_REWARDS>
 	>([]);
 
-	const [selectedFilterLevel, setSelectedFilterLevel] = useState<Array<number>>(
-		[],
-	);
+	const [selectedFilterLevel, setSelectedFilterLevel] = useState<Array<number>>([]);
 
-	const { seasons, rewards } = useContext(
-		AdminBattlepassContext,
-	) as AdminBattlepassContextType;
+	const { seasons, rewards } = useContext(AdminBattlepassContext) as AdminBattlepassContextType;
 
 	const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -317,17 +290,13 @@ export const RewardsGrid = () => {
 			if (levels[i] === rangeEnd + 1) {
 				rangeEnd = levels[i];
 			} else {
-				label +=
-					rangeStart === rangeEnd
-						? `${rangeStart}, `
-						: `${rangeStart}-${rangeEnd}, `;
+				label += rangeStart === rangeEnd ? `${rangeStart}, ` : `${rangeStart}-${rangeEnd}, `;
 				rangeStart = levels[i];
 				rangeEnd = rangeStart;
 			}
 		}
 
-		label +=
-			rangeStart === rangeEnd ? `${rangeStart}` : `${rangeStart}-${rangeEnd}`;
+		label += rangeStart === rangeEnd ? `${rangeStart}` : `${rangeStart}-${rangeEnd}`;
 
 		return label;
 	}
@@ -345,8 +314,7 @@ export const RewardsGrid = () => {
 			return (
 				(selectedFilterSeason === null ||
 					Number.parseInt(selectedFilterSeason) === reward.season_id) &&
-				(selectedFilterLevel.length === 0 ||
-					selectedFilterLevel.includes(reward.level)) &&
+				(selectedFilterLevel.length === 0 || selectedFilterLevel.includes(reward.level)) &&
 				(selectedFilterRankAccess.length === 0 ||
 					selectedFilterRankAccess.includes(
 						reward.reward_required_access.toLowerCase() as BATTLEPASS_RANK_ACCESS,
@@ -383,16 +351,10 @@ export const RewardsGrid = () => {
                      */}
 						<Popover open={openFilterSeason} onOpenChange={setOpenFilterSeason}>
 							<PopoverTrigger asChild>
-								<Button
-									variant="outline"
-									className="w-full justify-between p-2"
-									size="sm"
-								>
+								<Button variant="outline" className="w-full justify-between p-2" size="sm">
 									{selectedFilterSeason
-										? seasons.find(
-												(season) =>
-													season.id === Number.parseInt(selectedFilterSeason),
-											)?.season_name
+										? seasons.find((season) => season.id === Number.parseInt(selectedFilterSeason))
+												?.season_name
 										: "Filter by season"}
 									<ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 								</Button>
@@ -410,9 +372,7 @@ export const RewardsGrid = () => {
 														value={season.id.toString()}
 														onSelect={(currentValue) => {
 															setSelectedFilterSeason(
-																currentValue === selectedFilterSeason
-																	? null
-																	: currentValue,
+																currentValue === selectedFilterSeason ? null : currentValue,
 															);
 															// setOpenFilterSeason(false);
 														}}
@@ -420,9 +380,7 @@ export const RewardsGrid = () => {
 														<CheckIcon
 															className={cn(
 																"mr-2 h-4 w-4",
-																Number.parseInt(
-																	selectedFilterSeason as string,
-																) === season.id
+																Number.parseInt(selectedFilterSeason as string) === season.id
 																	? "opacity-100"
 																	: "opacity-0",
 															)}
@@ -450,22 +408,13 @@ export const RewardsGrid = () => {
 						{/* 
                      RANK ACCESS FILTER
                      */}
-						<Popover
-							open={openFilterRankAccess}
-							onOpenChange={setOpenFilterRankAccess}
-						>
+						<Popover open={openFilterRankAccess} onOpenChange={setOpenFilterRankAccess}>
 							<PopoverTrigger asChild>
-								<Button
-									variant="outline"
-									className="w-full justify-between p-2"
-									size="sm"
-								>
+								<Button variant="outline" className="w-full justify-between p-2" size="sm">
 									{selectedFilterRankAccess.length > 0
 										? selectedFilterRankAccess.map((rankAccess, index) => {
 												return rankAccess.concat(
-													index !== selectedFilterRankAccess.length - 1
-														? ", "
-														: "",
+													index !== selectedFilterRankAccess.length - 1 ? ", " : "",
 												);
 											})
 										: "Filter by rank"}
@@ -478,50 +427,41 @@ export const RewardsGrid = () => {
 									<CommandList>
 										<CommandEmpty>No ranks found.</CommandEmpty>
 										<CommandGroup>
-											{Object.values(BATTLEPASS_RANK_ACCESS).map(
-												(rankAccess) => {
-													return (
-														<CommandItem
-															key={rankAccess}
-															value={rankAccess}
-															onSelect={(currentValue) => {
-																const convertedCurrentValue =
-																	currentValue as BATTLEPASS_RANK_ACCESS;
-																const isSelected =
-																	selectedFilterRankAccess.includes(
-																		convertedCurrentValue,
-																	);
-																setSelectedFilterRankAccess(
-																	isSelected
-																		? [
-																				...selectedFilterRankAccess.filter(
-																					(item) =>
-																						item !== convertedCurrentValue,
-																				),
-																			]
-																		: [
-																				...selectedFilterRankAccess,
-																				convertedCurrentValue,
-																			],
-																);
-																// setOpenFilterRankAccess(false);
-															}}
-														>
-															<CheckIcon
-																className={cn(
-																	"mr-2 h-4 w-4",
-																	selectedFilterRankAccess.includes(
-																		rankAccess.toLowerCase() as BATTLEPASS_RANK_ACCESS,
-																	)
-																		? "opacity-100"
-																		: "opacity-0",
-																)}
-															/>
-															{rankAccess}
-														</CommandItem>
-													);
-												},
-											)}
+											{Object.values(BATTLEPASS_RANK_ACCESS).map((rankAccess) => {
+												return (
+													<CommandItem
+														key={rankAccess}
+														value={rankAccess}
+														onSelect={(currentValue) => {
+															const convertedCurrentValue = currentValue as BATTLEPASS_RANK_ACCESS;
+															const isSelected =
+																selectedFilterRankAccess.includes(convertedCurrentValue);
+															setSelectedFilterRankAccess(
+																isSelected
+																	? [
+																			...selectedFilterRankAccess.filter(
+																				(item) => item !== convertedCurrentValue,
+																			),
+																		]
+																	: [...selectedFilterRankAccess, convertedCurrentValue],
+															);
+															// setOpenFilterRankAccess(false);
+														}}
+													>
+														<CheckIcon
+															className={cn(
+																"mr-2 h-4 w-4",
+																selectedFilterRankAccess.includes(
+																	rankAccess.toLowerCase() as BATTLEPASS_RANK_ACCESS,
+																)
+																	? "opacity-100"
+																	: "opacity-0",
+															)}
+														/>
+														{rankAccess}
+													</CommandItem>
+												);
+											})}
 										</CommandGroup>
 									</CommandList>
 								</Command>
@@ -530,22 +470,13 @@ export const RewardsGrid = () => {
 						{/* 
                      REWARD TYPE FILTER
                      */}
-						<Popover
-							open={openFilterRewardType}
-							onOpenChange={setOpenFilterRewardType}
-						>
+						<Popover open={openFilterRewardType} onOpenChange={setOpenFilterRewardType}>
 							<PopoverTrigger asChild>
-								<Button
-									variant="outline"
-									className="w-full justify-between p-2"
-									size="sm"
-								>
+								<Button variant="outline" className="w-full justify-between p-2" size="sm">
 									{selectedFilterRewardType.length > 0
 										? selectedFilterRewardType.map((rewardType, index) => {
 												return rewardType.concat(
-													index !== selectedFilterRewardType.length - 1
-														? ", "
-														: "",
+													index !== selectedFilterRewardType.length - 1 ? ", " : "",
 												);
 											})
 										: "Filter by reward type"}
@@ -558,50 +489,41 @@ export const RewardsGrid = () => {
 									<CommandList>
 										<CommandEmpty>No reward types found.</CommandEmpty>
 										<CommandGroup>
-											{Object.values(BATTLEPASS_TYPE_REWARDS).map(
-												(rewardType) => {
-													return (
-														<CommandItem
-															key={rewardType}
-															value={rewardType}
-															onSelect={(currentValue) => {
-																const convertedCurrentValue =
-																	currentValue as BATTLEPASS_TYPE_REWARDS;
-																const isSelected =
-																	selectedFilterRewardType.includes(
-																		convertedCurrentValue,
-																	);
-																setSelectedFilterRewardType(
-																	isSelected
-																		? [
-																				...selectedFilterRewardType.filter(
-																					(item) =>
-																						item !== convertedCurrentValue,
-																				),
-																			]
-																		: [
-																				...selectedFilterRewardType,
-																				convertedCurrentValue,
-																			],
-																);
-																// setOpenFilterRewardType(false);
-															}}
-														>
-															<CheckIcon
-																className={cn(
-																	"mr-2 h-4 w-4",
-																	selectedFilterRewardType.includes(
-																		rewardType.toLowerCase() as BATTLEPASS_TYPE_REWARDS,
-																	)
-																		? "opacity-100"
-																		: "opacity-0",
-																)}
-															/>
-															{rewardType}
-														</CommandItem>
-													);
-												},
-											)}
+											{Object.values(BATTLEPASS_TYPE_REWARDS).map((rewardType) => {
+												return (
+													<CommandItem
+														key={rewardType}
+														value={rewardType}
+														onSelect={(currentValue) => {
+															const convertedCurrentValue = currentValue as BATTLEPASS_TYPE_REWARDS;
+															const isSelected =
+																selectedFilterRewardType.includes(convertedCurrentValue);
+															setSelectedFilterRewardType(
+																isSelected
+																	? [
+																			...selectedFilterRewardType.filter(
+																				(item) => item !== convertedCurrentValue,
+																			),
+																		]
+																	: [...selectedFilterRewardType, convertedCurrentValue],
+															);
+															// setOpenFilterRewardType(false);
+														}}
+													>
+														<CheckIcon
+															className={cn(
+																"mr-2 h-4 w-4",
+																selectedFilterRewardType.includes(
+																	rewardType.toLowerCase() as BATTLEPASS_TYPE_REWARDS,
+																)
+																	? "opacity-100"
+																	: "opacity-0",
+															)}
+														/>
+														{rewardType}
+													</CommandItem>
+												);
+											})}
 										</CommandGroup>
 									</CommandList>
 								</Command>
@@ -612,11 +534,7 @@ export const RewardsGrid = () => {
                      */}
 						<Popover open={openFilterLevel} onOpenChange={setOpenFilterLevel}>
 							<PopoverTrigger asChild>
-								<Button
-									variant="outline"
-									className="w-full justify-between p-2"
-									size="sm"
-								>
+								<Button variant="outline" className="w-full justify-between p-2" size="sm">
 									{selectedFilterLevel.length > 0
 										? getLevelFilterLabel(selectedFilterLevel)
 										: "Filter by level"}
@@ -629,47 +547,37 @@ export const RewardsGrid = () => {
 									<CommandList>
 										<CommandEmpty>No levels found.</CommandEmpty>
 										<CommandGroup>
-											{Array.from({ length: 50 }, (_, i) => i + 1).map(
-												(level) => {
-													return (
-														<CommandItem
-															key={level}
-															value={level.toString()}
-															onSelect={(currentValue) => {
-																const convertedCurrentValue =
-																	Number.parseInt(currentValue);
-																const isSelected = selectedFilterLevel.includes(
-																	convertedCurrentValue,
-																);
-																setSelectedFilterLevel(
-																	isSelected
-																		? [
-																				...selectedFilterLevel.filter(
-																					(item) =>
-																						item !== convertedCurrentValue,
-																				),
-																			]
-																		: [
-																				...selectedFilterLevel,
-																				convertedCurrentValue,
-																			],
-																);
-																// setOpenFilterLevel(false);
-															}}
-														>
-															<CheckIcon
-																className={cn(
-																	"mr-2 h-4 w-4",
-																	selectedFilterLevel.includes(level)
-																		? "opacity-100"
-																		: "opacity-0",
-																)}
-															/>
-															{level}
-														</CommandItem>
-													);
-												},
-											)}
+											{Array.from({ length: 50 }, (_, i) => i + 1).map((level) => {
+												return (
+													<CommandItem
+														key={level}
+														value={level.toString()}
+														onSelect={(currentValue) => {
+															const convertedCurrentValue = Number.parseInt(currentValue);
+															const isSelected =
+																selectedFilterLevel.includes(convertedCurrentValue);
+															setSelectedFilterLevel(
+																isSelected
+																	? [
+																			...selectedFilterLevel.filter(
+																				(item) => item !== convertedCurrentValue,
+																			),
+																		]
+																	: [...selectedFilterLevel, convertedCurrentValue],
+															);
+															// setOpenFilterLevel(false);
+														}}
+													>
+														<CheckIcon
+															className={cn(
+																"mr-2 h-4 w-4",
+																selectedFilterLevel.includes(level) ? "opacity-100" : "opacity-0",
+															)}
+														/>
+														{level}
+													</CommandItem>
+												);
+											})}
 										</CommandGroup>
 									</CommandList>
 								</Command>
@@ -687,10 +595,7 @@ export const RewardsGrid = () => {
 											<TableHead key={header.id}>
 												{header.isPlaceholder
 													? null
-													: flexRender(
-															header.column.columnDef.header,
-															header.getContext(),
-														)}
+													: flexRender(header.column.columnDef.header, header.getContext())}
 											</TableHead>
 										);
 									})}
@@ -701,17 +606,11 @@ export const RewardsGrid = () => {
 							{table.getRowModel().rows?.length ? (
 								table.getRowModel().rows.map((row) => {
 									return (
-										<TableRow
-											key={row.id}
-											data-state={row.getIsSelected() && "selected"}
-										>
+										<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
 											{row.getVisibleCells().map((cell) => {
 												return (
 													<TableCell key={cell.id}>
-														{flexRender(
-															cell.column.columnDef.cell,
-															cell.getContext(),
-														)}
+														{flexRender(cell.column.columnDef.cell, cell.getContext())}
 													</TableCell>
 												);
 											})}
@@ -720,10 +619,7 @@ export const RewardsGrid = () => {
 								})
 							) : (
 								<TableRow>
-									<TableCell
-										colSpan={columns.length}
-										className="h-24 text-center"
-									>
+									<TableCell colSpan={columns.length} className="h-24 text-center">
 										No results.
 									</TableCell>
 								</TableRow>
@@ -746,9 +642,7 @@ export const RewardsGrid = () => {
 								}}
 							>
 								<SelectTrigger className="h-8 w-[70px]">
-									<SelectValue
-										placeholder={table.getState().pagination.pageSize}
-									/>
+									<SelectValue placeholder={table.getState().pagination.pageSize} />
 								</SelectTrigger>
 								<SelectContent side="top">
 									{[5, 10, 20, 30, 40, 50].map((pageSize) => (
@@ -760,8 +654,7 @@ export const RewardsGrid = () => {
 							</Select>
 						</div>
 						<div className="flex w-[100px] items-center justify-center font-medium text-sm">
-							Page {table.getState().pagination.pageIndex + 1} of{" "}
-							{table.getPageCount()}
+							Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
 						</div>
 						<div className="flex items-center space-x-2">
 							<Button
@@ -938,14 +831,12 @@ const EditRewardForm = ({ reward }: { reward: battlepass_seasons_rewards }) => {
 						LabelOption="label"
 						keyValue="value"
 						defaultValue={reward.reward_type}
-						options={Object.values(BATTLEPASS_TYPE_REWARDS).map(
-							(rewardType) => {
-								return {
-									label: rewardType,
-									value: rewardType,
-								};
-							},
-						)}
+						options={Object.values(BATTLEPASS_TYPE_REWARDS).map((rewardType) => {
+							return {
+								label: rewardType,
+								value: rewardType,
+							};
+						})}
 						disabled={isSubmitting}
 						onValueChange={() => {
 							trigger("reward_type");
@@ -1059,27 +950,20 @@ const EditRewardForm = ({ reward }: { reward: battlepass_seasons_rewards }) => {
 	);
 };
 
-const DeleteRewardAlertDialog = ({
-	reward,
-}: { reward: battlepass_seasons_rewards }) => {
-	const { seasons, rewards } = useContext(
-		AdminBattlepassContext,
-	) as AdminBattlepassContextType;
+const DeleteRewardAlertDialog = ({ reward }: { reward: battlepass_seasons_rewards }) => {
+	const { seasons, rewards } = useContext(AdminBattlepassContext) as AdminBattlepassContextType;
 	const { toast } = useToast();
 
-	const seasonName = seasons.find(
-		(season) => season.id === reward.season_id,
-	)?.season_name;
+	const seasonName = seasons.find((season) => season.id === reward.season_id)?.season_name;
 
 	return (
 		<AlertDialogContent>
 			<AlertDialogHeader>
 				<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 				<AlertDialogDescription>
-					You are about to delete the reward {reward.reward_name} (LVL{" "}
-					{reward.level}, TYPE {reward.reward_type}, RANK{" "}
-					{reward.reward_required_access}) from season {seasonName}. This action
-					cannot be undone.
+					You are about to delete the reward {reward.reward_name} (LVL {reward.level}, TYPE{" "}
+					{reward.reward_type}, RANK {reward.reward_required_access}) from season {seasonName}. This
+					action cannot be undone.
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter>

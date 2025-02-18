@@ -35,7 +35,7 @@ export async function createProduct(formData: FormData) {
 		prodImgName = undefined;
 	} else {
 		const bytes = await file.arrayBuffer();
-		const buffer = Buffer.from(bytes);
+		const buffer = new Uint8Array(bytes);
 		const fileName = `${randomUUID()}-${file.name}`;
 		const path = join("public", "shop", fileName);
 		await writeFile(path, buffer);

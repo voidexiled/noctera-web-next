@@ -2,11 +2,11 @@
 import type { players } from "@prisma/client";
 import { z } from "zod";
 
-import { BattlepassRankBadge } from "@/app/(battlepass)/battlepass/components/info/BattlepassRankBadge";
+import { BattlepassRankBadge } from "@/components/(battlepass)/battlepass/info/BattlepassRankBadge";
 import { Typography } from "@/components/Typography";
-import { FormProvider } from "@/components/hook-form";
-import RHFSwitch from "@/components/hook-form/RHFSwitch";
-import RHFTextarea from "@/components/hook-form/RHFTextarea";
+import { FormProvider } from "@/components/common/hook-form";
+import RHFSwitch from "@/components/common/hook-form/RHFSwitch";
+import RHFTextarea from "@/components/common/hook-form/RHFTextarea";
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -55,15 +56,12 @@ interface IProps {
 }
 
 const EditPlayerSchema = z.object({
-	comment: z.string(),
+	comment: z.string().nullable(),
 	hidden: z.boolean().default(false),
 });
 type formValues = z.infer<typeof EditPlayerSchema>;
 
-export default function CharactersList({
-	chars = [],
-	playerOnline = [],
-}: IProps) {
+export default function CharactersList({ chars = [], playerOnline = [] }: IProps) {
 	return (
 		<>
 			<section>
@@ -72,34 +70,34 @@ export default function CharactersList({
 						Characters
 					</div>
 					<Table>
-						<TableHeader className="pointer-events-none">
+						<TableHeader className="pointer-events-none text-sm">
 							<TableRow>
 								<TableHead>Name</TableHead>
-								<TableHead className="w-[80px]">Battlepass</TableHead>
-								<TableHead className="w-[80px]">Status</TableHead>
-								<TableHead className="w-[30px]" />
+								<TableHead className="w-[80px] font-semibold">Battlepass</TableHead>
+								<TableHead className="w-[80px] font-semibold">Status</TableHead>
+								<TableHead className="w-[30px] font-semibold" />
 							</TableRow>
 						</TableHeader>
-						<TableBody>
+						<TableBody className="text-sm ">
 							{chars.map((player) => {
 								return (
 									<TableRow key={player.id.toString()}>
-										<TableCell>{player.name}</TableCell>
-										<TableCell>
+										<TableCell className="text-zinc-300">
+											<Link href={`/account-manager/characters/${player.id}`}>{player.name}</Link>
+										</TableCell>
+										<TableCell className="text-zinc-300">
 											<BattlepassRankBadge selectedPlayer={player} />
 										</TableCell>
 										<TableCell>
 											<Badge
 												variant={
 													playerOnline.find((p) => p.player_id === player.id)
-														? "success"
-														: "destructive"
+														? "serveron"
+														: "serveroff"
 												}
 											>
 												{" "}
-												{playerOnline.find((p) => p.player_id === player.id)
-													? "ONLINE"
-													: "OFFLINE"}{" "}
+												{playerOnline.find((p) => p.player_id === player.id) ? "ON" : "OFF"}{" "}
 											</Badge>
 										</TableCell>
 										<TableCell>
@@ -112,7 +110,7 @@ export default function CharactersList({
 								<TableRow>
 									<TableCell>
 										<Typography variant="overline" className="text-center">
-											No Player.
+											No characters created yet.
 										</Typography>
 									</TableCell>
 								</TableRow>
@@ -216,14 +214,9 @@ function Actions({ player }: { player: players }) {
 		<>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" className="h-8 w-8 p-0" size={"sm"}>
+					<Button variant="ghost" className="h-6 w-6 p-0" size={"iconsm"}>
 						<span className="sr-only">Open menu</span>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							viewBox="0 0 256 256"
-						>
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256">
 							<path
 								fill="currentColor"
 								d="M144 128a16 16 0 1 1-16-16a16 16 0 0 1 16 16Zm-84-16a16 16 0 1 0 16 16a16 16 0 0 0-16-16Zm136 0a16 16 0 1 0 16 16a16 16 0 0 0-16-16Z"
@@ -233,9 +226,7 @@ function Actions({ player }: { player: players }) {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
 					<DropdownMenuLabel>Actions</DropdownMenuLabel>
-					<DropdownMenuItem onSelect={() => setIsOpen(true)}>
-						Edit Player
-					</DropdownMenuItem>
+					<DropdownMenuItem onSelect={() => setIsOpen(true)}>Edit Player</DropdownMenuItem>
 					<DropdownMenuItem onClick={async () => setShowDeleteDialog(true)}>
 						Delete Player
 					</DropdownMenuItem>
@@ -245,15 +236,12 @@ function Actions({ player }: { player: players }) {
 			{open && (
 				<Dialog open={open} onOpenChange={setIsOpen}>
 					<DialogContent>
-						<FormProvider
-							methods={methods}
-							onSubmit={handleSubmit(HandleEditPlayer)}
-						>
+						<FormProvider methods={methods} onSubmit={handleSubmit(HandleEditPlayer)}>
 							<DialogHeader>
 								<DialogTitle>Edit Character</DialogTitle>
 							</DialogHeader>
 							<DialogDescription className="rounded-sm border">
-								<div className="flex items-center justify-between bg-background p-2 text-black text-sm">
+								<div className="flex items-center justify-between border-b bg-card/60 p-2 text-sm">
 									Character Data
 								</div>
 								<Table className="pointer-events-none">
@@ -263,10 +251,8 @@ function Actions({ player }: { player: players }) {
 											<TableCell className="font-bold">{player.name}</TableCell>
 										</TableRow>
 										<TableRow>
-											<TableCell>Sec:</TableCell>
-											<TableCell>
-												{player.sex === 0 ? "Female" : "Male"}
-											</TableCell>
+											<TableCell>Sex:</TableCell>
+											<TableCell>{player.sex === 0 ? "Female" : "Male"}</TableCell>
 										</TableRow>
 									</TableBody>
 								</Table>
@@ -310,8 +296,7 @@ function Actions({ player }: { player: players }) {
 						<AlertDialogHeader>
 							<AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
 							<AlertDialogDescription className="rounded-sm border p-2 text-red-500">
-								This action cannot be undone. This player will no longer be
-								accessible.
+								This action cannot be undone. This player will no longer be accessible.
 							</AlertDialogDescription>
 							<div className="space-y-1">
 								<Label>Enter &quot;{player.name}&quot; to continue.</Label>

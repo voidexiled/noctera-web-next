@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-type Params = { id: string };
+type Params = Promise<{ id: string }>;
 
 const handleAddCoins = async (req: Request, { params }: { params: Params }) => {
 	try {
-		const id = params.id;
+		const id = (await params).id;
 
 		const session = await getServerSession(authOptions);
 		if (!session?.user || session.user.role !== "admin")
@@ -15,10 +15,7 @@ const handleAddCoins = async (req: Request, { params }: { params: Params }) => {
 
 		await prisma.accounts.delete({ where: { id: +id } });
 
-		return NextResponse.json(
-			{ message: "Account a been deleted." },
-			{ status: 200 },
-		);
+		return NextResponse.json({ message: "Account a been deleted." }, { status: 200 });
 	} catch (err) {
 		return NextResponse.json({ err }, { status: 500 });
 	}

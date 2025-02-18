@@ -1,9 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import {
-	comparePassword,
-	encryptPassword,
-} from "@/utils/functions/criptoPassword";
+import { comparePassword, encryptPassword } from "@/utils/functions/criptoPassword";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -18,29 +15,10 @@ const handlePATCH = async (req: Request) => {
 				.string()
 				.min(8, "A senha deve ter no mínimo 8 caracteres")
 				.and(
-					z
-						.string()
-						.regex(
-							/[A-Z]/,
-							"The password should contain at least 1 uppercase character",
-						),
+					z.string().regex(/[A-Z]/, "The password should contain at least 1 uppercase character"),
 				)
-				.and(
-					z
-						.string()
-						.regex(
-							/[a-z]/,
-							"The password must contain at least one lowercase letter",
-						),
-				)
-				.and(
-					z
-						.string()
-						.regex(
-							/\d/,
-							"The password must contain at least one numeric digit",
-						),
-				)
+				.and(z.string().regex(/[a-z]/, "The password must contain at least one lowercase letter"))
+				.and(z.string().regex(/\d/, "The password must contain at least one numeric digit"))
 				.and(
 					z
 						.string()
@@ -56,14 +34,12 @@ const handlePATCH = async (req: Request) => {
 		UpdateAccountsSchema.parse(body);
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
-		if (!user)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(user.id) },
 		});
-		if (!acc)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!acc) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		if (!comparePassword(body.password, acc.password))
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

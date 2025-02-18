@@ -4,7 +4,7 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,10 +15,7 @@ import { z } from "zod";
 
 interface UserRecoveryFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserRecoveryForm({
-	className,
-	...props
-}: UserRecoveryFormProps) {
+export function UserRecoveryForm({ className, ...props }: UserRecoveryFormProps) {
 	const { toast } = useToast();
 
 	const loginFormSchema = z.object({
@@ -88,11 +85,7 @@ export function UserRecoveryForm({
 					<Button variant={"link"} asChild className="order-2 sm:order-1">
 						<Link href="/account-manager/login">Go to Login</Link>
 					</Button>
-					<Button
-						disabled={isSubmitting}
-						type="submit"
-						className="order-1 sm:order-2"
-					>
+					<Button disabled={isSubmitting} type="submit" className="order-1 sm:order-2">
 						{isSubmitting ? (
 							<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 						) : (

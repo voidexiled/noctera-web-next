@@ -23,8 +23,7 @@ export function TicketForm() {
 				<DialogHeader>
 					<DialogTitle>Open new ticket</DialogTitle>
 					<DialogDescription>
-						The ticket must be used to report problems, ask questions and send
-						proof.
+						The ticket must be used to report problems, ask questions and send proof.
 					</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">FORM</div>

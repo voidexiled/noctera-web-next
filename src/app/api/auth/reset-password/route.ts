@@ -1,5 +1,5 @@
 import { randomFillSync } from "node:crypto";
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import { MailProvider } from "@/lib/nodemailer";
 import { prisma } from "@/lib/prisma";
 import { encryptPassword } from "@/utils/functions/criptoPassword";
@@ -13,21 +13,14 @@ function gerarSenha(tamanho: number) {
 	const letrasMinusculas = "abcdefghijklmnopqrstuvwxyz";
 	const numeros = "0123456789";
 
-	const caracteres =
-		caracteresEspeciais + letrasMaiusculas + letrasMinusculas + numeros;
+	const caracteres = caracteresEspeciais + letrasMaiusculas + letrasMinusculas + numeros;
 
 	let senha = "";
 
 	// Garantir pelo menos um caractere especial, uma letra maiúscula e uma letra minúscula
-	senha += caracteresEspeciais.charAt(
-		Math.floor(Math.random() * caracteresEspeciais.length),
-	);
-	senha += letrasMaiusculas.charAt(
-		Math.floor(Math.random() * letrasMaiusculas.length),
-	);
-	senha += letrasMinusculas.charAt(
-		Math.floor(Math.random() * letrasMinusculas.length),
-	);
+	senha += caracteresEspeciais.charAt(Math.floor(Math.random() * caracteresEspeciais.length));
+	senha += letrasMaiusculas.charAt(Math.floor(Math.random() * letrasMaiusculas.length));
+	senha += letrasMinusculas.charAt(Math.floor(Math.random() * letrasMinusculas.length));
 
 	for (let i = senha.length; i < tamanho; i++) {
 		const indice = Math.floor(Math.random() * caracteres.length);
@@ -59,8 +52,7 @@ const validate = async (request: Request) => {
 		},
 	});
 
-	if (!getToken)
-		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+	if (!getToken) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 	const createdAt = dayjs(getToken.created_at);
 	const validatedAt = dayjs(getToken.expired_at);

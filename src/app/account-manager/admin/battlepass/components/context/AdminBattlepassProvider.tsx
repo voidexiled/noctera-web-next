@@ -1,5 +1,5 @@
 "use client";
-import { isDateActive } from "@/app/(battlepass)/battlepass/lib/utils";
+import { isDateActive } from "@/components/(battlepass)/battlepass/lib/utils";
 import { prisma } from "@/lib/prisma";
 import type {
 	battlepass_seasons,
@@ -22,9 +22,9 @@ export type AdminBattlepassContextType = {
 	setMostUsedSeasonId: (id: number | null) => void;
 };
 
-export const AdminBattlepassContext = createContext<
-	AdminBattlepassContextType | undefined
->(undefined);
+export const AdminBattlepassContext = createContext<AdminBattlepassContextType | undefined>(
+	undefined,
+);
 
 export const AdminBattlepassProvider: React.FC<{
 	children: React.ReactNode;
@@ -34,20 +34,14 @@ export const AdminBattlepassProvider: React.FC<{
 }> = ({ children, battlepassSeasons, battlepassRewards, battlepassTasks }) => {
 	const [currentPath, setCurrentPath] =
 		useState<AdminBattlepassContextType["currentPath"]>("seasons");
-	const [seasons, setSeasons] =
-		useState<battlepass_seasons[]>(battlepassSeasons);
-	const [rewards, setRewards] =
-		useState<battlepass_seasons_rewards[]>(battlepassRewards);
-	const [tasks, setTasks] =
-		useState<battlepass_seasons_tasks[]>(battlepassTasks);
+	const [seasons, setSeasons] = useState<battlepass_seasons[]>(battlepassSeasons);
+	const [rewards, setRewards] = useState<battlepass_seasons_rewards[]>(battlepassRewards);
+	const [tasks, setTasks] = useState<battlepass_seasons_tasks[]>(battlepassTasks);
 
 	const [mostUsedSeasonId, setMostUsedSeasonId] = useState<number | null>(
 		seasons
 			? seasons.filter((s) => {
-					if (
-						typeof s.date_start !== typeof new Date() ||
-						typeof s.date_end !== typeof new Date()
-					)
+					if (typeof s.date_start !== typeof new Date() || typeof s.date_end !== typeof new Date())
 						return false;
 					if (s.date_start && s.date_end) {
 						return isDateActive(

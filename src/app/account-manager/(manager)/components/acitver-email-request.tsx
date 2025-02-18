@@ -21,17 +21,10 @@ const requestAtiveEmail = async () => {
 		});
 };
 
-export default function ActiveEmailRequest({
-	disabled,
-}: { disabled: boolean }) {
+export default function ActiveEmailRequest({ disabled }: { disabled: boolean }) {
 	return (
 		<>
-			<Button
-				size={"sm"}
-				variant={"green"}
-				disabled={disabled}
-				onClick={requestAtiveEmail}
-			>
+			<Button size={"sm"} variant={"green"} disabled={disabled} onClick={requestAtiveEmail}>
 				{disabled ? "Registered" : "Request"}
 			</Button>
 		</>

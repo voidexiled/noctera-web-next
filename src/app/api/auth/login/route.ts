@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { status } from "@/app/layout";
-import configLua from "@/hooks/configLua";
+
+import configLua from "@/hooks/useConfigLua";
 import { prisma } from "@/lib/prisma";
 import { comparePassword } from "@/utils/functions/criptoPassword";
 import type { accounts } from "@prisma/client";
@@ -53,12 +53,7 @@ async function checkPremium(id: accounts["id"], lastDay: accounts["lastday"]) {
 	return _lastDay;
 }
 
-type ActionType =
-	| "news"
-	| "cacheinfo"
-	| "eventschedule"
-	| "boostedcreature"
-	| "login";
+type ActionType = "news" | "cacheinfo" | "eventschedule" | "boostedcreature" | "login";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -101,10 +96,7 @@ export async function POST(request: NextRequest) {
 		}
 	} catch (error) {
 		console.error("Error during login: ", error);
-		return NextResponse.json(
-			{ errorCode: 500, errorMessage: error },
-			{ status: 500 },
-		);
+		return NextResponse.json({ errorCode: 500, errorMessage: error }, { status: 500 });
 	}
 }
 
@@ -185,10 +177,7 @@ async function handleEventSchedule() {
 			lastupdatetimestamp: Math.floor(Date.now() / 1000),
 		});
 	} catch (error) {
-		return NextResponse.json(
-			{ errorCode: 3, errorMessage: error },
-			{ status: 500 },
-		);
+		return NextResponse.json({ errorCode: 3, errorMessage: error }, { status: 500 });
 	}
 }
 
@@ -293,10 +282,7 @@ async function handleLogin(body: any) {
 		);
 	}
 
-	const passwordsMatched = comparePassword(
-		password,
-		account?.password as string,
-	);
+	const passwordsMatched = comparePassword(password, account?.password as string);
 
 	if (!account || !passwordsMatched) {
 		return NextResponse.json(
@@ -305,15 +291,15 @@ async function handleLogin(body: any) {
 		);
 	}
 
-	// if (account.email_verified === false) {
-	//     return NextResponse.json(
-	//         {
-	//             errorCode: 3,
-	//             errorMessage: 'You need to verify your account. Check your email.',
-	//         },
-	//         { status: 400 },
-	//     );
-	// }
+	if (account.email_verified === false) {
+		return NextResponse.json(
+			{
+				errorCode: 3,
+				errorMessage: "You need to verify your account. Check your email.",
+			},
+			{ status: 200 },
+		);
+	}
 
 	const getVocation = (vocation: number) => {
 		const vocations: Record<number, string> = {
@@ -365,8 +351,7 @@ async function handleLogin(body: any) {
 	} else {
 		return NextResponse.json({
 			errorCode: 3,
-			errorMesssage:
-				"Error while fetching your account data. Please contact admin.",
+			errorMesssage: "Error while fetching your account data. Please contact admin.",
 		});
 	}
 

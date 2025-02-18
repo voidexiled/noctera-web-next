@@ -4,7 +4,7 @@ import {
 	RHFSelect,
 	RHFTextEditor,
 	RHFTextField,
-} from "@/components/hook-form";
+} from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -51,19 +51,16 @@ export function AddCoinsForm({ children, id }: FormProps) {
 
 	async function onSubmit(data: AccountFormValues) {
 		try {
-			const response = await fetch(
-				`/api/administration/accounts/add-coins/${id}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-type": "application/json; charset=UTF-8",
-					},
-					body: JSON.stringify({
-						amount: data.amount,
-						type: data.type,
-					}),
+			const response = await fetch(`/api/administration/accounts/add-coins/${id}`, {
+				method: "PUT",
+				headers: {
+					"Content-type": "application/json; charset=UTF-8",
 				},
-			);
+				body: JSON.stringify({
+					amount: data.amount,
+					type: data.type,
+				}),
+			});
 
 			if (response.ok) {
 				toast({
@@ -123,10 +120,7 @@ export function AddCoinsForm({ children, id }: FormProps) {
 							</DialogClose>
 							<Button disabled={isSubmitting} type="submit">
 								{isSubmitting ? (
-									<Icon
-										icon="eos-icons:loading"
-										className="h-4 w-4 animate-spin"
-									/>
+									<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 								) : (
 									"Add Coins"
 								)}

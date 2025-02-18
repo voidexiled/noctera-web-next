@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "player_id": 1,
+    "bossIdSlotOne": 0,
+    "bossIdSlotTwo": 0,
+    "removeTimes": 1,
+    "tracker": {}
+  },
+  {
+    "id": 2,
+    "player_id": 2,
+    "bossIdSlotOne": 0,
+    "bossIdSlotTwo": 0,
+    "removeTimes": 1,
+    "tracker": {}
+  },
+  {
+    "id": 3,
+    "player_id": 3,
+    "bossIdSlotOne": 0,
+    "bossIdSlotTwo": 0,
+    "removeTimes": 1,
+    "tracker": {}
+  },
+  {
+    "id": 4,
+    "player_id": 4,
+    "bossIdSlotOne": 0,
+    "bossIdSlotTwo": 0,
+    "removeTimes": 1,
+    "tracker": {}
+  },
+  {
+    "id": 5,
+    "player_id": 5,
+    "bossIdSlotOne": 0,
+    "bossIdSlotTwo": 0,
+    "removeTimes": 1,
+    "tracker": {}
+  },
+  {
+    "id": 6,
+    "player_id": 6,
+    "bossIdSlotOne": 0,
+    "bossIdSlotTwo": 0,
+    "removeTimes": 1,
+    "tracker": {}
+  }
+]

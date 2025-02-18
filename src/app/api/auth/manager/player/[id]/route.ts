@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { ZodError, z } from "zod";
 
-type Params = { id: number };
+type Params = Promise<{ id: number }>;
 
 const PlayerSchema = z
 	.object({
@@ -16,15 +16,14 @@ const PlayerSchema = z
 const update = async (request: Request, { params }: { params: Params }) => {
 	try {
 		const session = await getServerSession(authOptions);
-		if (!session)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-		if (!params.id)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		const playerId = (await params).id;
+		if (!playerId) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const { comment, hidden } = PlayerSchema.parse(await request.json());
 
 		await prisma.players.update({
-			where: { id: params.id },
+			where: { id: playerId },
 			data: { comment, hidden },
 		});
 
@@ -36,10 +35,7 @@ const update = async (request: Request, { params }: { params: Params }) => {
 		if (error instanceof Error) {
 			return NextResponse.json({ message: error.message }, { status: 500 });
 		}
-		return NextResponse.json(
-			{ message: "An unknown error occurred" },
-			{ status: 500 },
-		);
+		return NextResponse.json({ message: "An unknown error occurred" }, { status: 500 });
 	}
 };
 

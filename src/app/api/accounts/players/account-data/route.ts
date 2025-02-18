@@ -31,11 +31,7 @@ const handleCreate = async (req: Request) => {
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
 		});
-		if (
-			!session?.user ||
-			!acc ||
-			!comparePassword(data.password, acc?.password)
-		)
+		if (!session?.user || !acc || !comparePassword(data.password, acc?.password))
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		// return await prisma.profiles.upsert({

@@ -3,20 +3,15 @@ import { createContext, useState } from "react";
 
 export type AdminToolbarContextType = {
 	isOpenDialogViewAllAccounts: boolean;
-	setIsOpenDialogViewAllAccounts: (
-		isOpenDialogViewAllAccounts: boolean,
-	) => void;
+	setIsOpenDialogViewAllAccounts: (isOpenDialogViewAllAccounts: boolean) => void;
 };
 
-export const AdminToolbarContext = createContext<
-	AdminToolbarContextType | undefined
->(undefined);
+export const AdminToolbarContext = createContext<AdminToolbarContextType | undefined>(undefined);
 
 export const AdminToolbarProvider: React.FC<{
 	children: React.ReactNode;
 }> = ({ children }) => {
-	const [isOpenDialogViewAllAccounts, setIsOpenDialogViewAllAccounts] =
-		useState(false);
+	const [isOpenDialogViewAllAccounts, setIsOpenDialogViewAllAccounts] = useState(false);
 
 	return (
 		<AdminToolbarContext.Provider

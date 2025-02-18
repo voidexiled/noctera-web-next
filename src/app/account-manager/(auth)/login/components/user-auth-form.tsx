@@ -9,12 +9,12 @@ import { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { RocketIcon } from "@radix-ui/react-icons";
 
-import { IconiFy } from "@/components/Iconify";
 import TwoFactAuth from "@/components/TwoFactAuth";
-import RHFCheckbox from "@/components/hook-form/RHFCheckbox";
+import { IconiFy } from "@/components/common/Iconify";
+import RHFCheckbox from "@/components/common/hook-form/RHFCheckbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,10 +27,10 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 import { ErrorCode } from "@/utils/ErrorCode";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 const Uppercase = z
 	.string()
@@ -38,9 +38,7 @@ const Uppercase = z
 const Lowercase = z
 	.string()
 	.regex(/[a-z]/, "The password must contain at least one lowercase letter");
-const Digit = z
-	.string()
-	.regex(/\d/, "The password must contain at least one numeric digit");
+const Digit = z.string().regex(/\d/, "The password must contain at least one numeric digit");
 const SpecialChar = z
 	.string()
 	.regex(
@@ -54,7 +52,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 	const [showPassword, setShowPassword] = React.useState(false);
 	const [showOTP, setShowOTP] = React.useState<boolean>(false);
 
-	const { toast } = useToast();
 	const router = useRouter();
 	// const searchParams = useSearchParams();
 
@@ -63,9 +60,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 	const loginFormSchema = z.object({
 		email: z.string().email(),
 		// password: z.string().min(8, 'The password must be at least 8 characters long').and(passwordUppercase).and(passwordLowercase).and(passwordDigit).and(passwordSpecialChar),
-		password: z
-			.string()
-			.min(8, "The password must be at least 8 characters long"),
+		password: z.string().min(8, "The password must be at least 8 characters long"),
 		totpCode: z.string().optional(),
 	});
 
@@ -99,11 +94,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 					}
 					switch (response?.error) {
 						case ErrorCode.IncorrectPassword:
-							toast({
-								title: "Login failed:",
-								variant: "destructive",
-								description: <div>invalid Credentials</div>,
-							});
+							toast.error("Invalid Credentials");
 							return;
 						case ErrorCode.SecondFactorRequired:
 							setShowOTP(true);
@@ -111,11 +102,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 					}
 				})
 				.catch(() => {
-					toast({
-						title: "You submitted to data to login:",
-						variant: "destructive",
-						description: <div>Login failure</div>,
-					});
+					toast.error("Login failure");
 				});
 		} catch (error) {}
 	}
@@ -127,9 +114,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 					<Alert>
 						<RocketIcon className="h-4 w-4" />
 						<AlertTitle>Heads up!</AlertTitle>
-						<AlertDescription>
-							You can add components to your app using the cli.
-						</AlertDescription>
+						<AlertDescription>You can add components to your app using the cli.</AlertDescription>
 					</Alert>
 				)}
 				<div className="grid gap-2 space-y-2">
@@ -189,16 +174,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 						<Button variant={"link"} asChild className="order-2 sm:order-1">
 							<Link href="/account-manager/recovery">Recovery Password</Link>
 						</Button>
-						<Button
-							disabled={isSubmitting}
-							type="submit"
-							className="order-1 sm:order-2"
-						>
+						<Button disabled={isSubmitting} type="submit" className="order-1 sm:order-2">
 							{isSubmitting ? (
-								<Icon
-									icon="eos-icons:loading"
-									className="h-4 w-4 animate-spin"
-								/>
+								<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 							) : (
 								"Login"
 							)}

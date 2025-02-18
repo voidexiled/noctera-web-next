@@ -25,11 +25,7 @@ export default async function Page(props: {
 	return (
 		<>
 			<div className="flex flex-col rounded-sm border">
-				<Search
-					placeholder="Search..."
-					totalPage={totalPage}
-					options={ORDER_STATUS}
-				/>
+				<Search placeholder="Search..." totalPage={totalPage} options={ORDER_STATUS} />
 				<Suspense key={query + currentPage} fallback={<InvoiceSkeleton />}>
 					<DataTable orders={orders} />
 				</Suspense>
@@ -39,9 +35,5 @@ export default async function Page(props: {
 }
 
 function InvoiceSkeleton() {
-	return (
-		<div className="flex flex-row items-center justify-center">
-			Searching...
-		</div>
-	);
+	return <div className="flex flex-row items-center justify-center">Searching...</div>;
 }

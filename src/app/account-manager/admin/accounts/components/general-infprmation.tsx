@@ -73,20 +73,8 @@ export default function GeneralInfo() {
 							disabled={page === 1}
 							onClick={() => setPage(page - 1)}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-							>
-								<rect
-									x="0"
-									y="0"
-									width="24"
-									height="24"
-									fill="none"
-									stroke="none"
-								/>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+								<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 								<path
 									fill="none"
 									stroke="currentColor"
@@ -106,20 +94,8 @@ export default function GeneralInfo() {
 							disabled={data.totalPages === page}
 							onClick={() => setPage(page + 1)}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-							>
-								<rect
-									x="0"
-									y="0"
-									width="24"
-									height="24"
-									fill="none"
-									stroke="none"
-								/>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+								<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" />
 								<path
 									fill="none"
 									stroke="currentColor"
@@ -157,9 +133,7 @@ export default function GeneralInfo() {
 							data?.accounts.map((account) => (
 								<>
 									<TableRow key={account.id.toString()}>
-										<TableCell>
-											{account.id.toString().padStart(5, "0")}
-										</TableCell>
+										<TableCell>{account.id.toString().padStart(5, "0")}</TableCell>
 										<TableCell>{account.email}</TableCell>
 										<TableCell>{account.name}</TableCell>
 										<TableCell className="w-[30px] text-right">

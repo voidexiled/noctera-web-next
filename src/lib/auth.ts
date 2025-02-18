@@ -42,13 +42,9 @@ export const authOptions: NextAuthOptions = {
 					throw new Error(ErrorCode.IncorrectPassword);
 
 				if (user.secret_status) {
-					if (!credentials.totpCode)
-						throw new Error(ErrorCode.SecondFactorRequired);
+					if (!credentials.totpCode) throw new Error(ErrorCode.SecondFactorRequired);
 					if (!user.secret) throw new Error(ErrorCode.InternalServerError);
-					const isValidToken = authenticator.check(
-						credentials.totpCode,
-						user.secret,
-					);
+					const isValidToken = authenticator.check(credentials.totpCode, user.secret);
 					if (!isValidToken) throw new Error(ErrorCode.IncorrectPassword);
 				}
 

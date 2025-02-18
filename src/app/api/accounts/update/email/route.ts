@@ -19,9 +19,7 @@ export async function PATCH(req: Request) {
 	try {
 		const emailProvider = new MailProvider();
 
-		const { email, key, password } = UpdateAccountsSchema.parse(
-			await req.json(),
-		);
+		const { email, key, password } = UpdateAccountsSchema.parse(await req.json());
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
 

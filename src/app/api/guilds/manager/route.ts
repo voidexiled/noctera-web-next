@@ -8,17 +8,13 @@ import { z } from "zod";
 const ListGuild = async (request: Request) => {
 	try {
 		const session = await getServerSession(authOptions);
-		if (!session)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const guilds = await prisma.guilds.findMany();
 
 		return NextResponse.json({ guilds });
 	} catch (error) {
-		return NextResponse.json(
-			{ message: "Internal server error" },
-			{ status: 500 },
-		);
+		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
 	}
 };
 
@@ -39,8 +35,7 @@ const CreateGuild = async (request: Request) => {
 			include: { players: true },
 		});
 
-		if (!acc)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!acc) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		// if (!acc.premdays)
 		// 	return NextResponse.json(
 		// 		{ message: "Account no has premium" },
@@ -50,29 +45,20 @@ const CreateGuild = async (request: Request) => {
 		const findGuild = await prisma.guilds.findFirst({
 			where: { name: guild_name },
 		});
-		if (findGuild)
-			return NextResponse.json(
-				{ message: "Guild already exist." },
-				{ status: 400 },
-			);
+		if (findGuild) return NextResponse.json({ message: "Guild already exist." }, { status: 400 });
 
 		const currentPlayer = acc.players.find((p) => p.id === player_id);
-		if (!currentPlayer)
-			return NextResponse.json(
-				{ message: "Player not found." },
-				{ status: 400 },
-			);
+		if (!currentPlayer) return NextResponse.json({ message: "Player not found." }, { status: 400 });
 		if (currentPlayer.level < 8)
-			return NextResponse.json(
-				{ message: "Insufficient player level." },
-				{ status: 400 },
-			);
+			return NextResponse.json({ message: "Insufficient player level." }, { status: 400 });
 
-		const defaultRanks = [
-			{ name: "Leader", level: 3 },
-			{ name: "Vice Leader", level: 2 },
-			{ name: "Member", level: 1 },
-		];
+		// There is a trigger at the database level to create the default ranks
+
+		// const defaultRanks = [
+		// 	{ name: "Leader", level: 3 },
+		// 	{ name: "Vice Leader", level: 2 },
+		// 	{ name: "Member", level: 1 },
+		// ];
 
 		const guild = await prisma.guilds.create({
 			data: {
@@ -81,9 +67,9 @@ const CreateGuild = async (request: Request) => {
 				logo_name: "default.gif",
 				creationdata: dayjs().unix(),
 				description: "",
-				guild_ranks: {
-					create: defaultRanks,
-				},
+				// guild_ranks: {
+				// 	create: defaultRanks,
+				// },
 			},
 			include: { guild_ranks: { where: { level: 3 }, select: { id: true } } },
 		});
@@ -99,10 +85,7 @@ const CreateGuild = async (request: Request) => {
 		return NextResponse.json({}, { status: 201 });
 	} catch (error) {
 		console.error("Error:", error);
-		return NextResponse.json(
-			{ message: "Internal server error" },
-			{ status: 500 },
-		);
+		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
 	}
 };
 

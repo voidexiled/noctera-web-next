@@ -47,9 +47,7 @@ export default async function ServerInfo() {
 											<TableCell className="capitalize">Open PVP</TableCell>
 										</TableRow>
 										<TableRow>
-											<TableCell className="w-[130px]">
-												Protection level:
-											</TableCell>
+											<TableCell className="w-[130px]">Protection level:</TableCell>
 											<TableCell className="capitalize">80</TableCell>
 										</TableRow>
 										<TableRow>
@@ -142,15 +140,11 @@ export default async function ServerInfo() {
 											<TableCell>10 days</TableCell>
 										</TableRow>
 										<TableRow>
-											<TableCell className="w-[130px]">
-												Red skull max:
-											</TableCell>
+											<TableCell className="w-[130px]">Red skull max:</TableCell>
 											<TableCell>5 kills</TableCell>
 										</TableRow>
 										<TableRow>
-											<TableCell className="w-[130px]">
-												bacl skull max:
-											</TableCell>
+											<TableCell className="w-[130px]">bacl skull max:</TableCell>
 											<TableCell>10 kills</TableCell>
 										</TableRow>
 									</TableBody>
@@ -233,9 +227,7 @@ export default async function ServerInfo() {
 											<TableCell>
 												<b>6 or more players</b>
 											</TableCell>
-											<TableCell>
-												15% break for every player that joins
-											</TableCell>
+											<TableCell>15% break for every player that joins</TableCell>
 										</TableRow>
 									</TableBody>
 								</Table>

@@ -1,5 +1,5 @@
 "use client";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -120,11 +120,7 @@ export function ChangeAccountInfoForm({
 
 	return (
 		<>
-			<Button
-				size={"sm"}
-				className="whitespace-nowrap"
-				onClick={() => setShowNewTeamDialog(true)}
-			>
+			<Button size={"sm"} className="whitespace-nowrap" onClick={() => setShowNewTeamDialog(true)}>
 				Change Information
 			</Button>
 			<Dialog open={showNewTeamDialog} onOpenChange={handle}>
@@ -221,14 +217,10 @@ export function ChangeAccountInfoForm({
 						</div>
 						<div className="space-y-3 rounded-sm border p-2 text-sm">
 							<p>
-								Please enter your <strong>Password</strong> to confirm the
-								request to change your registration data.
+								Please enter your <strong>Password</strong> to confirm the request to change your
+								registration data.
 							</p>
-							<RHFTextField
-								name="password"
-								type="password"
-								disabled={isSubmitting}
-							/>
+							<RHFTextField name="password" type="password" disabled={isSubmitting} />
 						</div>
 						<DialogFooter>
 							<Button
@@ -242,10 +234,7 @@ export function ChangeAccountInfoForm({
 							</Button>
 							<Button disabled={isSubmitting || !isDirty} type="submit">
 								{isSubmitting ? (
-									<Icon
-										icon="eos-icons:loading"
-										className="h-4 w-4 animate-spin"
-									/>
+									<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 								) : (
 									"Submit"
 								)}

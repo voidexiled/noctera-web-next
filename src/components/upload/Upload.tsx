@@ -1,8 +1,8 @@
 import { type FileRejection, useDropzone } from "react-dropzone";
 
 import { cn } from "@/lib/utils";
-import { IconiFy } from "../Iconify";
 import { Typography } from "../Typography";
+import { IconiFy } from "../common/Iconify";
 import { Button } from "../ui/button";
 import RejectionFiles from "./errors/RejectionFiles";
 import MultiFilePreview from "./preview/MultiFilePreview";
@@ -24,13 +24,7 @@ export default function Upload({
 	onRemoveAll,
 	...other
 }: UploadProps) {
-	const {
-		getRootProps,
-		getInputProps,
-		isDragActive,
-		isDragReject,
-		fileRejections,
-	} = useDropzone({
+	const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
 		multiple,
 		disabled,
 		...other,
@@ -73,11 +67,7 @@ export default function Upload({
 			{hasFiles && (
 				<>
 					<div className="my-2">
-						<MultiFilePreview
-							files={files}
-							thumbnail={thumbnail}
-							onRemove={onRemove}
-						/>
+						<MultiFilePreview files={files} thumbnail={thumbnail} onRemove={onRemove} />
 					</div>
 
 					<div className="flex flex-row justify-end gap-2">
@@ -107,9 +97,7 @@ export default function Upload({
 	);
 }
 
-function Placeholder({
-	dropZoneText = "Drop or Select file",
-}: { dropZoneText?: string }) {
+function Placeholder({ dropZoneText = "Drop or Select file" }: { dropZoneText?: string }) {
 	return (
 		<div className="flex flex-col items-center justify-center p-2 text-center">
 			<Typography variant="h5">{dropZoneText}</Typography>

@@ -2,19 +2,14 @@ import {
 	AdminBattlepassContext,
 	type AdminBattlepassContextType,
 } from "@/app/account-manager/admin/battlepass/components/context/AdminBattlepassProvider";
-import { FormProvider, RHFSelect, RHFTextField } from "@/components/hook-form";
-import RHFDatePicker from "@/components/hook-form/RHFDatePicker";
+import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
+import RHFDatePicker from "@/components/common/hook-form/RHFDatePicker";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-} from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { battlepass_seasons } from "@prisma/client";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -23,13 +18,12 @@ import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { format } from "date-fns-tz";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
-import { TZDate } from "react-day-picker";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { date, z } from "zod";
 
 export const SeasonsGrid = () => {
 	const [openEditDialog, setOpenEditDialog] = useState(false);
-	const { toast } = useToast();
 	const { seasons, refetchSeasons } = useContext(
 		AdminBattlepassContext,
 	) as AdminBattlepassContextType;
@@ -46,29 +40,18 @@ export const SeasonsGrid = () => {
 				}),
 			});
 			if (res.status === 200) {
-				toast({
-					title: "Delete Season",
-					description: <div>Season with id {id} has been deleted.</div>,
-				});
+				toast.error(`Season with id ${id} has been deleted.`);
 				refetchSeasons();
 			}
 		} catch (error) {
 			const err = error as Error;
-			err;
-			toast({
-				title: "Error:",
-				variant: "destructive",
-				description: <div>{err.message}</div>,
-			});
+			toast.error(`Error: ${err.message}`);
 		}
 	};
 
 	return (
 		<TooltipProvider>
-			<ScrollArea
-				className="h-full w-full scroll-smooth border-b pb-2"
-				scrollHideDelay={3000}
-			>
+			<ScrollArea className="h-full w-full scroll-smooth border-b pb-2" scrollHideDelay={3000}>
 				<ScrollBar orientation="horizontal" className="z-50" />
 
 				<div className="flex flex-row gap-2 p-2">
@@ -99,9 +82,7 @@ export const SeasonsGrid = () => {
 											</p>
 										</TooltipTrigger>
 										<TooltipContent>
-											<p className="max-w-[150px] text-sm">
-												{season.description}
-											</p>
+											<p className="max-w-[150px] text-sm">{season.description}</p>
 										</TooltipContent>
 									</Tooltip>
 								</div>
@@ -111,9 +92,7 @@ export const SeasonsGrid = () => {
 											<CalendarIcon className="mr-1 h-4 w-4" />
 										</span>
 
-										{formated_start_date
-											.concat(" - ")
-											.concat(formated_end_date)}
+										{formated_start_date.concat(" - ").concat(formated_end_date)}
 									</span>
 									<div className="flex flex-row gap-2 bg-background/60 p-2">
 										<Dialog>
@@ -151,7 +130,6 @@ const EditSeasonForm = ({
 	const [showImagePreview, setShowImagePreview] = useState(true);
 	const [previewImageSrc, setPreviewImageSrc] = useState("");
 
-	const { toast } = useToast();
 	const { seasons, refetchSeasons } = useContext(
 		AdminBattlepassContext,
 	) as AdminBattlepassContextType;
@@ -207,21 +185,14 @@ const EditSeasonForm = ({
 		})
 			.then(async (res) => {
 				if (res.status === 200) {
-					toast({
-						title: "Update Season",
-						description: <div>{data.season_name} has been updated.</div>,
-					});
+					toast.success(`${data.season_name} has been updated.`);
 					refetchSeasons();
 					//setOpen(false);
 				}
 			})
 			.catch((error) => {
-				error;
-				toast({
-					title: "Error:",
-					variant: "destructive",
-					description: <div>{error}</div>,
-				});
+				console.log(error);
+				toast.error(`Error: ${error}`);
 			});
 	}
 
@@ -288,10 +259,9 @@ const EditSeasonForm = ({
 						/>
 						<Label>Preview image</Label>
 					</div>
-					{showImagePreview &&
-						methods.getValues("background_img").length > 0 && (
-							<img src={previewImageSrc} alt="season-image" />
-						)}
+					{showImagePreview && methods.getValues("background_img").length > 0 && (
+						<img src={previewImageSrc} alt="season-image" />
+					)}
 
 					{/* Buttons */}
 					<div className="grid grid-cols-3 gap-4">

@@ -1,4 +1,4 @@
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import { MailProvider } from "@/lib/nodemailer";
 import { prisma } from "@/lib/prisma";
 import { randomCode } from "@/utils/functions/randomCode";

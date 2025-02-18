@@ -1,14 +1,14 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-type Params = { id: string };
+type Params = Promise<{ id: string }>;
 
-const handleDelete = async (req: Request, { params }: { params: Params }) => {
+export async function DELETE(request: Request, { params }: { params: Params }) {
 	try {
-		const id = params.id;
+		const id = (await params).id;
 
 		const session = await getServerSession(authOptions);
 		const acc = await prisma.accounts.findUnique({
@@ -20,18 +20,14 @@ const handleDelete = async (req: Request, { params }: { params: Params }) => {
 		// if (acc._count.players < 9) return NextResponse.json({ message: 'You already have the maximum number of players on your account.' }, { status: 403 });
 
 		const findPlayers = await prisma.players.findUnique({ where: { id: +id } });
-		if (!findPlayers)
-			return NextResponse.json(
-				{ message: "Player not found" },
-				{ status: 400 },
-			);
+		if (!findPlayers) return NextResponse.json({ message: "Player not found" }, { status: 400 });
 		await prisma.players.delete({ where: { id: +id } });
 
 		return NextResponse.json({});
 	} catch (error) {
 		return NextResponse.json({}, { status: 500 });
 	}
-};
+}
 
 const EditPlayerSchema = z
 	.object({
@@ -40,11 +36,11 @@ const EditPlayerSchema = z
 	})
 	.strict();
 
-const handleUpdate = async (req: Request, { params }: { params: Params }) => {
+export async function PATCH(request: Request, { params }: { params: Params }) {
 	try {
-		const id = params.id;
+		const id = (await params).id;
 
-		const data = EditPlayerSchema.parse(await req.json());
+		const data = EditPlayerSchema.parse(await request.json());
 		const session = await getServerSession(authOptions);
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
@@ -55,11 +51,7 @@ const handleUpdate = async (req: Request, { params }: { params: Params }) => {
 		// if (acc._count.players < 9) return NextResponse.json({ message: 'You already have the maximum number of players on your account.' }, { status: 403 });
 
 		const findPlayers = await prisma.players.findUnique({ where: { id: +id } });
-		if (!findPlayers)
-			return NextResponse.json(
-				{ message: "Player not found" },
-				{ status: 400 },
-			);
+		if (!findPlayers) return NextResponse.json({ message: "Player not found" }, { status: 400 });
 		await prisma.players.update({
 			where: { id: +id },
 			data,
@@ -69,6 +61,4 @@ const handleUpdate = async (req: Request, { params }: { params: Params }) => {
 	} catch (error) {
 		return NextResponse.json({ error }, { status: 500 });
 	}
-};
-
-export { handleDelete as DELETE, handleUpdate as PATCH };
+}

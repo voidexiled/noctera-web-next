@@ -1,5 +1,5 @@
 "use client";
-import { FormProvider, RHFTextField } from "@/components/hook-form";
+import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -73,19 +73,15 @@ export function ConfirmDeletionAccount() {
 						<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
 							<div className="grid gap-4 py-4">
 								<p className="font-bold">
-									Do you really want to terminate your Tibia account and delete
-									all of your characters?
+									Do you really want to terminate your Tibia account and delete all of your
+									characters?
 								</p>
 								<div className="space-y-3 rounded-sm border p-2 text-sm">
 									<p>
-										Please enter your <strong>Password</strong> to confirm the
-										deletion your Account.
+										Please enter your <strong>Password</strong> to confirm the deletion your
+										Account.
 									</p>
-									<RHFTextField
-										name="key"
-										type="text"
-										disabled={isSubmitting}
-									/>
+									<RHFTextField name="key" type="text" disabled={isSubmitting} />
 								</div>
 							</div>
 							<DialogFooter>
@@ -100,10 +96,7 @@ export function ConfirmDeletionAccount() {
 								</Button>
 								<Button disabled={isSubmitting || !isDirty} type="submit">
 									{isSubmitting ? (
-										<Icon
-											icon="eos-icons:loading"
-											className="h-4 w-4 animate-spin"
-										/>
+										<Icon icon="eos-icons:loading" className="h-4 w-4 animate-spin" />
 									) : (
 										"Submit"
 									)}

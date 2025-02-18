@@ -167,8 +167,8 @@ const TwoFactSetupModal = ({
 						<DialogHeader>
 							<DialogTitle>Enable two-factor authentication</DialogTitle>
 							<DialogDescription>
-								Scan the image below with the authenticator app on your phone or
-								manually enter the text code instead.
+								Scan the image below with the authenticator app on your phone or manually enter the
+								text code instead.
 							</DialogDescription>
 						</DialogHeader>
 
@@ -184,10 +184,7 @@ const TwoFactSetupModal = ({
 									Close
 								</Button>
 							</DialogClose>
-							<Button
-								disabled={isSubmitting}
-								onClick={() => setStep(SetupStep.EnterTotpCode)}
-							>
+							<Button disabled={isSubmitting} onClick={() => setStep(SetupStep.EnterTotpCode)}>
 								Continue
 							</Button>
 						</DialogFooter>
@@ -198,15 +195,10 @@ const TwoFactSetupModal = ({
 					<DialogContent>
 						<DialogHeader>
 							<DialogTitle>Enable two-factor authentication</DialogTitle>
-							<DialogDescription>
-								Enter your code to enable 2FA
-							</DialogDescription>
+							<DialogDescription>Enter your code to enable 2FA</DialogDescription>
 						</DialogHeader>
 
-						<TwoFactAuth
-							value={totpCode}
-							onChange={(val) => setTotpCode(val)}
-						/>
+						<TwoFactAuth value={totpCode} onChange={(val) => setTotpCode(val)} />
 
 						<DialogFooter>
 							<DialogClose asChild>
@@ -214,10 +206,7 @@ const TwoFactSetupModal = ({
 									Close
 								</Button>
 							</DialogClose>
-							<Button
-								disabled={isSubmitting}
-								onClick={() => handleEnable(totpCode)}
-							>
+							<Button disabled={isSubmitting} onClick={() => handleEnable(totpCode)}>
 								Continue
 							</Button>
 						</DialogFooter>

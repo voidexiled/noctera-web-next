@@ -5,21 +5,21 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-type Params = { id: string };
+type Params = Promise<{ id: string }>;
 
 const Get = async (req: Request, { params }: { params: Params }) => {
 	const session = await getServerSession(authOptions);
 	if (!session?.user || session.user.role !== "admin")
 		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+	const productId = (await params).id;
 	const acc = await prisma.accounts.findUnique({
 		where: { id: Number(session?.user?.id) },
 	});
-	if (!acc)
-		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+	if (!acc) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-	const product = prisma.products.findUnique({ where: { id: +params.id } });
-	if (!product)
-		return NextResponse.json({ message: "Product not fount" }, { status: 400 });
+	const product = prisma.products.findUnique({ where: { id: +productId } });
+	if (!product) return NextResponse.json({ message: "Product not fount" }, { status: 400 });
 
 	return NextResponse.json({ product });
 };
@@ -28,16 +28,16 @@ const Delete = async (req: Request, { params }: { params: Params }) => {
 	const session = await getServerSession(authOptions);
 	if (!session?.user || session.user.role !== "admin")
 		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+	const productId = (await params).id;
 	const acc = await prisma.accounts.findUnique({
 		where: { id: Number(session?.user?.id) },
 	});
-	if (!acc)
-		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+	if (!acc) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-	const findProduct = prisma.products.findUnique({ where: { id: +params.id } });
-	if (!findProduct)
-		return NextResponse.json({ message: "Product not fount" }, { status: 400 });
-	await prisma.products.delete({ where: { id: +params.id } });
+	const findProduct = prisma.products.findUnique({ where: { id: +productId } });
+	if (!findProduct) return NextResponse.json({ message: "Product not fount" }, { status: 400 });
+	await prisma.products.delete({ where: { id: +productId } });
 
 	return NextResponse.json({});
 };
@@ -47,11 +47,11 @@ const Update = async (req: Request, { params }: { params: Params }) => {
 		const session = await getServerSession(authOptions);
 		if (!session?.user || session.user.role !== "admin")
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		const productId = (await params).id;
 		const acc = await prisma.accounts.findUnique({
 			where: { id: Number(session?.user?.id) },
 		});
-		if (!acc)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!acc) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const data = await req.formData();
 		//const file: File | null = data.get('img') as unknown as File
@@ -72,7 +72,7 @@ const Update = async (req: Request, { params }: { params: Params }) => {
 		//await writeFile(`./public/shop/${fileName}`, buffer)
 
 		await prisma.products.update({
-			where: { id: +params.id },
+			where: { id: +productId },
 			data: {
 				title: data.get("title") as string,
 				price: data.get("price") as string,

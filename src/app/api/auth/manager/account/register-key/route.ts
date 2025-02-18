@@ -1,11 +1,8 @@
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import { authOptions } from "@/lib/auth";
 import { MailProvider } from "@/lib/nodemailer";
 import { prisma } from "@/lib/prisma";
-import {
-	comparePassword,
-	encryptPassword,
-} from "@/utils/functions/criptoPassword";
+import { comparePassword, encryptPassword } from "@/utils/functions/criptoPassword";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { ZodError, z } from "zod";
@@ -45,14 +42,12 @@ const update = async (request: Request) => {
 		const body = UpdatePasswordSchema.parse(await request.json());
 
 		const session = await getServerSession(authOptions);
-		if (!session)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
 		const account = await prisma.accounts.findUnique({
 			where: { id: Number(session.user.id) },
 		});
-		if (!account)
-			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!account) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		if (comparePassword(body.password, account.password))
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
@@ -99,10 +94,7 @@ const update = async (request: Request) => {
 		return NextResponse.json({}, { status: 200 });
 	} catch (error) {
 		if (error instanceof ZodError) {
-			return NextResponse.json(
-				{ message: error.issues[0].message },
-				{ status: 400 },
-			);
+			return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
 		}
 	}
 };

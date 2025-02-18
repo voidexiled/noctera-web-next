@@ -1,0 +1,212 @@
+[
+  {
+    "id": 1,
+    "name": "Dawnport Tutorial",
+    "posx": 32069,
+    "posy": 31901,
+    "posz": 6
+  },
+  {
+    "id": 2,
+    "name": "Dawnport",
+    "posx": 32064,
+    "posy": 31894,
+    "posz": 6
+  },
+  {
+    "id": 3,
+    "name": "Rookgaard",
+    "posx": 32097,
+    "posy": 32219,
+    "posz": 7
+  },
+  {
+    "id": 4,
+    "name": "Island of Destiny",
+    "posx": 32091,
+    "posy": 32027,
+    "posz": 7
+  },
+  {
+    "id": 5,
+    "name": "Ab'Dendriel",
+    "posx": 32732,
+    "posy": 31634,
+    "posz": 7
+  },
+  {
+    "id": 6,
+    "name": "Carlin",
+    "posx": 32360,
+    "posy": 31782,
+    "posz": 7
+  },
+  {
+    "id": 7,
+    "name": "Kazordoon",
+    "posx": 32649,
+    "posy": 31925,
+    "posz": 11
+  },
+  {
+    "id": 8,
+    "name": "Thais",
+    "posx": 32362,
+    "posy": 32239,
+    "posz": 7
+  },
+  {
+    "id": 9,
+    "name": "Venore",
+    "posx": 32957,
+    "posy": 32076,
+    "posz": 7
+  },
+  {
+    "id": 10,
+    "name": "Ankrahmun",
+    "posx": 33194,
+    "posy": 32853,
+    "posz": 8
+  },
+  {
+    "id": 11,
+    "name": "Edron",
+    "posx": 33217,
+    "posy": 31814,
+    "posz": 8
+  },
+  {
+    "id": 12,
+    "name": "Farmine",
+    "posx": 33023,
+    "posy": 31521,
+    "posz": 11
+  },
+  {
+    "id": 13,
+    "name": "Darashia",
+    "posx": 33213,
+    "posy": 32454,
+    "posz": 1
+  },
+  {
+    "id": 14,
+    "name": "Liberty Bay",
+    "posx": 32317,
+    "posy": 32826,
+    "posz": 7
+  },
+  {
+    "id": 15,
+    "name": "Port Hope",
+    "posx": 32594,
+    "posy": 32745,
+    "posz": 7
+  },
+  {
+    "id": 16,
+    "name": "Svargrond",
+    "posx": 32212,
+    "posy": 31132,
+    "posz": 7
+  },
+  {
+    "id": 17,
+    "name": "Yalahar",
+    "posx": 32787,
+    "posy": 31276,
+    "posz": 7
+  },
+  {
+    "id": 18,
+    "name": "Gray Beach",
+    "posx": 33447,
+    "posy": 31323,
+    "posz": 9
+  },
+  {
+    "id": 19,
+    "name": "Krailos",
+    "posx": 33657,
+    "posy": 31665,
+    "posz": 8
+  },
+  {
+    "id": 20,
+    "name": "Rathleton",
+    "posx": 33594,
+    "posy": 31899,
+    "posz": 6
+  },
+  {
+    "id": 21,
+    "name": "Roshamuul",
+    "posx": 33513,
+    "posy": 32363,
+    "posz": 6
+  },
+  {
+    "id": 22,
+    "name": "Issavi",
+    "posx": 33921,
+    "posy": 31477,
+    "posz": 5
+  },
+  {
+    "id": 23,
+    "name": "Event Room",
+    "posx": 1054,
+    "posy": 1040,
+    "posz": 7
+  },
+  {
+    "id": 24,
+    "name": "Cobra Bastion",
+    "posx": 33397,
+    "posy": 32651,
+    "posz": 7
+  },
+  {
+    "id": 25,
+    "name": "Bounac",
+    "posx": 32424,
+    "posy": 32445,
+    "posz": 7
+  },
+  {
+    "id": 26,
+    "name": "Feyrist",
+    "posx": 33490,
+    "posy": 32221,
+    "posz": 7
+  },
+  {
+    "id": 27,
+    "name": "Gnomprona",
+    "posx": 33517,
+    "posy": 32856,
+    "posz": 14
+  },
+  {
+    "id": 28,
+    "name": "Marapur",
+    "posx": 33842,
+    "posy": 32853,
+    "posz": 7
+  },
+  {
+    "id": 29,
+    "name": "Candia",
+    "posx": 33338,
+    "posy": 32125,
+    "posz": 7
+  },
+  {
+    "id": 30,
+    "name": "Vip city",
+    "posx": 32172,
+    "posy": 30828,
+    "posz": 6
+  }
+]

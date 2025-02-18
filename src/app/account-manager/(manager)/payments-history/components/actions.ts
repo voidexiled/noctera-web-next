@@ -6,17 +6,12 @@ import { revalidatePath } from "next/cache";
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, NODE_ENV } = process.env;
 
 const base =
-	NODE_ENV === "development"
-		? "https://api.sandbox.paypal.com"
-		: "https://api.paypal.com";
+	NODE_ENV === "development" ? "https://api.sandbox.paypal.com" : "https://api.paypal.com";
 
 const generateAccessToken = async () => {
 	try {
-		if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET)
-			throw new Error("MISSING_API_CREDENTIALS");
-		const auth = Buffer.from(
-			`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`,
-		).toString("base64");
+		if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) throw new Error("MISSING_API_CREDENTIALS");
+		const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString("base64");
 		const response = await fetch(`${base}/v1/oauth2/token`, {
 			method: "POST",
 			body: "grant_type=client_credentials",
@@ -55,9 +50,9 @@ export const captureOrder = async (orderID: string) => {
  * Cancel an order to start the transaction.
  * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
  */
-export const cancelOrder = async ({ order }: { order: string }) => {
+export const cancelOrder = async ({ paymentIntentId }: { paymentIntentId: string }) => {
 	const queryOrder = await prisma.orders.findFirst({
-		where: { orderID: order },
+		where: { orderID: paymentIntentId },
 	});
 	if (queryOrder) {
 		await prisma.orders.delete({ where: { id: queryOrder.id } });

@@ -9,7 +9,7 @@ enum types {
 }
 type Params = Promise<{ type: types }>;
 
-const listNews = async (request: Request, segmentData: { params: Params }) => {
+export async function GET(request: Request, segmentData: { params: Params }) {
 	try {
 		const params = await segmentData.params;
 		const url = new URL(request.url);
@@ -45,6 +45,4 @@ const listNews = async (request: Request, segmentData: { params: Params }) => {
 	} catch (error) {
 		return NextResponse.json({ error }, { status: 500 });
 	}
-};
-
-export { listNews as GET };
+}

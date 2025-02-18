@@ -7,10 +7,7 @@ import { usePathname } from "next/navigation";
 
 const BASE_ADMIN_PATH = "/account-manager/admin";
 
-export function MainNav({
-	className,
-	...props
-}: React.HTMLAttributes<HTMLElement>) {
+export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
 	const pathname = usePathname();
 
 	const partes = pathname.split("/");
@@ -19,10 +16,7 @@ export function MainNav({
 	//	const lastPath = partes[partes.length - 1];
 
 	return (
-		<nav
-			className={cn("flex items-center space-x-4 lg:space-x-6", className)}
-			{...props}
-		>
+		<nav className={cn("flex items-center space-x-4 lg:space-x-6", className)} {...props}>
 			<Link
 				href={BASE_ADMIN_PATH}
 				className={`font-medium text-sm transition-colors hover:text-accent ${["accounts", "shop", "blog", "battlepass", "settings"].includes(selectedPath) && "text-muted-foreground/70"}`}
