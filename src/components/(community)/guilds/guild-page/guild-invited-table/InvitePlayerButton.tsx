@@ -1,16 +1,16 @@
 "use client";
 
+import { API_ROUTES } from "@/app/api/routes";
+import type { GuildsCharactersNameGETRequest, GuildsCharactersNameGETResponse } from "@/app/api/types";
 import type { Character } from "@/components/(community)/characters/types/characters";
-import type {
-	InvitePlayerToGuildErrorResponse,
-	InvitePlayerToGuildResponse,
-} from "@/components/(community)/guilds/types/guilds";
+import type { InvitePlayerToGuildErrorResponse, InvitePlayerToGuildResponse } from "@/components/(community)/guilds/types/guilds";
 import { IconiFy } from "@/components/common/Iconify";
 import TableEmptyState from "@/components/common/TableEmptyState";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { typedFetch } from "@/utils/typedFetch";
 
 import { PlusCircle, SendIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -35,14 +35,18 @@ export const InvitePlayerButton = ({ guild_id }: InvitePlayerProps) => {
 
 		debounceTimerRef.current = setTimeout(async () => {
 			try {
-				//const response = await fetch(`/api/characters/${searchTerm}`);
-				const response = await fetch(`/api/guilds/characters/${searchTerm}`);
-				if (response.ok) {
-					const data: Character[] = await response.json();
-					setCharacters(data);
+				const response = await typedFetch<GuildsCharactersNameGETRequest, GuildsCharactersNameGETResponse>(
+					API_ROUTES.guilds.characters.name(searchTerm),
+					{
+						method: "GET",
+					},
+				);
+				if (response.status === 200) {
+					setCharacters(response.characters);
 				}
-			} catch (error) {
-				console.log(error);
+			} catch (e) {
+				const error: Error = e as Error;
+				console.error(error);
 			}
 		}, 500);
 	}, [searchTerm]);
@@ -97,11 +101,7 @@ export const InvitePlayerButton = ({ guild_id }: InvitePlayerProps) => {
 											key={character.id}
 										>
 											<span className="text-popover-foreground/90 text-sm">{character.name}</span>
-											<Button
-												variant="ghost"
-												size="iconsm"
-												onClick={() => invitePlayer(character.id)}
-											>
+											<Button variant="ghost" size="iconsm" onClick={() => invitePlayer(character.id)}>
 												<SendIcon className="h-4 w-4" />
 											</Button>
 										</div>

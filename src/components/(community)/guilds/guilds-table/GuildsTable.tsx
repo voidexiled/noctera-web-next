@@ -39,7 +39,7 @@ export default function TableGuild({ localAccountCharacters, currentPage }: Guil
 				totalPages={Math.ceil(guilds.length / guildsPerPage)}
 			/>
 
-			<div className="flex flex-col rounded-sm border">
+			<div className="flex flex-col rounded-sm ">
 				{pagedGuilds.length > 0 ? (
 					<Table>
 						<TableHeader className="pointer-events-none">

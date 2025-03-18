@@ -1,3 +1,4 @@
+import type { AuthActiveEmailPOSTRequest, AuthActiveEmailPOSTResponse } from "@/app/api/types";
 import configLua from "@/hooks/useConfigLua";
 import { authOptions } from "@/lib/auth";
 import { MailProvider } from "@/lib/nodemailer";
@@ -9,16 +10,14 @@ import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-const lua = configLua();
-
 const create = async (req: Request) => {
 	const session = await getServerSession(authOptions);
-	if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const acc = await prisma.accounts.findUnique({
 		where: { id: Number(session?.user?.id), email_verified: false },
 	});
-	if (!acc) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+	if (!acc) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const token = randomCode(24);
 	const code = randomCode(10);
@@ -35,50 +34,18 @@ const create = async (req: Request) => {
 
 	const link = `${process.env.NEXTAUTH_URL}/email-confirmation/${token}?key=${code}`;
 
-	// await emailProvider.SendMail({
-	// 	to: acc.email,
-	// 	subject: `${lua.serverName} Email confirmation`,
-	// 	html: `
-	// <div>
-	//   Welcome to ${lua.serverName}! Thank you for registering for ${lua.serverName}.
-	//   <br><br>
-	//   To be able to fully experience all features of a ${lua.serverName},<br>
-	//   you need to confirm your account. To do so, please click on the<br>
-	//   following link: <a href="${link}" target="_blank">${link}</a>
-	//   <br><br>
-	//   If clicking on the link does not work in your email program, please<br>
-	//   copy and paste it into your browser. Please make sure to copy the complete link.<br>
-	//   and confirm the request with your email address and the following<br>
-	//   <strong>confirmation key</strong>:<br>
-	//   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br> ${code}<br>
-	//   <br><br>
-	//   Moreover, please read our rules hints at: ${process.env.NEXTAUTH_URL}/rules
-	//   <br><br>
-	//   Kind regards,<br>
-	//   Your ${lua.serverName} Team<br>
-	// </div>
-	// `,
-	// });
 	// ! Send Welcome Email with the steps to activate the account
 
 	return NextResponse.json({}, { status: 200 });
 };
 
-const ValidateSchema = z.object({
-	code: z.string(),
-	token: z.string(),
-});
-
 export async function POST(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-		const { code, token } = ValidateSchema.parse(await request.json());
-		const data = {
-			code,
-			token,
-		};
+		const data: AuthActiveEmailPOSTRequest = await request.json();
+		const { code, token } = data;
 
 		console.log(data);
 		const getToken = await prisma.tokens.findFirst({
@@ -94,15 +61,15 @@ export async function POST(request: NextRequest) {
 		});
 
 		if (getToken?.accounts?.email_verified)
-			return NextResponse.json({ message: "Email already verified" }, { status: 401 });
-		if (!getToken) return NextResponse.json({ message: "Token not valid" }, { status: 401 });
+			return NextResponse.json({ error: "Email already verified" }, { status: 401 });
+		if (!getToken) return NextResponse.json({ error: "Token not valid" }, { status: 401 });
 
 		const createdAt = dayjs(getToken.created_at);
 		const validatedAt = dayjs(getToken.expired_at);
 		const now = dayjs();
 
 		if (now.isAfter(createdAt) && !now.isBefore(validatedAt))
-			return NextResponse.json({ message: "Token expired" }, { status: 401 });
+			return NextResponse.json({ error: "Token expired" }, { status: 401 });
 
 		const key = randomCode(20);
 
@@ -116,26 +83,16 @@ export async function POST(request: NextRequest) {
 			data: { isValid: false },
 		});
 
-		// 	await emailProvider.SendMail({
-		// 		to: getToken.accounts?.email!,
-		// 		subject: `${lua.serverName} You recovery key`,
-		// 		html: `
-		// <div>
-		//   This is your recovery key, save this email or save key elsewhere<br><br>
-		//   ${formatStringWithHyphens(key)}
-		//   <br><br>
-		//   Kind regards,<br>
-		//   Your ${lua.serverName} Team<br>
-		// </div>
-		// `,
-		// 	});
-
 		// ! Send Email verified notification
 
-		return NextResponse.json({ recover_key: key }, { status: 200 });
+		const response: AuthActiveEmailPOSTResponse = {
+			recovery_key: key,
+		};
+
+		return NextResponse.json(response, { status: 200 });
 	} catch (error) {
-		console.log(error);
-		return NextResponse.json({ message: "Error al verificar el token" }, { status: 500 });
+		console.error(error);
+		return NextResponse.json({ error: "Error al verificar el token" }, { status: 500 });
 	}
 }
 

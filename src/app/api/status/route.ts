@@ -17,7 +17,7 @@ async function getStatus() {
 			status: !!status,
 		};
 	} catch (error) {
-		console.error("Ocorreu um erro ao verificar o status do servidor:", error);
+		console.error("Ha ocurrido un error al verificar el status del servidor:", error);
 		return {
 			status: false,
 		};

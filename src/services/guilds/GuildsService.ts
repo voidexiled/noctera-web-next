@@ -45,9 +45,10 @@ export async function getGuildByName(guild_name: string) {
 		});
 		if (!findedGuild) throw new Error("Guild not found");
 		return findedGuild;
-	} catch (err) {
-		const error = err as Error;
+	} catch (e) {
+		const error: Error = e as Error;
 		toast.error(error.message);
+		throw error;
 	}
 }
 
@@ -58,7 +59,8 @@ export async function getManyGuilds<T extends Prisma.guildsFindManyArgs>(
 	try {
 		const guilds = await prisma.guilds.findMany(args);
 		return guilds as Prisma.guildsGetPayload<T>[];
-	} catch (error) {
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error("Error al obtener guilds:", error);
 		throw error;
 	}

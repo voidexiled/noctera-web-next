@@ -27,13 +27,13 @@ const GuildCreationDetails = ({
 	serverName,
 	creationDate,
 }: { serverName: string; creationDate: number }) => (
-	<Typography variant="body1" className="text-sm">
+	<Typography variant="body1" className="text-foreground/80 text-sm">
 		The guild founded on {serverName} in {dayjs.unix(creationDate).format("MMMM D YYYY")}.
 	</Typography>
 );
 
 const GuildBankBalance = ({ balance }: { balance: number }) => (
-	<Typography variant="body1" className="font-bold text-sm">
+	<Typography variant="body1" className="font-bold text-foreground/80 text-sm">
 		Guild Bank Account Balance: {balance} Gold
 	</Typography>
 );

@@ -25,7 +25,7 @@ export const BoostedCard = ({ boosted, kind }: BoostedCardProps) => {
 	return (
 		<div
 			className={cn(
-				"group relative grid h-20 w-full grid-cols-[1fr_auto] rounded-md bg-linear-60 p-2",
+				"group relative grid h-40 w-full grid-rows-[1fr_auto] rounded-md bg-linear-60 p-2 md:h-20 md:grid-cols-[1fr_1fr] ",
 				kind === "boss"
 					? " from-red-900/90 to-fuchsia-900/80"
 					: " from-green-900/90 to-blue-900/80",
@@ -41,13 +41,13 @@ export const BoostedCard = ({ boosted, kind }: BoostedCardProps) => {
 			/>
 			<div
 				className={cn(
-					"relative flex flex-col justify-center",
+					"relative flex flex-col items-center justify-center md:items-start",
 					kind === "boss" ? "text-rose-200" : "text-emerald-200",
 				)}
 			>
 				<motion.span
 					className={cn(
-						"font-semibold text-sm",
+						"font-semibold text-base md:text-sm",
 						kind === "boss" ? "text-rose-200" : "text-emerald-200",
 					)}
 					initial={{ opacity: 0, y: 10 }}
@@ -58,7 +58,7 @@ export const BoostedCard = ({ boosted, kind }: BoostedCardProps) => {
 				</motion.span>
 				<motion.span
 					className={cn(
-						"text-nowrap text-xs",
+						"truncate text-nowrap text-sm md:text-xs",
 						kind === "boss" ? "text-rose-300/80" : "text-emerald-300/80",
 					)}
 					initial={{ opacity: 0, y: 10 }}

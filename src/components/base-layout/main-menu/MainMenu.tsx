@@ -49,11 +49,11 @@ export default function MainMenu() {
 
 				<Item
 					accordionValue="item-4"
-					title="Shop"
+					title="Donate"
 					imgSrc={"/icons/icon-shops.gif"}
 					imgAlt="Webshop"
 				>
-					<ItemChild title="Buy Coins" href={"/shop"} />
+					<ItemChild title="Donate" href={"/donate"} />
 					<ItemChild title="Character Market" href={"/character-market"} />
 					{/* <ItemChild title="Battlepass" href={'/battlepass'} /> */}
 				</Item>

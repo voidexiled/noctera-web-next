@@ -1,12 +1,15 @@
+import type { GuildsCharactersNameGETRequest } from "@/app/api/types";
 import { prisma } from "@/lib/prisma";
+import { GetManyPlayers } from "@/services/players/PlayersService";
 import { convertBigIntsToNumbers } from "@/utils/functions/convertBigIntsToNumbers";
 import { type NextRequest, NextResponse } from "next/server";
 
-type Params = Promise<{ name: string }>;
+type Params = Promise<GuildsCharactersNameGETRequest>;
 
 export async function GET(request: NextRequest, segmentData: { params: Params }) {
 	const params = await segmentData.params;
-	const characters = await prisma.players.findMany({
+
+	const characters = await GetManyPlayers({
 		where: {
 			AND: [
 				{ id: { not: { in: [1, 2, 3, 4, 5] } } },

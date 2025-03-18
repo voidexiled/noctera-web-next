@@ -1,6 +1,9 @@
+import { API_ROUTES } from "@/app/api/routes";
+import type { BattlepassPlayerRewardsCreatePOSTRequest, BattlepassPlayerRewardsCreatePOSTResponse } from "@/app/api/types";
 import { RANK_PRIORITY } from "@/components/(battlepass)/battlepass/lib/consts";
 import type { BattlePassLevel } from "@/components/(battlepass)/battlepass/types/battlepass";
 import type { ToastProps } from "@/components/ui/toast";
+import { typedFetch } from "@/utils/typedFetch";
 import {
 	BATTLEPASS_RANK_ACCESS,
 	BATTLEPASS_TYPE_REWARDS,
@@ -90,9 +93,7 @@ export function getRewardPath(reward_type: BATTLEPASS_TYPE_REWARDS, reward_image
 	return basePath;
 }
 
-export function groupRewardsByLevel(
-	battlepass_rewards: battlepass_seasons_rewards[],
-): BattlePassLevel[] {
+export function groupRewardsByLevel(battlepass_rewards: battlepass_seasons_rewards[]): BattlePassLevel[] {
 	const grouped = battlepass_rewards.reduce((acc, reward) => {
 		const level = acc.find((l) => l.level === reward.level);
 		if (level) {
@@ -133,9 +134,7 @@ export function groupRewardsByLevel(
 	return grouped.sort((a, b) => a.level - b.level);
 }
 
-export const getDisplayRankTextClassname = (
-	rank: (typeof BATTLEPASS_RANK_ACCESS)[keyof typeof BATTLEPASS_RANK_ACCESS] | undefined,
-) => {
+export const getDisplayRankTextClassname = (rank: (typeof BATTLEPASS_RANK_ACCESS)[keyof typeof BATTLEPASS_RANK_ACCESS] | undefined) => {
 	if (rank === BATTLEPASS_RANK_ACCESS.FREE) return "text-battlepass-rank-free";
 	if (rank === BATTLEPASS_RANK_ACCESS.VIP_SILVER) return "text-battlepass-rank-vip-silver ";
 	if (rank === BATTLEPASS_RANK_ACCESS.VIP_GOLD) return "text-battlepass-rank-vip-gold ";
@@ -143,9 +142,7 @@ export const getDisplayRankTextClassname = (
 	return "";
 };
 
-export const getDisplayRankTextContent = (
-	rank: (typeof BATTLEPASS_RANK_ACCESS)[keyof typeof BATTLEPASS_RANK_ACCESS] | undefined,
-) => {
+export const getDisplayRankTextContent = (rank: (typeof BATTLEPASS_RANK_ACCESS)[keyof typeof BATTLEPASS_RANK_ACCESS] | undefined) => {
 	if (rank === BATTLEPASS_RANK_ACCESS.FREE) return "";
 	if (rank === BATTLEPASS_RANK_ACCESS.VIP_SILVER) return ": una elección noble.";
 	if (rank === BATTLEPASS_RANK_ACCESS.VIP_GOLD) return ": brilla como el oro.";
@@ -170,17 +167,11 @@ type BattlepassTasksSortByType = "battlepass_exp_reward";
 
 type BattlepassTasksOrderByType = "ascending" | "descending";
 
-export const getBattlepassTasksSorted = (
-	tasks: battlepass_seasons_tasks[],
-	sort_by: BattlepassTasksSortByType,
-	order_by: BattlepassTasksOrderByType,
-) => {
+export const getBattlepassTasksSorted = (tasks: battlepass_seasons_tasks[], sort_by: BattlepassTasksSortByType, order_by: BattlepassTasksOrderByType) => {
 	if (sort_by === "battlepass_exp_reward") {
 		return tasks.toSorted((a, b) => {
-			if (order_by === "descending")
-				return a.task_battlepass_exp_reward - b.task_battlepass_exp_reward;
-			if (order_by === "ascending")
-				return b.task_battlepass_exp_reward - a.task_battlepass_exp_reward;
+			if (order_by === "descending") return a.task_battlepass_exp_reward - b.task_battlepass_exp_reward;
+			if (order_by === "ascending") return b.task_battlepass_exp_reward - a.task_battlepass_exp_reward;
 
 			return a.task_battlepass_exp_reward - b.task_battlepass_exp_reward;
 		});
@@ -216,9 +207,7 @@ export const getBattlepassRewardsSorted = (
 	return rewards;
 };
 
-export const groupBattlepassRewardsByLevel = (
-	rewards: battlepass_seasons_rewards[],
-): BattlePassLevel[] => {
+export const groupBattlepassRewardsByLevel = (rewards: battlepass_seasons_rewards[]): BattlePassLevel[] => {
 	const grouped = rewards.reduce((acc, reward) => {
 		const level = acc.find((l) => l.level === reward.level);
 		if (level) {
@@ -319,10 +308,7 @@ export const getRewardSuccessfullyClaimedText = (battlepass_reward: battlepass_s
 	}
 };
 
-export const hasAccessToReward = (
-	player_rank: BATTLEPASS_RANK_ACCESS,
-	reward_required_rank: BATTLEPASS_RANK_ACCESS,
-) => {
+export const hasAccessToReward = (player_rank: BATTLEPASS_RANK_ACCESS, reward_required_rank: BATTLEPASS_RANK_ACCESS) => {
 	return RANK_PRIORITY[player_rank] >= RANK_PRIORITY[reward_required_rank];
 };
 
@@ -341,41 +327,40 @@ export const claimRewards = async (
 	errorToast: (reward: battlepass_seasons_rewards) => void,
 ) => {
 	if (!hasAccess || isLocked || !hasRemainingRewards) return;
-	let _isClaimed: boolean = isClaimed;
-	let _hasRemainingRewards: boolean = hasRemainingRewards;
-	const claimRewardsIds = player.player_battlepass_rewards_claimed.map(
-		(reward) => reward.reward_id,
-	);
+	const _isClaimed: boolean = isClaimed;
+	const _hasRemainingRewards: boolean = hasRemainingRewards;
+	const claimRewardsIds = player.player_battlepass_rewards_claimed.map((reward) => reward.reward_id);
 	const availableRewards = battlepassLevel.rewards.filter(
-		(rew) =>
-			hasAccessToReward(player.battlepass_rank, rew.reward_required_access) &&
-			!claimRewardsIds.includes(rew.id),
+		(rew) => hasAccessToReward(player.battlepass_rank, rew.reward_required_access) && !claimRewardsIds.includes(rew.id),
 	);
 	console.log("availableRewards", availableRewards);
-
+	const rewardsToClaim = availableRewards.length;
+	let _claimedRewards = 0;
 	for (const rew of availableRewards) {
-		const res = await fetch("/api/battlepass/player/rewards/create", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
+		const res = await typedFetch<BattlepassPlayerRewardsCreatePOSTRequest, BattlepassPlayerRewardsCreatePOSTResponse>(
+			API_ROUTES.battlepass.player.rewards.create._,
+			{
+				method: "POST",
+				body: {
+					player_id: player.id,
+					season_id: player.player_battlepass_progress[0].season_id,
+					reward_id: rew.id,
+				},
 			},
-			body: JSON.stringify({
-				player_id: player.id,
-				season_id: player.player_battlepass_progress[0].season_id,
-				reward_id: rew.id,
-			}),
-		});
+		);
 
-		if (res.ok) {
-			_isClaimed = true;
-			_hasRemainingRewards = false;
-
+		if (res.status === 200) {
+			_claimedRewards++;
 			successToast(rew as battlepass_seasons_rewards);
 		} else {
 			errorToast(rew as battlepass_seasons_rewards);
 		}
-		return { isClaimed: _isClaimed, hasRemainingRewards: _hasRemainingRewards };
 	}
+	if (_claimedRewards === rewardsToClaim) {
+		return { isClaimed: true, hasRemainingRewards: false };
+	}
+
+	return { isClaimed: false, hasRemainingRewards: true };
 };
 
 // export const claimRewards = async (
@@ -442,9 +427,7 @@ export const calculateCurrentItemRemainingRewards = (
 		return hasAccessToReward(player.battlepass_rank, reward.reward_required_access);
 	});
 
-	const claimedRewards = player.player_battlepass_rewards_claimed.filter((reward) =>
-		battlepassLevelRewardsIds.includes(reward.reward_id),
-	);
+	const claimedRewards = player.player_battlepass_rewards_claimed.filter((reward) => battlepassLevelRewardsIds.includes(reward.reward_id));
 
 	console.log("claimed", claimedRewards.length);
 	console.log(totalRewards.length);

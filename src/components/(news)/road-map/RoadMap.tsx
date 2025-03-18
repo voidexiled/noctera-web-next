@@ -30,7 +30,8 @@ export const RoadMap = () => {
 					}));
 				}
 			}
-		} catch (error) {
+		} catch (e) {
+			const error: Error = e as Error;
 			console.log("Error:", error);
 		}
 	};

@@ -48,8 +48,9 @@ export async function createGuild(formData: { name: string; leader: string }) {
 
 		await prisma.guilds.create({ data: creationData });
 		await revalidateAndRedirect(formData.name);
-	} catch (error) {
-		return handleDatabaseError("Create Guild");
+	} catch (e) {
+		const error: Error = e as Error;
+		return handleDatabaseError(error.message);
 	}
 }
 
@@ -60,8 +61,9 @@ export async function listPlayers(account_id: number) {
 			select: { id: true, name: true },
 		});
 		return { players };
-	} catch (error) {
-		return handleDatabaseError("List Players");
+	} catch (e) {
+		const error: Error = e as Error;
+		return handleDatabaseError(error.message);
 	}
 }
 
@@ -99,14 +101,15 @@ export async function updateGuild(id: number, formData: FormData) {
 			})
 			.catch((err) => {
 				const error = err as Error;
-				console.log(error);
+				console.error(error);
 				throw error;
 			});
 
 		await revalidateAndRedirect(guild.name);
-	} catch (error) {
-		console.log(error);
-		return handleDatabaseError("Update Guild");
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error(error);
+		return handleDatabaseError(error.message);
 	}
 }
 
@@ -114,8 +117,9 @@ export async function deleteGuild(id: number) {
 	try {
 		await prisma.guilds.delete({ where: { id } });
 		await revalidateAndRedirect("");
-	} catch (error) {
-		return handleDatabaseError("Delete Guild");
+	} catch (e) {
+		const error: Error = e as Error;
+		return handleDatabaseError(error.message);
 	}
 }
 
@@ -129,8 +133,9 @@ async function handlePlayerGuildInvite(
 			select: { guilds: { select: { name: true } } },
 		});
 		await revalidateAndRedirect(data.guilds.name);
-	} catch (error) {
-		return handleDatabaseError("Manage Player/Guild Invitations");
+	} catch (e) {
+		const error: Error = e as Error;
+		return handleDatabaseError(error.message);
 	}
 }
 

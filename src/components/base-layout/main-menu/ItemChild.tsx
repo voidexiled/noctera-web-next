@@ -13,8 +13,11 @@ type ItemChildProps = {
 
 export default function ItemChild({ title, className, href }: ItemChildProps) {
 	return (
-		<Button variant="itemchild" asChild className={cn("justify-between ", className)}>
-			<Link href={href ?? "/"}> {title}</Link>
+		<Button size="sm" variant="itemchild" asChild className={cn("justify-between ", className)}>
+			<Link href={href ?? "/"} className="truncate text-nowrap">
+				{" "}
+				{title}
+			</Link>
 		</Button>
 	);
 }

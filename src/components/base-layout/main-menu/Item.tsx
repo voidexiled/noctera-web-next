@@ -29,7 +29,7 @@ export default function Item({
 }: ItemProps) {
 	return (
 		<AccordionItem value={accordionValue} className="max-w-full overflow-hidden border-none p-0 ">
-			<AccordionTrigger className="cursor-pointer rounded-sm bg-linear-60 from-card to-background p-1 px-2 text-card-foreground decoration-none">
+			<AccordionTrigger className="cursor-pointer rounded-sm bg-linear-60 from-card to-background px-4 py-2 text-card-foreground decoration-none md:px-2 md:py-1">
 				<div className={cn("flex flex-row items-center gap-2", className)}>
 					<Image
 						src={imgSrc ?? ""}
@@ -37,7 +37,9 @@ export default function Item({
 						height={imgHeight ?? 24}
 						alt={imgAlt ?? ""}
 					/>
-					<span className="relative overflow-hidden text-ellipsis ">{title}</span>
+					<span className="relative overflow-hidden truncate text-ellipsis text-nowrap">
+						{title}
+					</span>
 				</div>
 			</AccordionTrigger>
 			<AccordionContent>

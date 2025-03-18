@@ -15,7 +15,7 @@ export async function GET(request: Request, segmentData: { params: Params }) {
 		const url = new URL(request.url);
 
 		const page = Number.parseInt(url.searchParams.get("page") || "1");
-		const postsPerPage = Number.parseInt(url.searchParams.get("limit") || "2");
+		const postsPerPage = Number.parseInt(url.searchParams.get("limit") || "3");
 		const skip = (page - 1) * postsPerPage;
 
 		const posts = await prisma.posts.findMany({

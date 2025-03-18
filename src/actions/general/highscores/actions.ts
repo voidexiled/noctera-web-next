@@ -49,9 +49,10 @@ export async function fetchCharacters({ currentPage, vocation, category }: Fetch
 			players,
 			totalPage: Math.ceil(count / ITEMS_PER_PAGE),
 		};
-	} catch (error) {
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch character data.");
+		throw error;
 	}
 }
 
@@ -68,8 +69,9 @@ export async function fetchPlayersTopFive() {
 		});
 
 		return players;
-	} catch (error) {
-		console.error("Database Error:", error);
-		throw new Error("Failed to fetch character data.");
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error("Database Error:", error.message);
+		throw error;
 	}
 }

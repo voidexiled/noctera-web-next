@@ -9,7 +9,7 @@ type GuildActionsProps = {
 };
 export async function GuildActions({ userStatus, guild }: GuildActionsProps) {
 	return (
-		<div className="flex flex-col gap-2 rounded border p-2 sm:justify-between md:flex-row">
+		<div className="flex flex-col gap-2 rounded px-2 sm:justify-between md:flex-row">
 			<GuestActions guild_name={guild.name} />
 			<LeaderActions
 				guild_id={guild.id}

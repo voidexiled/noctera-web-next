@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getAccount, updateAccount } from "@/services/accounts/AccountsService";
+import { getAccountUnique, updateAccount } from "@/services/accounts/AccountsService";
 import {
 	createPlayerStoreHistory,
 	updatePlayerStoreHistory,
@@ -54,7 +54,7 @@ export async function deliverOrder({ orderID }: { orderID: string }) {
 
 	if (!order) return null;
 
-	const userAccount = await getAccount({
+	const userAccount = await getAccountUnique({
 		where: { id: +order.account_id },
 		select: {
 			id: true,

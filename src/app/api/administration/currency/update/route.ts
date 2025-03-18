@@ -1,4 +1,4 @@
-import type { CurrencyFreaksResponseType } from "@/app/account-manager/admin/shop/(pages)/settings/components/CurrenciesActionsSection";
+import type { CurrencyFreaksResponseType } from "@/app/(default)/account-manager/admin/shop/(pages)/settings/components/CurrenciesActionsSection";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { Prisma, exchange_rates } from "@prisma/client";
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
 		return NextResponse.json({ message: "Currency rates updated successfully!" }, { status: 200 });
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return NextResponse.json({ message: "Error updating currency rates" }, { status: 500 });
 	}
 }

@@ -26,8 +26,9 @@ export async function getOnlinePlayers({ currentPage }: { currentPage: number })
 		});
 
 		return { players, totalPage: Math.ceil(Number(count) / ITEMS_PER_PAGE) };
-	} catch (error) {
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch orders data.");
+		throw error;
 	}
 }

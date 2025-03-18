@@ -68,7 +68,8 @@ export const ManageGuild = ({ guild, defaultValues }: ManageGuildProps) => {
 			});
 			reset(defaultValues);
 		} catch (e) {
-			const error = e as Error;
+			const error: Error = e as Error;
+			console.error(error);
 		}
 	}
 
@@ -79,7 +80,7 @@ export const ManageGuild = ({ guild, defaultValues }: ManageGuildProps) => {
 	return (
 		<Dialog open={showModal} onOpenChange={handleModal}>
 			<DialogTrigger asChild>
-				<Button className="w-full" onClick={() => setShowModal(false)}>
+				<Button className="w-full" onClick={() => setShowModal(false)} size="sm">
 					Manager Guild
 				</Button>
 			</DialogTrigger>

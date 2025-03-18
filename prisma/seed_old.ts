@@ -3,7 +3,7 @@ import { encryptPassword } from '../src/utils/functions/criptoPassword';
 //import { randomKey } from '@/utils/functions/randomKey';
 import dayjs from 'dayjs';
 import type { Args, GetPayloadResult } from '@prisma/client/runtime/library';
-import { countries} from "../src/app/account-manager/(manager)/components/data/countries";
+import { countries} from "../src/components/(account-manager)/(manager)/data/countries";
 
 
 //import config from '@/lib/config';

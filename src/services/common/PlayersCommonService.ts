@@ -15,8 +15,8 @@ export async function getLatestKills(
 			},
 		});
 		return latestKills;
-	} catch (err) {
-		const error = err as Error;
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error(error);
 		return [];
 	}

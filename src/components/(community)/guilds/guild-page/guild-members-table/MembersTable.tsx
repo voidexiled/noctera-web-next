@@ -23,7 +23,7 @@ export async function MembersTable({ members, ranks, userStatus }: MembersTableP
 	const shouldRenderMemberOptions = userStatus && userStatus.level >= 2;
 
 	return (
-		<div className="flex flex-col rounded-sm border">
+		<div className="flex flex-col rounded-sm">
 			<div className="flex items-center justify-between bg-background p-2 text-sm">
 				Guild Members
 			</div>

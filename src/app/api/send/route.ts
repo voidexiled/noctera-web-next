@@ -1,14 +1,13 @@
-import VerifyEmail from "@/app/emails/VerifyEmail";
+import VerifyEmail from "@/app/(default)/emails/VerifyEmail";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getAccount } from "@/services/accounts/AccountsService";
+import { getAccountUnique } from "@/services/accounts/AccountsService";
 import { randomCode } from "@/utils/functions/randomCode";
 import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { VerifyEmailTemplate } from "../../../components/resend/VerifyEmailTemplate";
 
 const resend = new Resend(process.env.NO_REPLY_RESEND_KEY as string);
 
@@ -23,7 +22,7 @@ export async function POST(request: NextRequest) {
 
 		if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-		const acc = await getAccount({
+		const acc = await getAccountUnique({
 			where: { id: Number(session?.user?.id), email_verified: false },
 			select: {
 				id: true,
@@ -51,7 +50,7 @@ export async function POST(request: NextRequest) {
 			},
 		});
 
-		const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/email-confirmation/${token}?key=${code}`;
+		const verificationUrl = `${process.env.NEXTAUTH_URL}/email-confirmation/${token}?key=${code}`;
 
 		const emailContent = VerifyEmail({
 			accountname: accountName,

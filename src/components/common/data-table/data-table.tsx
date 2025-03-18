@@ -35,6 +35,8 @@ type DataTableProps<TData, TValue> = {
 	rowClassName?: ClassValue | ClassValue[];
 	onClickBuilder?: (row: TData) => void;
 	disablePagination?: boolean;
+	tableClassName?: ClassValue | ClassValue[];
+	globalClassName?: ClassValue | ClassValue[];
 };
 
 export function DataTable<TData, TValue>({
@@ -46,6 +48,8 @@ export function DataTable<TData, TValue>({
 	rowsPerPage,
 	onClickBuilder,
 	disablePagination,
+	tableClassName,
+	globalClassName,
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -83,17 +87,17 @@ export function DataTable<TData, TValue>({
 	console.log(pagination);
 
 	return (
-		<Card className="w-full">
-			<CardHeader>
+		<Card className="w-full bg-none">
+			<CardHeader className={cn(globalClassName)}>
 				{title && <CardTitle>{title}</CardTitle>}
-				{renderToolbar && <div className="mt-4">{renderToolbar()}</div>}
+				{renderToolbar && <div className={cn("mt-4", globalClassName)}>{renderToolbar()}</div>}
 			</CardHeader>
 			<CardContent>
-				<div className="rounded-md border">
-					<Table>
-						<TableHeader className="sticky top-0 z-10">
+				<div className={cn("rounded-md border bg-card", globalClassName, tableClassName)}>
+					<Table className={cn("", globalClassName, tableClassName)}>
+						<TableHeader className={cn("sticky top-0 z-10", globalClassName)}>
 							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
+								<TableRow key={headerGroup.id} className={cn(globalClassName)}>
 									{headerGroup.headers.map((header) => {
 										const meta = header.column.columnDef.meta as ColumnMeta<TData> | undefined;
 										return (
@@ -103,6 +107,7 @@ export function DataTable<TData, TValue>({
 													width: header.getSize() !== 150 ? header.getSize() : undefined,
 												}}
 												className={cn(
+													globalClassName,
 													meta?.align === "right" && "text-right",
 													meta?.align === "center" && "text-center",
 													meta?.className,
@@ -118,14 +123,19 @@ export function DataTable<TData, TValue>({
 								</TableRow>
 							))}
 						</TableHeader>
-						<TableBody>
+						<TableBody className={cn(globalClassName)}>
 							{table.getRowModel().rows?.length ? (
 								table.getRowModel().rows.map((row) => {
 									return (
 										<TableRow
 											key={row.id}
 											data-state={row.getIsSelected() && "selected"}
-											className={cn("h-24", onClickBuilder && "hover:cursor-pointer", rowClassName)}
+											className={cn(
+												"h-24",
+												onClickBuilder && "hover:cursor-pointer",
+												globalClassName,
+												rowClassName,
+											)}
 											onClick={() => {
 												onClickBuilder?.(row.original);
 											}}
@@ -159,7 +169,7 @@ export function DataTable<TData, TValue>({
 					</Table>
 				</div>
 				{!disablePagination && (
-					<div className="flex items-center justify-between py-4">
+					<div className={cn("flex items-center justify-between py-4", globalClassName)}>
 						<div className="text-muted-foreground text-sm">
 							Showing {table.getRowModel().rows.length} of {data.length} entries
 						</div>
@@ -169,6 +179,7 @@ export function DataTable<TData, TValue>({
 								size="sm"
 								onClick={() => table.previousPage()}
 								disabled={!table.getCanPreviousPage()}
+								className={cn(globalClassName)}
 							>
 								Previous
 							</Button>
@@ -177,6 +188,7 @@ export function DataTable<TData, TValue>({
 								size="sm"
 								onClick={() => table.nextPage()}
 								disabled={!table.getCanNextPage()}
+								className={cn(globalClassName)}
 							>
 								Next
 							</Button>

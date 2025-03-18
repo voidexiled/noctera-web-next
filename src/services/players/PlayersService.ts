@@ -3,6 +3,17 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 
+export async function GetFirstPlayer<T extends Prisma.playersFindFirstArgs>(args: T): Promise<Prisma.playersGetPayload<T>> {
+	try {
+		const player = await prisma.players.findFirst(args);
+		return player as Prisma.playersGetPayload<T>;
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error("Error al obtener el primer jugador:", error);
+		throw error;
+	}
+}
+
 export async function getPlayerById(id: number, select?: Prisma.playersSelect) {
 	try {
 		const player = await prisma.players.findFirst({
@@ -11,9 +22,10 @@ export async function getPlayerById(id: number, select?: Prisma.playersSelect) {
 		});
 
 		return player;
-	} catch (err) {
-		const error = err as Error;
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error(error);
+		throw error;
 	}
 }
 
@@ -25,18 +37,13 @@ type GetManyPlayersParams = {
 	skip?: number;
 };
 
-export async function getManyPlayers({ where, select, orderBy, take, skip }: GetManyPlayersParams) {
+export async function GetManyPlayers<T extends Prisma.playersFindManyArgs>(args: T): Promise<Prisma.playersGetPayload<T>[]> {
 	try {
-		const players = await prisma.players.findMany({
-			where,
-			select,
-			orderBy,
-			take,
-			skip,
-		});
-		return players;
-	} catch (err) {
-		const error = err as Error;
-		console.log(error.message);
+		const players = await prisma.players.findMany(args);
+		return players as Prisma.playersGetPayload<T>[];
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error(error);
+		throw error;
 	}
 }

@@ -51,22 +51,21 @@ export default function CreateNewRankForm({ guild_id, onSuccessAction }: CreateN
 			// document.getElementById('closeDialog')?.click();
 			router.refresh();
 		} catch (e) {
-			console.error(e);
+			const error: Error = e as Error;
+			console.error(error);
 		}
 	}
 
 	return (
-		<>
-			<FormProvider
-				methods={methods}
-				onSubmit={handleSubmit(onSubmit)}
-				className="flex flex-row items-end "
-			>
-				<RHFTextField name="rank" label="Create new Rank" />
-				<Button disabled={isSubmitting} size={"default"}>
-					Create
-				</Button>
-			</FormProvider>
-		</>
+		<FormProvider
+			methods={methods}
+			onSubmit={handleSubmit(onSubmit)}
+			className="flex flex-row items-end "
+		>
+			<RHFTextField name="rank" label="Create new Rank" />
+			<Button disabled={isSubmitting} size={"default"}>
+				Create
+			</Button>
+		</FormProvider>
 	);
 }

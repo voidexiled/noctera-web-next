@@ -1,16 +1,14 @@
 import { createReadStream, existsSync } from "node:fs";
 import { join } from "node:path";
+import type { GuildsImagesFilenameGETRequest, GuildsImagesFilenameGETResponse } from "@/app/api/types";
 import { type NextRequest, NextResponse } from "next/server";
 
-type Params = Promise<{ params: { filename: string } }>;
+type Params = Promise<GuildsImagesFilenameGETRequest>;
 
-export async function GET(
-	request: NextRequest,
-	segmentData: { params: Promise<{ filename: string }> },
-) {
+export async function GET(request: NextRequest, segmentData: { params: Params }) {
 	const { filename } = await segmentData.params;
-	console.log(`fileName ${filename}`);
-	console.log(`fileName ${typeof filename}`);
+	// console.log(`fileName ${filename}`);
+	// console.log(`fileName ${typeof filename}`);
 	if (!filename || typeof filename !== "string") {
 		return NextResponse.json({ error: "No valid filename provided" }, { status: 400 });
 	}
@@ -27,7 +25,7 @@ export async function GET(
 		const contentType = `image/${filename.split(".").pop()}`;
 		console.log(`contentType ${contentType}`);
 
-		const readableStream = new ReadableStream({
+		const readableStream: GuildsImagesFilenameGETResponse = new ReadableStream({
 			start(controller) {
 				fileStream.on("data", (chunk) => {
 					controller.enqueue(chunk);

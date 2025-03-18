@@ -15,14 +15,12 @@ export const HighscoresCard = ({ players }: HighscoresCardType) => {
 	const emptyRows = new Array(5 - players.length).fill(null);
 
 	return (
-		<Card className="overflow-hidden rounded-md border-none">
+		<Card className="overflow-hidden rounded-md border-none px-0 md:px-0">
 			<div className="relative z-[1]">
 				<CardHeader className="pb-2">
-					<CardTitle className="text-base text-card-foreground/90 leading-none">
-						Highscores
-					</CardTitle>
+					<CardTitle className="text-card-foreground/90 leading-none">Highscores</CardTitle>
 				</CardHeader>
-				<CardContent className="gap-0 p-0">
+				<CardContent className="gap-0 px-0 md:px-0">
 					<div className="grid grid-cols-1 grid-rows-5">
 						{players.map((player, index) => {
 							const playerOutfit: Outfit = {
@@ -37,7 +35,7 @@ export const HighscoresCard = ({ players }: HighscoresCardType) => {
 							return (
 								<Link
 									key={player.id}
-									className="grid h-13 grid-cols-[15px_55px_1fr] items-center justify-start overflow-hidden px-2 py-1 transition-colors delay-0 duration-150 hover:bg-blue-600/10"
+									className="grid h-13 grid-cols-[15px_55px_1fr] items-center justify-start overflow-hidden px-2 py-1 transition-colors delay-0 duration-150 hover:bg-blue-600/10 active:bg-blue-600/10"
 									href={`/characters/${player.name}`}
 								>
 									<div className="relative grid h-full w-full">

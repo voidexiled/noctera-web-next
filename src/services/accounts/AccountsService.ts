@@ -20,19 +20,17 @@ export async function getAccounts({ select, orderBy, take, skip }: GetAccountsPr
 	return accounts;
 }
 
-type GetAccountProps = {
-	select?: Prisma.accountsSelect;
-	where?: Prisma.accountsWhereUniqueInput;
-};
-
-export async function getAccount({ select, where }: GetAccountProps) {
-	if (!where) return null;
-	const account = await prisma.accounts.findUnique({
-		where,
-		select,
-	});
-
-	return account;
+export async function getAccountUnique<T extends Prisma.accountsFindUniqueArgs>(
+	args: T,
+): Promise<Prisma.accountsGetPayload<T>> {
+	try {
+		const account = await prisma.accounts.findUnique(args);
+		return account as Prisma.accountsGetPayload<T>;
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error("Error al obtener la cuenta:", error);
+		throw error;
+	}
 }
 
 type UpdateAccountProps = {

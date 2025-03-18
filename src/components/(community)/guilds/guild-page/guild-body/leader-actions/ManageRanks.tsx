@@ -61,7 +61,8 @@ export const ManageRanks = ({ guild }: ManageRanksProps) => {
 			router.refresh();
 			document.getElementById("closeDialog")?.click();
 		} catch (e) {
-			console.error(e);
+			const error: Error = e as Error;
+			console.error(error);
 		}
 	}
 
@@ -86,7 +87,8 @@ export const ManageRanks = ({ guild }: ManageRanksProps) => {
 			toast.error("An internal error ocurred while deleting rank");
 			router.refresh();
 		} catch (e) {
-			console.error(e);
+			const error: Error = e as Error;
+			console.error(error);
 		}
 	}
 
@@ -110,7 +112,7 @@ export const ManageRanks = ({ guild }: ManageRanksProps) => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button>Manager Ranks</Button>
+				<Button size="sm">Manager Ranks</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>

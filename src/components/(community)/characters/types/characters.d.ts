@@ -4,4 +4,5 @@ export type Character = {
 	vocation: number;
 	level: number;
 	looktype: number;
+	hidden: boolean;
 };

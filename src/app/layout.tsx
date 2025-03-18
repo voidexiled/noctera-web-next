@@ -4,32 +4,17 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Provider } from "@/providers/providers";
-
-import { FloatingAdminToolbar } from "@/components/admin/FloatingAdminToolbar";
-import { AdminToolbarProvider } from "@/components/admin/context/AdminToolbarContext";
-import { Banner } from "@/components/base-layout/banner/Banner";
-import { TransparentContainer } from "@/components/base-layout/common/TransparentContainer";
-import { Footer } from "@/components/base-layout/footer/Footer";
-import { Header } from "@/components/base-layout/header/Header";
-import { LeftSidebar } from "@/components/base-layout/left-sidebar/LeftSidebar";
-import { RightSidebar } from "@/components/base-layout/right-sidebar/RightSidebar";
 import configLua from "@/hooks/useConfigLua";
-import { getBoostedBoss, getBoostedCreature } from "@/services/BoostedCreaturesService";
-import { getServerStatus, getTotalOnline } from "@/services/ServerStatusService";
 
-import { fetchPlayersTopFive } from "@/actions/general/highscores/actions";
-import DatabaseErrorPage from "@/components/base-layout/DabaseErrorPage";
+import { cn } from "@/lib/utils";
 import type React from "react";
 import { Toaster } from "sonner";
-import getServerSaveTime, { cn } from "../lib/utils";
 
 const lua = configLua();
 
 export const revalidate = 0;
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], weight: "400" });
 export const metadata: Metadata = {
 	title: {
 		default: lua.serverName,
@@ -42,58 +27,19 @@ export default async function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	let pageContent: React.ReactNode | null | React.ReactNode[];
-
-	try {
-		const [serverSaveTime, isServerOnline, playerOnlineCount, boostedCreature, boostedBoss] =
-			await Promise.all([
-				getServerSaveTime(lua),
-				getServerStatus(),
-				getTotalOnline(),
-				getBoostedCreature(),
-				getBoostedBoss(),
-			]);
-		const nowDate = new Date();
-
-		const highscorePlayers = await fetchPlayersTopFive();
-
-		pageContent = (
-			<Provider>
-				<ScrollArea className="h-screen w-full px-2">
-					<Banner />
-					<main className="mx-auto grid max-w-(--breakpoint-xl) grid-cols-1 space-y-2 md:grid-cols-12 md:space-x-2 md:space-y-0 xl:max-w-(--breakpoint-xl)">
-						<LeftSidebar />
-						<article className="col-span-8 space-y-2 pb-8">
-							<Header isServerOnline={isServerOnline} playerOnlineCount={playerOnlineCount} />
-							<TransparentContainer as="section">{children}</TransparentContainer>
-							<Footer />
-						</article>
-						<RightSidebar
-							serverSaveTime={{
-								hour: serverSaveTime.serverSaveHours,
-								min: serverSaveTime.serverSaveMinutes,
-								sec: serverSaveTime.serverSaveSeconds,
-							}}
-							nowDate={nowDate}
-							boostedCreature={boostedCreature}
-							boostedBoss={boostedBoss}
-							highscorePlayers={highscorePlayers}
-						/>
-					</main>
-				</ScrollArea>
-				<AdminToolbarProvider>
-					<FloatingAdminToolbar />
-				</AdminToolbarProvider>
-			</Provider>
-		);
-	} catch (error: unknown) {
-		pageContent = <DatabaseErrorPage />; // Usa el componente DatabaseErrorPage
-	}
-
 	return (
 		<html lang="es" className="dark">
-			<body className={cn(inter.className, " text-foreground")}>
-				{pageContent}
+			<link rel="canonical" href="https://noctera-global.com" />
+			<meta
+				name="description"
+				content="Join now to Noctera Global, a free and open-source MMORPG. Experience thrilling online adventure, quests, and a vibrant community. Explore numerous maps and new features, all in a dynamic and engaging gaming environment."
+			/>
+			<meta
+				name="keywords"
+				content="noctera, global, tibia, mmorpg, server, free, top, ot, online, wiki, 13.40, 13.20, 13.00, 12.40, 12.20, 12.00, 11.40, 11.20, 11.00, 10.40, 10.20, 10.00, 9.40, 9.20, 9.00, 8.40, 8.20, 8.00, 7.40, 7.20, 7.00, 6.40, 6.20, 6.00, 5.40, 5.20, 5.00"
+			/>
+			<body className={cn(inter.className, "text-foreground")}>
+				{children}
 				<Toaster
 					position="bottom-center"
 					theme="dark"

@@ -1,27 +1,22 @@
+import type {
+	ShopOrdersUpdateStatusPOSTRequest,
+	ShopOrdersUpdateStatusPOSTResponse,
+} from "@/app/api/types";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { ORDER_STATUS } from "@prisma/client";
+import type { ORDER_STATUS } from "@prisma/client";
 import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-const validStatuses = Object.values(ORDER_STATUS) as [string, ...string[]];
-
-const schema = z.object({
-	paymentIntentId: z.string(),
-	paymentIntentClientSecret: z.string(),
-	newStatus: z.enum(validStatuses),
-});
 
 export async function POST(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 		if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-		const { paymentIntentId, paymentIntentClientSecret, newStatus } = schema.parse(
-			await request.json(),
-		);
+		const data: ShopOrdersUpdateStatusPOSTRequest = await request.json();
+		const { paymentIntentId, paymentIntentClientSecret, newStatus } = data;
 
 		const order = await prisma.orders.findFirst({
 			where: { orderID: paymentIntentId, paymentClientSecret: paymentIntentClientSecret },
@@ -38,7 +33,7 @@ export async function POST(request: NextRequest) {
 
 		const updatedOrder = await prisma.orders.update({
 			where: { id: order.id },
-			data: { status: newStatus as ORDER_STATUS },
+			data: { status: newStatus },
 		});
 
 		if (!updatedOrder)
@@ -46,7 +41,7 @@ export async function POST(request: NextRequest) {
 
 		return NextResponse.json(updatedOrder);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return NextResponse.json({ error: "Failed to update order status." }, { status: 500 });
 	}
 }

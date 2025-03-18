@@ -14,7 +14,7 @@ type GuildBodyProps = {
 
 export async function GuildBody({ guild, ownerPlayer, userStatus }: GuildBodyProps) {
 	return (
-		<div className="flex gap-2 rounded border p-2 sm:justify-between">
+		<div className="flex gap-2 rounded p-2 pb-4 sm:justify-between">
 			<GuildInformation guild={guild} ownerName={ownerPlayer.name} />
 			<GuildActions guild={guild} userStatus={userStatus} />
 		</div>

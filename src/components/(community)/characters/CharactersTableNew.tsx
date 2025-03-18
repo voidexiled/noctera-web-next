@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import { getVocation } from "@/utils/functions/getVocations";
 import type { players } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const characterColumns = createColumns<Character>({
@@ -77,6 +78,7 @@ export const CharactersTable = ({
 	searchTerms: string;
 	setSearchTermsAction: (searchTerms: string) => void;
 }) => {
+	const router = useRouter();
 	const [characterSearch, setCharacterSearch] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState("5");
 	const [filteredCharacters, setFilteredCharacters] = useState<Character[]>([]);
@@ -97,7 +99,9 @@ export const CharactersTable = ({
 			columns={characterColumns}
 			rowsPerPage={+rowsPerPage}
 			data={filteredCharacters}
-			onClickBuilder={(row) => `/characters/${row.name}`}
+			onClickBuilder={(row) => {
+				router.push(`/characters/${row.name}`);
+			}}
 			rowClassName="h-20"
 			renderToolbar={() => {
 				return (

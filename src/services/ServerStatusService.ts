@@ -11,7 +11,8 @@ export const getServerStatus = async () => {
 		const host = lua.ip.split(" ")[0];
 		const port = +lua.statusProtocolPort;
 		return await statusServer.getStatus(host, port);
-	} catch (error) {
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error("Error checking server status:", error);
 		return null;
 	}
@@ -20,7 +21,8 @@ export const getServerStatus = async () => {
 export const getTotalOnline = async () => {
 	try {
 		return await prisma.players_online.count();
-	} catch (error) {
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error("Error counting online players:", error);
 		return 0;
 	}

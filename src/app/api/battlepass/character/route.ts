@@ -1,5 +1,8 @@
+import type { BattlepassCharacterPOSTRequest, BattlepassCharacterPOSTResponse } from "@/app/api/types";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { GetFirstPlayer } from "@/services/players/PlayersService";
+import type { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -7,43 +10,40 @@ export async function POST(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 		const user = session?.user;
-		if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-		const { id, season_id } = (await request.json()) as {
-			id: number;
-			season_id: number;
-		};
+		const body: BattlepassCharacterPOSTRequest = await request.json();
 
-		const character = await prisma.players
-			.findUnique({
-				where: { id: Number(id) },
-				select: {
-					name: true,
-					level: true,
-					id: true,
-					battlepass_rank: true,
-					vocation: true,
-					player_battlepass_progress: {
-						where: {
-							season_id: Number(season_id),
-						},
-					},
-					player_battlepass_tasks: {
-						where: {
-							season_id: Number(season_id),
-						},
-					},
-					player_battlepass_rewards_claimed: {
-						where: {
-							season_id: Number(season_id),
-						},
+		const { id, season_id } = body;
+
+		const character = await GetFirstPlayer({
+			where: { id: +id },
+			select: {
+				name: true,
+				level: true,
+				id: true,
+				battlepass_rank: true,
+				vocation: true,
+			},
+			include: {
+				player_battlepass_progress: {
+					where: {
+						season_id: +season_id,
 					},
 				},
-			})
-			.catch((err) => {
-				console.log(err);
-				throw new Error("Error fetching character");
-			});
+				player_battlepass_tasks: {
+					where: {
+						season_id: +season_id,
+					},
+				},
+				player_battlepass_rewards_claimed: {
+					where: {
+						season_id: +season_id,
+					},
+				},
+			},
+		});
+
 		console.log("character: ", character);
 
 		if (!character) {
@@ -53,9 +53,14 @@ export async function POST(request: NextRequest) {
 			});
 		}
 
-		return NextResponse.json({ player: character, status: 200 });
-	} catch (error) {
+		const response: BattlepassCharacterPOSTResponse = {
+			player: character,
+		};
+
+		return NextResponse.json(response, { status: 200 });
+	} catch (e) {
+		const error: Error = e as Error;
 		console.error("Error during character fetch: ", error);
-		return new Response((error as Error).message, { status: 500 });
+		return NextResponse.json({ error: error.message }, { status: 500 });
 	}
 }

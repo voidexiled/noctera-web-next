@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
 
 export const ReasignLeadership = () => {
-	return <Button>Reasign Leadership</Button>;
+	return <Button size="sm">Reasign Leadership</Button>;
 };

@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { type FieldValues, FormProvider as Form, type UseFormReturn } from "react-hook-form";

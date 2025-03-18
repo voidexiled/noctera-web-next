@@ -16,10 +16,13 @@ export const BattlepassLevelSeparator = () => {
 
 	return (
 		<div
-			className="z-40 flex h-full flex-row items-start justify-center bg-card/80 font-bold "
-			style={{
-				width: groupedRewards.length * 182,
-			}}
+			className={cn(
+				"z-40 flex h-full flex-row items-start justify-center bg-card/80 font-bold",
+				`w-[${groupedRewards.length * 182}px]`,
+			)}
+			// style={{
+			// 	width: groupedRewards.length * 182,
+			// }}
 		>
 			{groupedRewards.map((reward, index) => {
 				const levelPassed = reward.level <= playerCurrentBattlepassLevel;

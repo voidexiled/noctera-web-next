@@ -15,7 +15,7 @@ export default async function LoginBox() {
 					<>
 						{session.user.role === "admin" && (
 							<Button variant="adminpanel" asChild className="rounded-md">
-								<Link href={"/account-manager/admin"}>Admin Panel</Link>
+								<Link href={"/admin"}>Admin Panel</Link>
 							</Button>
 						)}
 						<Button variant="myaccount" asChild className="rounded-md">

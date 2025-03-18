@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const Banner = () => {
 	return (
-		<div className="mx-auto mt-10 mb-4 hidden max-w-(--breakpoint-xl) grid-cols-1 space-y-2 sm:grid sm:grid-cols-12 sm:space-x-2 sm:space-y-0">
+		<div className="mx-auto mt-10 mb-4 grid max-w-(--breakpoint-xl) grid-cols-1 space-y-2 sm:grid-cols-12 sm:space-x-2 sm:space-y-0">
 			<div className="col-span-2 space-y-2">
 				<Link href="/">
 					{/* <Image

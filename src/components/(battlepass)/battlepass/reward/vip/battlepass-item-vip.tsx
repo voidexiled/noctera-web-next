@@ -1,9 +1,6 @@
 "use client";
 
-import {
-	BattlepassContext,
-	type BattlepassContextType,
-} from "@/components/(battlepass)/battlepass/context/BattlepassContext";
+import { BattlepassContext, type BattlepassContextType } from "@/components/(battlepass)/battlepass/context/BattlepassContext";
 import { RANK_PRIORITY } from "@/components/(battlepass)/battlepass/lib/consts";
 import {
 	calculateCurrentItemRemainingRewards,
@@ -17,12 +14,7 @@ import {
 import type { BattlePassLevel } from "@/components/(battlepass)/battlepass/types/battlepass";
 import SparklesText from "@/components/ui/sparkles-text";
 import { cn } from "@/lib/utils";
-import {
-	BATTLEPASS_RANK_ACCESS,
-	BATTLEPASS_TYPE_REWARDS,
-	type battlepass_seasons_rewards,
-	type players,
-} from "@prisma/client";
+import { BATTLEPASS_RANK_ACCESS, BATTLEPASS_TYPE_REWARDS, type battlepass_seasons_rewards, type players } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -31,20 +23,14 @@ type BattlepassRewardVipType = {
 };
 
 export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType) => {
-	const { selectedPlayer, playerCurrentBattlepassLevel } = useContext(
-		BattlepassContext,
-	) as BattlepassContextType;
+	const { selectedPlayer, playerCurrentBattlepassLevel } = useContext(BattlepassContext) as BattlepassContextType;
 
 	const [currentRewardShowed, setCurrentRewardShowed] = useState<number>(0);
 
-	const [hasRemainingRewards, setHasRemainingRewards] = useState<boolean>(
-		calculateCurrentItemRemainingRewards(selectedPlayer, battlepassLevel),
-	);
+	const [hasRemainingRewards, setHasRemainingRewards] = useState<boolean>(calculateCurrentItemRemainingRewards(selectedPlayer, battlepassLevel));
 
 	const [isClaimed, setIsClaimed] = useState<boolean>(
-		selectedPlayer.player_battlepass_rewards_claimed.some((claimed) =>
-			battlepassLevel.rewards.some((r) => r.id === claimed.reward_id),
-		),
+		selectedPlayer.player_battlepass_rewards_claimed.some((claimed) => battlepassLevel.rewards.some((r) => r.id === claimed.reward_id)),
 	);
 
 	const hasAccess = !playerIsRank(selectedPlayer, BATTLEPASS_RANK_ACCESS.FREE);
@@ -77,19 +63,10 @@ export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType
 	return (
 		<div
 			onClick={() => {
-				claimRewards(
-					selectedPlayer,
-					hasAccess,
-					isLocked,
-					isClaimed,
-					hasRemainingRewards,
-					battlepassLevel,
-					successToast,
-					errorToast,
-				).then((value) => {
+				claimRewards(selectedPlayer, hasAccess, isLocked, isClaimed, hasRemainingRewards, battlepassLevel, successToast, errorToast).then((value) => {
 					if (value) {
-						setIsClaimed(true);
-						setHasRemainingRewards(false);
+						setIsClaimed(value.isClaimed);
+						setHasRemainingRewards(value.hasRemainingRewards);
 					}
 				});
 			}}
@@ -97,11 +74,7 @@ export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType
 				"no-draggable no-selectable group relative grid h-full min-w-[182px] cursor-pointer grid-cols-1 grid-rows-[1fr_35px] px-4 py-3 transition-colors duration-100 ease-in-out hover:bg-background active:bg-background/65",
 				!hasAccess && "reward-locked pointer-events-none",
 				isLocked && "reward-locked pointer-events-none bg-background",
-				!isLocked &&
-					hasAccess &&
-					isClaimed &&
-					!hasRemainingRewards &&
-					"pointer-events-none bg-primary/40 ",
+				!isLocked && hasAccess && isClaimed && !hasRemainingRewards && "pointer-events-none bg-primary/40 ",
 			)}
 		>
 			<img
@@ -121,29 +94,17 @@ export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType
 				height={32}
 				src={"/battlepass/claimed.png"}
 			/>
-			<div
-				className={cn(
-					"group relative grid h-[165px] w-[150px] grid-cols-1 grid-rows-[1fr_40px] overflow-hidden p-2 ",
-				)}
-			>
+			<div className={cn("group relative grid h-[165px] w-[150px] grid-cols-1 grid-rows-[1fr_40px] overflow-hidden p-2 ")}>
 				<div className="relative flex flex-col items-center justify-center">
 					{battlepassLevel.rewards.map((rew, index) => {
-						const stackIndex =
-							(index - currentRewardShowed + battlepassLevel.rewards.length) %
-							battlepassLevel.rewards.length;
+						const stackIndex = (index - currentRewardShowed + battlepassLevel.rewards.length) % battlepassLevel.rewards.length;
 						const isCurrent = stackIndex === 0;
 
 						const isOutfit = rew.reward_type === BATTLEPASS_TYPE_REWARDS.OUTFIT;
 						const outfitSrc = isOutfit ? rew.reward_img.split(";") : "";
 						const maleSrc = isOutfit ? outfitSrc[0] : "";
 						const femaleSrc = isOutfit ? outfitSrc[1] : "";
-						const finalSrc = isOutfit
-							? outfitSrc !== ""
-								? selectedPlayer.sex === 0
-									? maleSrc
-									: femaleSrc
-								: rew.reward_img
-							: rew.reward_img;
+						const finalSrc = isOutfit ? (outfitSrc !== "" ? (selectedPlayer.sex === 0 ? maleSrc : femaleSrc) : rew.reward_img) : rew.reward_img;
 
 						return (
 							<img
@@ -156,14 +117,11 @@ export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType
 								className={cn(
 									"absolute p-1 transition-all duration-500 ease-in-out",
 									isCurrent && "z-10",
-									!hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access) &&
-										"grayscale-[100%]",
+									!hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access) && "grayscale-[100%]",
 								)}
 								style={{
 									zIndex: isCurrent ? 10 : 10 - stackIndex,
-									transform: isCurrent
-										? "scale(1) translateY(0)"
-										: `scale(${1 - stackIndex * 0.16}) `,
+									transform: isCurrent ? "scale(1) translateY(0)" : `scale(${1 - stackIndex * 0.16}) `,
 									opacity: isCurrent
 										? hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access)
 											? 1
@@ -182,9 +140,7 @@ export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType
 								RANK_PRIORITY[b.reward_required_access as BATTLEPASS_RANK_ACCESS],
 						)
 						.map((rew, index) => {
-							const stackIndex =
-								(index - currentRewardShowed + battlepassLevel.rewards.length) %
-								battlepassLevel.rewards.length;
+							const stackIndex = (index - currentRewardShowed + battlepassLevel.rewards.length) % battlepassLevel.rewards.length;
 							const isCurrent = stackIndex === 0;
 							return (
 								<div
@@ -195,18 +151,13 @@ export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType
 									)}
 									style={{
 										zIndex: isCurrent ? 10 : 10 - stackIndex,
-										transform: isCurrent
-											? "scale(1) translateY(0)"
-											: `scale(${1 - stackIndex * 0.16}) `,
+										transform: isCurrent ? "scale(1) translateY(0)" : `scale(${1 - stackIndex * 0.16}) `,
 										opacity: isCurrent ? 1 : 0,
 									}}
 								>
 									<span
 										className={cn(
-											!hasAccessToReward(
-												selectedPlayer.battlepass_rank,
-												rew.reward_required_access,
-											) && "line-through",
+											!hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access) && "line-through",
 											getDisplayRankTextClassname(rew.reward_required_access),
 										)}
 									>
@@ -224,11 +175,7 @@ export const BattlepassRewardVip = ({ battlepassLevel }: BattlepassRewardVipType
 					</span>
 				</div>
 			)}
-			<div
-				className={cn(
-					"absolute top-2 right-0 left-0 flex flex-col items-center justify-center opacity-100 transition-all duration-500",
-				)}
-			>
+			<div className={cn("absolute top-2 right-0 left-0 flex flex-col items-center justify-center opacity-100 transition-all duration-500")}>
 				{/* {!hasAccessToCurrentReward(currentRewardShowed) && 'opacity-100'}  */}
 				{/* <SparklesText
 					className={cn(

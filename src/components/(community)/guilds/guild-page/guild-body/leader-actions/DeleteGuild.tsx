@@ -73,7 +73,7 @@ export const DeleteGuild = ({ guild_id }: DeleteGuildProps) => {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant={"destructive"} className="whitespace-nowrap">
+				<Button size="sm" variant="destructive" className="whitespace-nowrap">
 					Delete Guild
 				</Button>
 			</AlertDialogTrigger>

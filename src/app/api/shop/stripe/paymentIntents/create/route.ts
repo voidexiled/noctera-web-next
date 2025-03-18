@@ -1,6 +1,10 @@
+import type {
+	ShopStripePaymentIntentsCreatePOSTRequest,
+	ShopStripePaymentIntentsCreatePOSTResponse,
+} from "@/app/api/types";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getAccount } from "@/services/accounts/AccountsService";
+import { getAccountUnique } from "@/services/accounts/AccountsService";
 import { ORDER_STATUS } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
@@ -27,11 +31,11 @@ export async function POST(request: NextRequest) {
 		const session = await getServerSession(authOptions);
 		if (!session?.user.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-		const { currency_code, value, description, product_category_id, product_amount } =
-			StripeSchema.parse(await request.json());
+		const data: ShopStripePaymentIntentsCreatePOSTRequest = await request.json();
+		const { currency_code, value, description, product_category_id, product_amount } = data;
 
 		// Verify user account
-		const playerAccount = await getAccount({
+		const playerAccount = await getAccountUnique({
 			where: { id: +session.user.id },
 			select: {
 				id: true,
@@ -41,7 +45,7 @@ export async function POST(request: NextRequest) {
 		if (!playerAccount) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 		// Create payment intent
-		const intentPayment = await stripe.paymentIntents.create({
+		const paymentIntent = await stripe.paymentIntents.create({
 			amount: value,
 			currency: currency_code,
 			automatic_payment_methods: {
@@ -50,7 +54,7 @@ export async function POST(request: NextRequest) {
 		});
 
 		// handle payment intent creation error
-		if (!intentPayment.client_secret) {
+		if (!paymentIntent.client_secret) {
 			return NextResponse.json({ error: "Failed to create payment." }, { status: 500 });
 		}
 
@@ -64,9 +68,9 @@ export async function POST(request: NextRequest) {
 				total_amount: (value / 100).toString(),
 				product_category_id: product_category_id,
 				product_amount: product_amount,
-				orderID: intentPayment.id,
-				payerID: intentPayment.customer?.toString(),
-				paymentClientSecret: intentPayment.client_secret, // ! TODO: delete???
+				orderID: paymentIntent.id,
+				payerID: paymentIntent.customer?.toString(),
+				paymentClientSecret: paymentIntent.client_secret, // ! TODO: delete???
 				description: description,
 				createdAt: new Date(),
 				updatedAt: new Date(),
@@ -79,10 +83,15 @@ export async function POST(request: NextRequest) {
 			orderCreated = true;
 		}
 
-		return NextResponse.json({ paymentIntent: intentPayment, orderCreated }, { status: 200 });
+		const response: ShopStripePaymentIntentsCreatePOSTResponse = {
+			paymentIntent,
+			orderCreated,
+		};
+
+		return NextResponse.json(response, { status: 200 });
 	} catch (error) {
 		const err = error as Error;
 		console.error(err);
-		return new Response(JSON.stringify({ error: err }));
+		return NextResponse.json({ error: err.message }, { status: 500 });
 	}
 }

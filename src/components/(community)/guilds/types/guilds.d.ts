@@ -1,4 +1,4 @@
-import type { guild_membership, guilds } from "@prisma/client";
+import type { accounts, guild_membership, guilds, players, posts } from "@prisma/client";
 
 export type GuildsTableType = guilds & {
 	owner_name: string;

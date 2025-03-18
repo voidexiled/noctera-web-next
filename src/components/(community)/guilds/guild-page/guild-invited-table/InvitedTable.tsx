@@ -38,7 +38,7 @@ export async function InvitedTable({ guild, userStatus }: InvitedTableProps) {
 	if (!isMember) return null;
 
 	return (
-		<div className="flex flex-col rounded-sm border">
+		<div className="flex flex-col rounded-sm">
 			<div className="flex items-center justify-between bg-background p-2 text-sm">
 				Invited Characters
 				{isLeader && <InvitePlayerButton guild_id={guild.id} />}

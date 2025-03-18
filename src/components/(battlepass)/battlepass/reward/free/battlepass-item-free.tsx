@@ -1,8 +1,5 @@
 "use client";
-import {
-	BattlepassContext,
-	type BattlepassContextType,
-} from "@/components/(battlepass)/battlepass/context/BattlepassContext";
+import { BattlepassContext, type BattlepassContextType } from "@/components/(battlepass)/battlepass/context/BattlepassContext";
 import {
 	calculateCurrentItemRemainingRewards,
 	claimRewards,
@@ -15,29 +12,21 @@ import {
 import type { BattlePassLevel } from "@/components/(battlepass)/battlepass/types/battlepass";
 import SparklesText from "@/components/ui/sparkles-text";
 import { cn } from "@/lib/utils";
-import {
-	BATTLEPASS_RANK_ACCESS,
-	BATTLEPASS_TYPE_REWARDS,
-	type battlepass_seasons_rewards,
-} from "@prisma/client";
+import { BATTLEPASS_RANK_ACCESS, BATTLEPASS_TYPE_REWARDS, type battlepass_seasons_rewards } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 type BattlepassRewardFreeType = {
 	battlepassLevel: BattlePassLevel;
 };
 export const BattlepassRewardFree = ({ battlepassLevel }: BattlepassRewardFreeType) => {
-	const { selectedPlayer, playerCurrentBattlepassLevel } = useContext(
-		BattlepassContext,
-	) as BattlepassContextType;
+	const { selectedPlayer, playerCurrentBattlepassLevel } = useContext(BattlepassContext) as BattlepassContextType;
 
 	const [currentRewardShowed, setCurrentRewardShowed] = useState<number>(0);
 
 	const [hasRemainingRewards, setHasRemainingRewards] = useState<boolean>(true);
 
 	const [isClaimed, setIsClaimed] = useState<boolean>(
-		selectedPlayer.player_battlepass_rewards_claimed.some((claimed) =>
-			battlepassLevel.rewards.some((r) => r.id === claimed.reward_id),
-		),
+		selectedPlayer.player_battlepass_rewards_claimed.some((claimed) => battlepassLevel.rewards.some((r) => r.id === claimed.reward_id)),
 	);
 
 	const isLocked = battlepassLevel.level > playerCurrentBattlepassLevel;
@@ -67,19 +56,10 @@ export const BattlepassRewardFree = ({ battlepassLevel }: BattlepassRewardFreeTy
 	return (
 		<div
 			onClick={() => {
-				claimRewards(
-					selectedPlayer,
-					true,
-					isLocked,
-					isClaimed,
-					hasRemainingRewards,
-					battlepassLevel,
-					successToast,
-					errorToast,
-				).then((value) => {
+				claimRewards(selectedPlayer, true, isLocked, isClaimed, hasRemainingRewards, battlepassLevel, successToast, errorToast).then((value) => {
 					if (value) {
-						setIsClaimed(true);
-						setHasRemainingRewards(false);
+						setIsClaimed(value.isClaimed);
+						setHasRemainingRewards(value.hasRemainingRewards);
 					}
 				});
 			}}
@@ -98,10 +78,7 @@ export const BattlepassRewardFree = ({ battlepassLevel }: BattlepassRewardFreeTy
 			/>
 			<img
 				alt="claimed reward"
-				className={cn(
-					"absolute top-[5px] right-[5px] hidden antialiased opacity-80 ",
-					isClaimed && !hasRemainingRewards && "flex",
-				)}
+				className={cn("absolute top-[5px] right-[5px] hidden antialiased opacity-80 ", isClaimed && !hasRemainingRewards && "flex")}
 				width={32}
 				height={32}
 				src={"/battlepass/claimed.png"}
@@ -113,22 +90,14 @@ export const BattlepassRewardFree = ({ battlepassLevel }: BattlepassRewardFreeTy
 			>
 				<div className="relative flex flex-col items-center justify-center">
 					{battlepassLevel.rewards.map((rew, index) => {
-						const stackIndex =
-							(index - currentRewardShowed + battlepassLevel.rewards.length) %
-							battlepassLevel.rewards.length;
+						const stackIndex = (index - currentRewardShowed + battlepassLevel.rewards.length) % battlepassLevel.rewards.length;
 						const isCurrent = stackIndex === 0;
 
 						const isOutfit = rew.reward_type === BATTLEPASS_TYPE_REWARDS.OUTFIT;
 						const outfitSrc = isOutfit ? rew.reward_img.split(";") : "";
 						const maleSrc = isOutfit ? outfitSrc[0] : "";
 						const femaleSrc = isOutfit ? outfitSrc[1] : "";
-						const finalSrc = isOutfit
-							? outfitSrc !== ""
-								? selectedPlayer.sex === 0
-									? maleSrc
-									: femaleSrc
-								: rew.reward_img
-							: rew.reward_img;
+						const finalSrc = isOutfit ? (outfitSrc !== "" ? (selectedPlayer.sex === 0 ? maleSrc : femaleSrc) : rew.reward_img) : rew.reward_img;
 
 						return (
 							<img
@@ -141,14 +110,11 @@ export const BattlepassRewardFree = ({ battlepassLevel }: BattlepassRewardFreeTy
 								className={cn(
 									"absolute p-1 transition-all delay-0 duration-500 ease-in-out",
 									isCurrent && "z-10",
-									!hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access) &&
-										"grayscale-[100%]",
+									!hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access) && "grayscale-[100%]",
 								)}
 								style={{
 									zIndex: isCurrent ? 10 : 10 - stackIndex,
-									transform: isCurrent
-										? "scale(1) translateY(0)"
-										: `scale(${1 - stackIndex * 0.16}) `,
+									transform: isCurrent ? "scale(1) translateY(0)" : `scale(${1 - stackIndex * 0.16}) `,
 									opacity: isCurrent
 										? hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access)
 											? 1
@@ -161,9 +127,7 @@ export const BattlepassRewardFree = ({ battlepassLevel }: BattlepassRewardFreeTy
 				</div>
 				<div className="relative flex flex-col items-center justify-start">
 					{battlepassLevel.rewards.map((rew, index) => {
-						const stackIndex =
-							(index - currentRewardShowed + battlepassLevel.rewards.length) %
-							battlepassLevel.rewards.length;
+						const stackIndex = (index - currentRewardShowed + battlepassLevel.rewards.length) % battlepassLevel.rewards.length;
 						const isCurrent = stackIndex === 0;
 						return (
 							<div
@@ -174,18 +138,13 @@ export const BattlepassRewardFree = ({ battlepassLevel }: BattlepassRewardFreeTy
 								)}
 								style={{
 									zIndex: isCurrent ? 10 : 10 - stackIndex,
-									transform: isCurrent
-										? "scale(1) translateY(0)"
-										: `scale(${1 - stackIndex * 0.16}) `,
+									transform: isCurrent ? "scale(1) translateY(0)" : `scale(${1 - stackIndex * 0.16}) `,
 									opacity: isCurrent ? 1 : 0,
 								}}
 							>
 								<span
 									className={cn(
-										!hasAccessToReward(
-											selectedPlayer.battlepass_rank,
-											rew.reward_required_access,
-										) && "line-through",
+										!hasAccessToReward(selectedPlayer.battlepass_rank, rew.reward_required_access) && "line-through",
 										getDisplayRankTextClassname(rew.reward_required_access),
 									)}
 								>

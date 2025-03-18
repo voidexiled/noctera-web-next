@@ -1,111 +1,96 @@
 import { randomFillSync } from "node:crypto";
+import { PasswordResetConfirmationTemplate } from "@/app/(default)/emails/ResetPasswordConfirmation";
+import type { AuthResetPasswordPOSTRequest, AuthResetPasswordPOSTResponse } from "@/app/api/types";
 import configLua from "@/hooks/useConfigLua";
+import { authOptions } from "@/lib/auth";
 import { MailProvider } from "@/lib/nodemailer";
 import { prisma } from "@/lib/prisma";
 import { encryptPassword } from "@/utils/functions/criptoPassword";
 import dayjs from "dayjs";
-import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { type NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import { z } from "zod";
 
-function gerarSenha(tamanho: number) {
-	const caracteresEspeciais = "@#$%&";
-	const letrasMaiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	const letrasMinusculas = "abcdefghijklmnopqrstuvwxyz";
-	const numeros = "0123456789";
+function generatePassword(size: number) {
+	const specialChars = "@#$%&";
+	const mayusLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	const minusLetters = "abcdefghijklmnopqrstuvwxyz";
+	const numbers = "0123456789";
 
-	const caracteres = caracteresEspeciais + letrasMaiusculas + letrasMinusculas + numeros;
+	const chars = specialChars + mayusLetters + minusLetters + numbers;
 
-	let senha = "";
+	let password = "";
 
-	// Garantir pelo menos um caractere especial, uma letra maiúscula e uma letra minúscula
-	senha += caracteresEspeciais.charAt(Math.floor(Math.random() * caracteresEspeciais.length));
-	senha += letrasMaiusculas.charAt(Math.floor(Math.random() * letrasMaiusculas.length));
-	senha += letrasMinusculas.charAt(Math.floor(Math.random() * letrasMinusculas.length));
+	password += specialChars.charAt(Math.floor(Math.random() * specialChars.length));
+	password += mayusLetters.charAt(Math.floor(Math.random() * mayusLetters.length));
+	password += minusLetters.charAt(Math.floor(Math.random() * minusLetters.length));
 
-	for (let i = senha.length; i < tamanho; i++) {
-		const indice = Math.floor(Math.random() * caracteres.length);
-		senha += caracteres.charAt(indice);
+	for (let i = password.length; i < size; i++) {
+		const indice = Math.floor(Math.random() * chars.length);
+		password += chars.charAt(indice);
 	}
 
-	return senha;
+	return password;
 }
 
-const ValidateSchema = z.object({
-	code: z.string(),
-	token: z.string(),
-});
+const resend = new Resend(process.env.NO_REPLY_RESEND_KEY as string);
 
-const validate = async (request: Request) => {
-	const emailProvider = new MailProvider();
-	const lua = configLua();
+export async function POST(request: NextRequest) {
+	try {
+		const data: AuthResetPasswordPOSTRequest = await request.json();
+		const { code, token } = data;
 
-	const { code, token } = ValidateSchema.parse(await request.json());
-
-	const getToken = await prisma.tokens.findFirst({
-		where: { code, token, isValid: true },
-		include: {
-			accounts: {
-				select: {
-					email: true,
+		const getToken = await prisma.tokens.findFirst({
+			where: { code, token, isValid: true },
+			include: {
+				accounts: {
+					select: {
+						email: true,
+					},
 				},
 			},
-		},
-	});
+		});
 
-	if (!getToken) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		if (!getToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const createdAt = dayjs(getToken.created_at);
-	const validatedAt = dayjs(getToken.expired_at);
-	const now = dayjs();
+		const createdAt = dayjs(getToken.created_at);
+		const validatedAt = dayjs(getToken.expired_at);
+		const now = dayjs();
 
-	if (now.isAfter(createdAt) && !now.isBefore(validatedAt))
-		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		console.log(now.isAfter(createdAt), !now.isBefore(validatedAt));
+		if (now.isAfter(createdAt) && !now.isBefore(validatedAt))
+			return NextResponse.json({ error: "This token has expired" }, { status: 401 });
 
-	const newPass = gerarSenha(12);
+		const newPass = generatePassword(12);
 
-	await prisma.accounts.update({
-		where: { id: getToken.account_id! },
-		data: { password: encryptPassword(newPass) },
-	});
-	await prisma.tokens.update({
-		where: { id: getToken.id! },
-		data: { isValid: false },
-	});
+		await prisma.accounts.update({
+			where: { id: getToken.account_id! },
+			data: { password: encryptPassword(newPass) },
+		});
 
-	await emailProvider.SendMail({
-		to: getToken.accounts?.email!,
-		subject: `${lua.serverName} Reset email`,
-		html: `
-    <div>
-    Dear Tibia player,<br>
-    &nbsp;&nbsp;&nbsp; <br>
-    You have requested a new password for your Tibia account.<br>
-    The password for your account is:<br>
-    &nbsp;&nbsp;&nbsp; ${newPass} <br>
-    <br>
-    In case you do not receive the new password you have to make<br>
-    another request.<br>
-    <br>
-    For security reasons, please memorise the password or keep it<br>
-    in a safe place but do not store it on your computer. Delete<br>
-    this mail once you have logged into your account successfully!<br>
-    <br>
-    If you would like to know more about the security of your Tibia<br>
-    account, please read the security hints at<br>
-    &nbsp;&nbsp; <a href="http://www.tibia.com/gameguides/?subtopic=securityhints">Securityhints</a><br>
-    <br>
-    Please note: A possible linkup between your Tibia account and<br>
-    your Facebook profile has been disconnected. You can easily<br>
-    associate your Tibia account with your Facebook profile again<br>
-    in your account management.<br>
-    <br>
-    Kind regards,<br>
-    Your ${lua.serverName} Team<br>
-    </div>
-    `,
-	});
+		await prisma.tokens.update({
+			where: { id: getToken.id! },
+			data: { isValid: false },
+		});
 
-	return NextResponse.json({}, { status: 200 });
-};
+		const passwordResetConfirmationContent = PasswordResetConfirmationTemplate({
+			newPassword: newPass,
+		});
 
-export { validate as POST };
+		await resend.emails.send({
+			from: "Noctera Global <no-reply@noctera-global.com>",
+			to: [getToken.accounts?.email!],
+			subject: "New password for your account",
+			react: passwordResetConfirmationContent,
+		});
+
+		const response: AuthResetPasswordPOSTResponse = undefined;
+
+		return NextResponse.json(response, { status: 200 });
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error(error);
+		return NextResponse.json({ error: error.message }, { status: 500 });
+	}
+}

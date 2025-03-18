@@ -13,4 +13,8 @@ export type ConfigType = {
 	guilds: {
 		minimum_level_to_create: number;
 	};
+	pid: {
+		inventory: number;
+		store_inbox: number;
+	};
 };

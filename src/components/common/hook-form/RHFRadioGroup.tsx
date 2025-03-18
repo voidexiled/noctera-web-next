@@ -1,3 +1,4 @@
+"use client";
 import { randomUUID } from "node:crypto";
 import type { products } from "@prisma/client";
 import Image from "next/image";

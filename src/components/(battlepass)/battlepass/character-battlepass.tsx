@@ -1,40 +1,24 @@
 "use client";
 
-import {
-	BattlepassContext,
-	type BattlepassContextType,
-} from "@/components/(battlepass)/battlepass/context/BattlepassContext";
-import {
-	CustomCard,
-	CustomCardContent,
-	CustomCardHeader,
-} from "@/components/(battlepass)/battlepass/custom-card";
-import {
-	getDisplayRankTextClassname,
-	playerIsRank,
-} from "@/components/(battlepass)/battlepass/lib/utils";
+import { API_ROUTES } from "@/app/api/routes";
+import type { BattlepassCharacterPOSTRequest, BattlepassCharacterPOSTResponse } from "@/app/api/types";
+import { BattlepassContext, type BattlepassContextType } from "@/components/(battlepass)/battlepass/context/BattlepassContext";
+import { CustomCard, CustomCardContent, CustomCardHeader } from "@/components/(battlepass)/battlepass/custom-card";
+import { getDisplayRankTextClassname, playerIsRank } from "@/components/(battlepass)/battlepass/lib/utils";
 import { BattlepassTaskList } from "@/components/(battlepass)/battlepass/task/task-list";
 import { BattlepassTracker } from "@/components/(battlepass)/battlepass/tracker/battlepass-tracker";
 import { FormProvider, RHFSelect } from "@/components/common/hook-form";
 import SparklesText from "@/components/ui/sparkles-text";
 import { useBattlepass } from "@/hooks/useBattlepass";
 import { cn } from "@/lib/utils";
+import { typedFetch } from "@/utils/typedFetch";
 
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export function CharacterBattlepass() {
-	const {
-		account,
-		currentSeason,
-		selectedPlayer,
-		setSelectedPlayer,
-		setAccount,
-		setCurrentSeason,
-		refetchSeason,
-		refetchAccount,
-	} = useBattlepass();
+	const { account, currentSeason, selectedPlayer, setSelectedPlayer, setAccount, setCurrentSeason, refetchSeason, refetchAccount } = useBattlepass();
 
 	// setAccount(acc);
 	// setCurrentSeason(cs);
@@ -48,11 +32,7 @@ export function CharacterBattlepass() {
 
 	const methods = useForm<battlepassFormValues>({
 		defaultValues: {
-			character_name: account.players
-				? account.players.length > 0
-					? account.players[0].name
-					: ""
-				: "",
+			character_name: account.players ? (account.players.length > 0 ? account.players[0].name : "") : "",
 		},
 	});
 
@@ -71,32 +51,25 @@ export function CharacterBattlepass() {
 			if (!_findedCharacter) return;
 
 			try {
-				console.log("id: ", _findedCharacter.id, typeof _findedCharacter.id);
-				console.log("season_id: ", currentSeason.id, typeof currentSeason.id);
+				// console.log("id: ", _findedCharacter.id, typeof _findedCharacter.id);
+				// console.log("season_id: ", currentSeason.id, typeof currentSeason.id);
 
-				const _updatedCharacter = await fetch("api/battlepass/character", {
+				const _updatedCharacter = await typedFetch<BattlepassCharacterPOSTRequest, BattlepassCharacterPOSTResponse>(API_ROUTES.battlepass.character._, {
 					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
+					body: {
 						id: _findedCharacter.id,
 						season_id: currentSeason.id,
-					}),
-				})
-					.then((res) => res.json())
-					.catch((err) => {
-						console.log(err);
-						return { character: null };
-					});
+					},
+				});
 
 				if (_updatedCharacter) {
 					refetchSeason();
 					setSelectedPlayer(_updatedCharacter.player);
 				}
 				console.log("_updatedCharacter", _updatedCharacter);
-			} catch (error) {
-				console.log(error);
+			} catch (e) {
+				const error: Error = e as Error;
+				console.error(error);
 			}
 		};
 		findCharacter();
@@ -113,10 +86,7 @@ export function CharacterBattlepass() {
 
 					{!playerIsRank(selectedPlayer, "FREE") ? (
 						<SparklesText
-							className={cn(
-								"font-sans text-base",
-								getDisplayRankTextClassname(selectedPlayer?.battlepass_rank),
-							)}
+							className={cn("font-sans text-base", getDisplayRankTextClassname(selectedPlayer?.battlepass_rank))}
 							sparklesCount={25}
 							text={selectedPlayer?.battlepass_rank as string}
 						/>

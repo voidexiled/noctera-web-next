@@ -4,9 +4,8 @@ import { encryptPassword } from "@/utils/functions/criptoPassword";
 import dayjs from "dayjs";
 import { NextResponse } from "next/server";
 
+import type { AuthRegisterPOSTRequest } from "@/app/api/types";
 import { pageConfig } from "@/lib/config";
-//import { positions, samplePlayer } from "../../../../../prisma/seed";
-import { MailProvider } from "@/lib/nodemailer";
 import { BATTLEPASS_RANK_ACCESS } from "@prisma/client";
 import { ZodError, z } from "zod";
 
@@ -56,7 +55,6 @@ const CreateAccountSchema = z
 		phone: z.string(),
 		rlname: z.string(),
 	})
-
 	.strict();
 
 const lua = configLua();
@@ -68,33 +66,33 @@ export type RouteErrorResponse = {
 
 export async function POST(req: Request) {
 	try {
-		const emailProvider = new MailProvider();
 		const data = await CreateAccountSchema.parseAsync(await req.json());
-		console.log("dataRouteParsed", data);
+		const dataRequest: AuthRegisterPOSTRequest = data as AuthRegisterPOSTRequest;
+
 		const existsUser = await prisma.accounts.findFirst({
-			where: { OR: [{ name: data.name }, { email: data.email }] },
+			where: { OR: [{ name: dataRequest.name }, { email: dataRequest.email }] },
 		});
 		if (existsUser) {
 			return NextResponse.json({ error: "Account already registered" }, { status: 400 });
 		}
 		const existsPlayer = await prisma.players.findFirst({
-			where: { name: data.characterName },
+			where: { name: dataRequest.characterName },
 		});
 		if (existsPlayer) {
 			return NextResponse.json(
-				{ error: `Character name ${data.characterName} is already in use` },
+				{ error: `Character name ${dataRequest.characterName} is already in use` },
 				{ status: 400 },
 			);
 		}
 
 		const initialPlayerName =
-			data.vocation === "1"
+			dataRequest.vocation === "1"
 				? "Sorcerer Sample"
-				: data.vocation === "2"
+				: dataRequest.vocation === "2"
 					? "Druid Sample"
-					: data.vocation === "3"
+					: dataRequest.vocation === "3"
 						? "Paladin Sample"
-						: data.vocation === "4"
+						: dataRequest.vocation === "4"
 							? "Knight Sample"
 							: "Rook Sample";
 
@@ -110,106 +108,94 @@ export async function POST(req: Request) {
 			account_id: undefined,
 		};
 
-		const createdAccount = await prisma.accounts.create({
-			data: {
-				name: data.name,
-				email: data.email,
-				password: encryptPassword(data.password),
-				creation: dayjs().unix(),
-				country: data.country,
-				phone: data.phone,
-				rlname: data.rlname,
-				coins_transferable: pageConfig.new_account.add_transferable_coins
-					? pageConfig.new_account.coins_transferable
-					: 0,
-				coins: pageConfig.new_account.add_coins ? pageConfig.new_account.coins : 0,
-				premdays: pageConfig.new_account.add_vip_days ? pageConfig.new_account.vip_days : 0,
-				players: {
-					create: {
-						...restInitialPlayer,
-						name: data.characterName,
-						sex: data.gender === "female" ? 0 : 1,
-						level: findInitialPlayer.level,
-						vocation: findInitialPlayer.vocation,
-						health: findInitialPlayer.health,
-						healthmax: findInitialPlayer.healthmax,
-						experience: findInitialPlayer.experience,
-						battlepass_rank: BATTLEPASS_RANK_ACCESS.FREE,
-						//creation: dayjs().unix(),
+		const [createdAccount, latestSeason] = await prisma.$transaction(async (transaction) => {
+			const newAccount = await transaction.accounts.create({
+				data: {
+					name: dataRequest.name,
+					email: dataRequest.email,
+					password: encryptPassword(dataRequest.password),
+					creation: dayjs().unix(),
+					country: dataRequest.country,
+					phone: dataRequest.phone,
+					rlname: dataRequest.rlname,
+					coins_transferable: pageConfig.new_account.add_transferable_coins
+						? pageConfig.new_account.coins_transferable
+						: 0,
+					coins: pageConfig.new_account.add_coins ? pageConfig.new_account.coins : 0,
+					premdays: pageConfig.new_account.add_vip_days ? pageConfig.new_account.vip_days : 0,
+					players: {
+						create: {
+							...restInitialPlayer,
+							name: dataRequest.characterName,
+							sex: dataRequest.gender === "female" ? 0 : 1,
+							level: findInitialPlayer.level,
+							vocation: findInitialPlayer.vocation,
+							health: findInitialPlayer.health,
+							healthmax: findInitialPlayer.healthmax,
+							experience: findInitialPlayer.experience,
+							battlepass_rank: BATTLEPASS_RANK_ACCESS.FREE,
+						},
 					},
 				},
-			},
-		});
+			});
 
-		// await emailProvider.SendMail({
-		// 	to: data.email,
-		// 	subject: "Welcome to Noctera Global",
-		// 	text: "Bienvenido",
-		// 	html: `
-		//   <div>
-		//      <h1>Follow the following link</h1>
-		//       <p>Please follow
-		//         <a href=""> this link </a>
-		//         to reset your password
-		//         </p>
-		//   </div>
-		//   `,
-		// });
-
-		const createdAccountSearched = await prisma.accounts.findFirst({
-			where: {
-				id: createdAccount.id,
-			},
-			include: {
-				players: true,
-			},
-		});
-
-		const playerCreated = createdAccountSearched?.players[0];
-
-		if (!createdAccountSearched || !playerCreated) throw Error();
-
-		const battlepassSeasons = await prisma.battlepass_seasons.findMany({
-			select: { id: true, season_number: true },
-		});
-
-		const latestSeason = battlepassSeasons.sort(
-			(a, b) => Number(b.season_number) - Number(a.season_number),
-		)[0];
-
-		if (latestSeason) {
-			await prisma.player_battlepass_progress.create({
-				data: {
-					current_exp: 0,
-					season_id: latestSeason.id,
-					player_id: playerCreated.id,
+			const fetchedAccount = await transaction.accounts.findFirst({
+				where: {
+					id: newAccount.id,
+				},
+				include: {
+					players: true,
 				},
 			});
 
-			const latestSeasonTasks = await prisma.battlepass_seasons_tasks.findMany({
-				where: { season_id: latestSeason.id },
+			const currentPlayer = fetchedAccount?.players[0];
+
+			if (!fetchedAccount || !currentPlayer) throw new Error("Account creation failed");
+
+			const battlepassSeasons = await transaction.battlepass_seasons.findMany({
+				select: { id: true, season_number: true },
 			});
 
-			const playerTasks = latestSeasonTasks.map((task) => {
-				return {
-					player_id: playerCreated.id,
-					task_id: task.id,
-					season_id: latestSeason.id,
-				};
-			});
+			const latestSeason = battlepassSeasons.sort(
+				(a, b) => Number(b.season_number) - Number(a.season_number),
+			)[0];
 
-			const createdPlayerTasks = await prisma.player_battlepass_tasks.createMany({
-				data: playerTasks,
-			});
-		}
+			if (latestSeason) {
+				await transaction.player_battlepass_progress.create({
+					data: {
+						current_exp: 0,
+						season_id: latestSeason.id,
+						player_id: currentPlayer.id,
+					},
+				});
 
-		NextResponse.json({}, { status: 200 });
-	} catch (error) {
-		console.log(error);
+				const latestSeasonTasks = await transaction.battlepass_seasons_tasks.findMany({
+					where: { season_id: latestSeason.id },
+				});
+
+				const playerTasks = latestSeasonTasks.map((task) => {
+					return {
+						player_id: currentPlayer.id,
+						task_id: task.id,
+						season_id: latestSeason.id,
+					};
+				});
+
+				await transaction.player_battlepass_tasks.createMany({
+					data: playerTasks,
+				});
+			}
+
+			return [newAccount, latestSeason];
+		});
+
+		return NextResponse.json({ message: "Account created successfully" }, { status: 200 });
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error(error);
 		if (error instanceof ZodError) {
-			return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
+			return NextResponse.json({ error: error.issues[0].message }, { status: 400 });
 		}
-		return NextResponse.json({ error: error }, { status: 500 });
+		return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
 	}
-	return NextResponse.json(null, { status: 200 });
 }

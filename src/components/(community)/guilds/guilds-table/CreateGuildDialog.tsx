@@ -4,10 +4,10 @@ import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const FormSchema = z.object({
@@ -41,11 +41,7 @@ export const CreateGuildDialog = ({ players }: { players: PlayersSelectOptions[]
 				}),
 			});
 			if (res.ok) {
-				toast({
-					title: "Success!",
-					description: <div>Guild has been created</div>,
-					variant: "success",
-				});
+				toast.success("Guild has been created");
 				document.getElementById("closeDialog")?.click();
 				reset();
 				router.push(`/guilds/${formData.name}`);
@@ -53,27 +49,15 @@ export const CreateGuildDialog = ({ players }: { players: PlayersSelectOptions[]
 			}
 			if (res.status === 400) {
 				const body = await res.json();
-				toast({
-					title: "Error!",
-					description: <div>{body.message}</div>,
-					variant: "destructive",
-				});
+				toast.error(body.message);
 			} else if (res.status === 401) {
 				const body = await res.json();
-				toast({
-					title: "Error!",
-					description: <div>{body.message}</div>,
-					variant: "destructive",
-				});
+				toast.error(body.message);
 				router.push("/account-manager");
 			}
-		} catch (e: unknown) {
-			console.error(e);
-			// toast({
-			// 	title: "Error!",
-			// 	description: <div>{e}</div>,
-			// 	variant: "destructive",
-			// });
+		} catch (e) {
+			const error: Error = e as Error;
+			console.error(error);
 		}
 	}
 

@@ -1,4 +1,7 @@
+"use client";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import type { SelectProps } from "@radix-ui/react-select";
 import type { ReactNode } from "react";
@@ -28,6 +31,7 @@ export default function RHFSelect<T>({
 	LabelOption,
 	...other
 }: RHFSelectProps<T>) {
+	const isMobile = useIsMobile();
 	const { control } = useFormContext();
 	const inputId = `input-${name}`;
 	return (
@@ -41,16 +45,26 @@ export default function RHFSelect<T>({
 							<Label className="self-start" htmlFor={inputId}>
 								{label}
 							</Label>
-							{info && (
-								<TooltipProvider>
-									<Tooltip delayDuration={100}>
-										<TooltipTrigger asChild>
-											<InfoCircledIcon className="h-4 w-4 self-end text-zinc-500 hover:text-zinc-400" />
-										</TooltipTrigger>
-										<TooltipContent className="w-80 text-xs">{info}</TooltipContent>
-									</Tooltip>
-								</TooltipProvider>
-							)}
+							{info &&
+								(isMobile ? (
+									<Popover>
+										<PopoverTrigger asChild popoverTargetAction="toggle">
+											<button type="button">
+												<InfoCircledIcon className="h-4 w-4 self-end text-zinc-500 hover:text-zinc-400" />
+											</button>
+										</PopoverTrigger>
+										<PopoverContent className="w-80 text-xs">{info}</PopoverContent>
+									</Popover>
+								) : (
+									<TooltipProvider>
+										<Tooltip delayDuration={100}>
+											<TooltipTrigger asChild>
+												<InfoCircledIcon className="h-4 w-4 self-end text-zinc-500 hover:text-zinc-400" />
+											</TooltipTrigger>
+											<TooltipContent className="w-80 text-xs">{info}</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								))}
 						</div>
 					)}
 					<Select onValueChange={field.onChange} defaultValue={defaultValue} {...other}>

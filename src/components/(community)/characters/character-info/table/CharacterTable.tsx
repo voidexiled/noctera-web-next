@@ -48,7 +48,7 @@ export const CharacterTable = ({ player }: CharacterInfoProps) => {
 					/>
 					<RowItem
 						shouldShow={!!hasGuildMembership}
-						label="Guild Membership"
+						label="Guild"
 						value={() => {
 							const rankName = player?.guild_membership?.guild_ranks.name;
 							const guildName = player?.guild_membership?.guilds.name;

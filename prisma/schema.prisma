@@ -30,6 +30,14 @@ model social_medias {
   @@map("wp_social_medias")
 }
 
+enum POST_TYPE {
+  INFO
+  UPDATE
+  ALERT
+  CRITICAL
+  EVENT
+}
+
 model posts {
   id         Int           @id @default(autoincrement())
   account_id Int           @db.UnsignedInt
@@ -37,6 +45,7 @@ model posts {
   published  Boolean       @default(true)
   content    String        @db.LongText
   cover      String?
+  type       POST_TYPE     @default(INFO)
   slug       String?       @unique
   category   CATEGORY_POST @default(BLOG)
   createdAt  DateTime      @default(now()) @map("created_at")

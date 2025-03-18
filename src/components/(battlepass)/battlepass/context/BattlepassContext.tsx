@@ -1,4 +1,12 @@
 "use client";
+import { API_ROUTES } from "@/app/api/routes";
+import type {
+	BattlepassAccountPOSTRequest,
+	BattlepassAccountPOSTResponse,
+	BattlepassSeasonCurrentPOSTRequest,
+	BattlepassSeasonCurrentPOSTResponse,
+} from "@/app/api/types";
+import { typedFetch } from "@/utils/typedFetch";
 import type {
 	accounts,
 	battlepass_seasons,
@@ -116,63 +124,35 @@ export const BattlepassProvider: React.FC<{
 	const [battlepassMaxLevel, setBattlepassMaxLevel] = useState<number>(50);
 	const [playerCurrentBattlepassLevel, setPlayerCurrentBattlepassLevel] = useState<number>(1);
 
-	const [battlepassRequiredExperienceForLevelUp, setBattlepassRequiredExperienceForLevelUp] =
-		useState<number>(100);
+	const [battlepassRequiredExperienceForLevelUp, setBattlepassRequiredExperienceForLevelUp] = useState<number>(100);
 
 	async function refetchSeason() {
 		try {
-			const _season: {
-				season: battlepass_seasons & {
-					battlepass_seasons_tasks: battlepass_seasons_tasks[];
-					battlepass_seasons_rewards: battlepass_seasons_rewards[];
-				};
-			} = await fetch("/api/battlepass/season/current", {
+			const _season = await typedFetch<BattlepassSeasonCurrentPOSTRequest, BattlepassSeasonCurrentPOSTResponse>(API_ROUTES.battlepass.season.current._, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
-				.then((res) => res.json())
-				.catch((err) => {
-					console.log(err);
-					return { season: null };
-				});
+			});
 			console.log("_season", _season);
 			setCurrentSeason(_season.season);
-		} catch (error) {
-			console.log(error);
+		} catch (e) {
+			const error: Error = e as Error;
+			console.error(error);
 		}
 	}
 
 	async function refetchAccount() {
 		try {
-			const _account: {
-				account: accounts & {
-					players: (players & {
-						player_battlepass_progress: player_battlepass_progress[];
-						player_battlepass_rewards_claimed: player_battlepass_rewards_claimed[];
-						player_battlepass_tasks: player_battlepass_tasks[];
-					})[];
-				};
-			} = await fetch("/api/battlepass/account", {
+			const _account = await typedFetch<BattlepassAccountPOSTRequest, BattlepassAccountPOSTResponse>(API_ROUTES.battlepass.account._, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
+				body: {
 					id: selectedPlayer.id,
 					season_id: currentSeason.id,
-				}),
-			})
-				.then((res) => res.json())
-				.catch((err) => {
-					console.log(err);
-					return { account: null };
-				});
+				},
+			});
 			console.log("_account", _account);
 			setAccount(_account.account);
-		} catch (error) {
-			console.log(error);
+		} catch (e) {
+			const error: Error = e as Error;
+			console.error(error);
 		}
 	}
 
@@ -180,14 +160,8 @@ export const BattlepassProvider: React.FC<{
 		const updateInfo = async () => {
 			if (selectedPlayer?.player_battlepass_progress[0]?.current_exp) {
 				// todo: get max level from season
-
 				setBattlepassMaxLevel(50);
-				setPlayerCurrentBattlepassLevel(
-					Math.floor(
-						selectedPlayer.player_battlepass_progress[0].current_exp /
-							battlepassRequiredExperienceForLevelUp,
-					),
-				);
+				setPlayerCurrentBattlepassLevel(Math.floor(selectedPlayer.player_battlepass_progress[0].current_exp / battlepassRequiredExperienceForLevelUp));
 				refetchSeason();
 			}
 		};

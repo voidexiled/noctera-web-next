@@ -17,6 +17,8 @@ const validationPOST = z.object({
 const create = async (req: Request) => {
 	try {
 		const body = validationPOST.parse(await req.json());
+
+		console.log(body);
 		const session = await getServerSession(authOptions);
 		if (!session?.user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		const acc = await prisma.accounts.findUnique({
@@ -30,11 +32,13 @@ const create = async (req: Request) => {
 				...omit(body, "id"),
 				slug: generateSlug(body.title),
 				account_id: acc.id,
+				content: body.content,
 			},
 		});
 
-		return NextResponse.json({}, { status: 201 });
+		return NextResponse.json({}, { status: 200 });
 	} catch (error) {
+		console.error(error);
 		return NextResponse.json({ error }, { status: 500 });
 	}
 };
@@ -57,7 +61,10 @@ const update = async (req: Request) => {
 
 		await prisma.posts.update({
 			where: { id: body.id },
-			data,
+			data: {
+				...data,
+				content: JSON.stringify(data.content),
+			},
 		});
 
 		return NextResponse.json({}, { status: 200 });

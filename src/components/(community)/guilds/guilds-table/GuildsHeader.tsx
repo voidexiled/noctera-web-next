@@ -37,7 +37,8 @@ export const GuildsHeader = ({ players, totalPages }: GuildsTableHeaderProps) =>
 					const data: GuildsTableType[] = await response.json();
 					setGuilds(data);
 				}
-			} catch (error) {
+			} catch (e) {
+				const error: Error = e as Error;
 				console.error("Error:", error);
 			}
 		}, 500);
