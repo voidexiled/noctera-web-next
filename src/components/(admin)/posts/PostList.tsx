@@ -16,7 +16,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { getAccountUnique } from "@/services/accounts/AccountsService";
+import { GetAccountUnique } from "@/services/accounts/AccountsService";
 import type { posts } from "@prisma/client";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";

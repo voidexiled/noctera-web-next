@@ -1,6 +1,6 @@
 import type { BattlepassAccountPOSTRequest, BattlepassAccountPOSTResponse } from "@/app/api/types";
 import { authOptions } from "@/lib/auth";
-import { getAccountUnique } from "@/services/accounts/AccountsService";
+import { GetAccountUnique } from "@/services/accounts/AccountsService";
 import type { Prisma, accounts, player_battlepass_progress, player_battlepass_rewards_claimed, player_battlepass_tasks, players } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
 		const { id, season_id } = body;
 
-		const account = await getAccountUnique({
+		const account = await GetAccountUnique({
 			where: { id: +id },
 			include: {
 				players: {

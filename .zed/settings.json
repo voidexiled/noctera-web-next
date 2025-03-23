@@ -51,7 +51,7 @@
   "hard_tabs": true,
   "lsp": {
     "vtsls": {
-      "initialization_options": {
+      "settings": {
         "typescript": {
           "preferences": {
             "importModuleSpecifier": "non-relative"

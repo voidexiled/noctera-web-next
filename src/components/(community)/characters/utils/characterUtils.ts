@@ -6,10 +6,10 @@ import type {
 	PlayerWithItems,
 } from "@/components/(community)/characters/types/character";
 import { EMPTY_SLOTS, SLOTS } from "@/components/(community)/characters/utils/slots";
-import { pageConfig } from "@/lib/config";
+import { GlobalConfig } from "@/lib/config";
 import type { player_items, players } from "@prisma/client";
 
-const animatedItemsPath = pageConfig.paths.animated_items;
+const animatedItemsPath = GlobalConfig.paths.animated_items;
 
 export function retrieveEquippedItemsFromCharacter(character: PlayerWithItems) {
 	const MIN_INVENTORY_SLOT = 1;

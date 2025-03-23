@@ -189,3 +189,28 @@ export type GuildsImagesFilenameGETRequest = {
 };
 
 export type GuildsImagesFilenameGETResponse = ReadableStream;
+
+export type GuildsInvitationsDELETERequest = {
+	guild_id: number;
+	player_id: number;
+};
+export type GuildsInvitationsDELETEResponse = {
+	guild_id: number;
+	player_id: number;
+	player_name: string;
+};
+
+export type GuildsManagerPOSTRequest = {
+	guild_name: string;
+	player_id: number;
+};
+export type GuildsManagerPOSTResponse = undefined;
+
+export type GuildsManagerDELETERequest = {
+	id: string;
+};
+
+export type GuildManagerDELETEResponse = {
+	guild_id: number;
+	guild_name: string;
+};

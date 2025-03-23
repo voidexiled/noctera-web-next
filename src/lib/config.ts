@@ -1,6 +1,6 @@
 import type { ConfigType } from "@/lib/configtypes";
 
-export const pageConfig: ConfigType = {
+export const GlobalConfig: ConfigType = {
 	new_account: {
 		add_transferable_coins: false,
 		coins_transferable: 0,
@@ -11,6 +11,7 @@ export const pageConfig: ConfigType = {
 	},
 	paths: {
 		animated_items: "/animated-items",
+		default_guild_logo: "default.gif",
 	},
 	guilds: {
 		minimum_level_to_create: 100,

@@ -9,6 +9,7 @@ export type ConfigType = {
 	};
 	paths: {
 		animated_items: string;
+		default_guild_logo: string;
 	};
 	guilds: {
 		minimum_level_to_create: number;

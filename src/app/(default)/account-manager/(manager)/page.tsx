@@ -25,7 +25,7 @@ import CharactersList from "@/components/(account-manager)/(manager)/manager/Cha
 import { CreateCharacterButton } from "@/components/(account-manager)/(manager)/manager/CreateCharacterButton";
 import { ResendVerificationEmailButton } from "@/components/(account-manager)/(manager)/manager/ResendVerificationEmailButton";
 import InvitedToGuildAlert from "@/components/kokonutui/InvitedToGuildAlert";
-import { getAccountUnique } from "@/services/accounts/AccountsService";
+import { GetAccountUnique } from "@/services/accounts/AccountsService";
 import { convertBigIntsToNumbers } from "@/utils/functions/convertBigIntsToNumbers";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 
@@ -43,7 +43,7 @@ export default async function AccountManagerPage(props: Params) {
 	const user = session?.user;
 	if (!user) redirect("/");
 
-	const acc = await getAccountUnique({
+	const acc = await GetAccountUnique({
 		where: { id: Number(user?.id) },
 		include: {
 			players: {

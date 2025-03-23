@@ -1,9 +1,7 @@
 "use client";
-import type {
-	DeleteGuildError,
-	DeleteGuildRequest,
-	DeleteGuildResponse,
-} from "@/components/(community)/guilds/types/guilds";
+import { API_ROUTES } from "@/app/api/routes";
+import type { GuildsManagerDELETERequest, GuildsManagerPOSTRequest, GuildsManagerPOSTResponse } from "@/app/api/types";
+import type { DeleteGuildError, DeleteGuildRequest, DeleteGuildResponse } from "@/components/(community)/guilds/types/guilds";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
 	AlertDialog,
@@ -18,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { typedFetch } from "@/utils/typedFetch";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -31,20 +30,10 @@ export const DeleteGuild = ({ guild_id }: DeleteGuildProps) => {
 	const router = useRouter();
 
 	async function handleDeleteGuild() {
-		const request: DeleteGuildRequest = {
-			guild_id,
-		};
-
-		// const res = await fetch(`/api/guilds/manager/${guild_id}`, {
-		// 	method: "DELETE",
-		// 	body: JSON.stringify(request),
-		// });
-
 		const res = toast
 			.promise(
-				fetch(`/api/guilds/manager/${guild_id}`, {
+				typedFetch<GuildsManagerDELETERequest, GuildsManagerPOSTResponse>(API_ROUTES.guilds.manager.id(guild_id)._, {
 					method: "DELETE",
-					body: JSON.stringify(request),
 				}),
 				{
 					loading: "Deleting Guild...",
@@ -58,16 +47,6 @@ export const DeleteGuild = ({ guild_id }: DeleteGuildProps) => {
 				router.push("/guilds");
 				return res;
 			});
-
-		// if (res.ok) {
-
-		// 	const dataResponse: DeleteGuildResponse = await res.json();
-		// 	toast.success(`Guild ${dataResponse.guild_name} deleted`);
-		// 	router.push("/guilds");
-		// } else {
-		// 	const dataError: DeleteGuildError = await res.json();
-		// 	toast.error(dataError.message);
-		// }
 	}
 
 	return (
@@ -89,22 +68,12 @@ export const DeleteGuild = ({ guild_id }: DeleteGuildProps) => {
 						<Label htmlFor="confirmDeleteGuild" className="text-sm">
 							Type <span className="font-bold">'Delete'</span> to confirm deletion
 						</Label>
-						<Input
-							type="text"
-							id="confirmDeleteGuild"
-							value={confirmDeleteGuild}
-							onChange={(e) => setConfirmDeleteGuild(e.target.value)}
-						/>
+						<Input type="text" id="confirmDeleteGuild" value={confirmDeleteGuild} onChange={(e) => setConfirmDeleteGuild(e.target.value)} />
 					</div>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<Button
-						variant={"destructive"}
-						type="submit"
-						onClick={handleDeleteGuild}
-						disabled={confirmDeleteGuild !== "Delete"}
-					>
+					<Button variant={"destructive"} type="submit" onClick={handleDeleteGuild} disabled={confirmDeleteGuild !== "Delete"}>
 						Confirm Deletion
 					</Button>
 				</AlertDialogFooter>

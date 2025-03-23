@@ -4,7 +4,7 @@ import type {
 } from "@/app/api/types";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getAccountUnique } from "@/services/accounts/AccountsService";
+import { GetAccountUnique } from "@/services/accounts/AccountsService";
 import { ORDER_STATUS } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 		const { currency_code, value, description, product_category_id, product_amount } = data;
 
 		// Verify user account
-		const playerAccount = await getAccountUnique({
+		const playerAccount = await GetAccountUnique({
 			where: { id: +session.user.id },
 			select: {
 				id: true,

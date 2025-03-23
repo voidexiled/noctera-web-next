@@ -9,7 +9,7 @@ type GetAccountsProps = {
 	skip?: number;
 };
 
-export async function getAccounts({ select, orderBy, take, skip }: GetAccountsProps) {
+export async function GetAccounts({ select, orderBy, take, skip }: GetAccountsProps) {
 	const accounts = await prisma.accounts.findMany({
 		select,
 		orderBy,
@@ -20,9 +20,7 @@ export async function getAccounts({ select, orderBy, take, skip }: GetAccountsPr
 	return accounts;
 }
 
-export async function getAccountUnique<T extends Prisma.accountsFindUniqueArgs>(
-	args: T,
-): Promise<Prisma.accountsGetPayload<T>> {
+export async function GetAccountUnique<T extends Prisma.accountsFindUniqueArgs>(args: T): Promise<Prisma.accountsGetPayload<T>> {
 	try {
 		const account = await prisma.accounts.findUnique(args);
 		return account as Prisma.accountsGetPayload<T>;

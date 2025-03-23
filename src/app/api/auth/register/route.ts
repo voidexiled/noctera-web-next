@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { NextResponse } from "next/server";
 
 import type { AuthRegisterPOSTRequest } from "@/app/api/types";
-import { pageConfig } from "@/lib/config";
+import { GlobalConfig } from "@/lib/config";
 import { BATTLEPASS_RANK_ACCESS } from "@prisma/client";
 import { ZodError, z } from "zod";
 
@@ -118,11 +118,11 @@ export async function POST(req: Request) {
 					country: dataRequest.country,
 					phone: dataRequest.phone,
 					rlname: dataRequest.rlname,
-					coins_transferable: pageConfig.new_account.add_transferable_coins
-						? pageConfig.new_account.coins_transferable
+					coins_transferable: GlobalConfig.new_account.add_transferable_coins
+						? GlobalConfig.new_account.coins_transferable
 						: 0,
-					coins: pageConfig.new_account.add_coins ? pageConfig.new_account.coins : 0,
-					premdays: pageConfig.new_account.add_vip_days ? pageConfig.new_account.vip_days : 0,
+					coins: GlobalConfig.new_account.add_coins ? GlobalConfig.new_account.coins : 0,
+					premdays: GlobalConfig.new_account.add_vip_days ? GlobalConfig.new_account.vip_days : 0,
 					players: {
 						create: {
 							...restInitialPlayer,

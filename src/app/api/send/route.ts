@@ -1,7 +1,7 @@
 import VerifyEmail from "@/app/(default)/emails/VerifyEmail";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getAccountUnique } from "@/services/accounts/AccountsService";
+import { GetAccountUnique } from "@/services/accounts/AccountsService";
 import { randomCode } from "@/utils/functions/randomCode";
 import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
 		if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-		const acc = await getAccountUnique({
+		const acc = await GetAccountUnique({
 			where: { id: Number(session?.user?.id), email_verified: false },
 			select: {
 				id: true,

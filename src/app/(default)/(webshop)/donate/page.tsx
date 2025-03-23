@@ -10,7 +10,7 @@ import Loading from "@/app/(default)/loading";
 import { countries } from "@/components/(account-manager)/(manager)/data/countries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authOptions } from "@/lib/auth";
-import { getAccountUnique } from "@/services/accounts/AccountsService";
+import { GetAccountUnique } from "@/services/accounts/AccountsService";
 import { getExchangeRate } from "@/services/common/ExchangeRatesService";
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
@@ -23,7 +23,7 @@ export default async function ShopPage() {
 
 	let country = "";
 	let currency_code = "";
-	const userAccount = await getAccountUnique({
+	const userAccount = await GetAccountUnique({
 		where: { id: +session.user.id },
 		select: {
 			id: true,

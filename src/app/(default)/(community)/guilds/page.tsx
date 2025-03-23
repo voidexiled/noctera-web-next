@@ -6,8 +6,8 @@ import TableGuild from "@/components/(community)/guilds/guilds-table/GuildsTable
 import { GuildsTableNew } from "@/components/(community)/guilds/guilds-table/GuildsTableNew";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { authOptions } from "@/lib/auth";
-import { pageConfig } from "@/lib/config";
-import { getManyGuilds } from "@/services/guilds/GuildsService";
+import { GlobalConfig } from "@/lib/config";
+import { GetManyGuilds } from "@/services/guilds/GuildsService";
 import { GetManyPlayers } from "@/services/players/PlayersService";
 import type { Prisma, players } from "@prisma/client";
 import { getServerSession } from "next-auth";
@@ -28,14 +28,14 @@ export default async function Guilds(props: { searchParams?: SearchParams }) {
 			(await GetManyPlayers({
 				where: {
 					account_id: +accountId,
-					level: { gte: pageConfig.guilds.minimum_level_to_create ?? 8 },
+					level: { gte: GlobalConfig.guilds.minimum_level_to_create ?? 8 },
 					guild_membership: null,
 					guilds: null,
 				},
 			})) || [];
 	}
 
-	const guilds = await getManyGuilds({
+	const guilds = await GetManyGuilds({
 		include: {
 			players: {
 				select: {

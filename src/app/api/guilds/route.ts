@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 type Params = Promise<{
 	name: string;
 }>;
-
+// TODO: Unused, need to remove it?
 export async function GET(request: Request, { params }: { params: Params }) {
 	const characters = await prisma.guilds.findMany({
 		include: {

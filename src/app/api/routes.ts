@@ -89,10 +89,8 @@ export const API_ROUTES = {
 		images: {
 			filename: (filename: string) => `/api/guilds/images/${filename}`, // ? need to review
 		},
-		invites: {
-			delete: {
-				_: "/api/guilds/invites/delete", // ? need to review
-			},
+		invitations: {
+			_: "/api/guilds/invites/delete", // ? need to review
 		},
 		manager: {
 			_: "/api/guilds/manager", // ? need to review the post(create guild), get unused, need to remove it?(fetch all guilds)
