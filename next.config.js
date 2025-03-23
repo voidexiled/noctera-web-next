@@ -26,7 +26,8 @@ const nextConfig = {
   experimental: {
 		serverActions: {
 			allowedForwardedHosts: ['localhost', 'noctera-global.com'],
-			allowedOrigins: ['http://localhost', 'noctera-global.com', 'http://noctera-global.com', 'https://www.noctera-global.com']
+			allowedOrigins: ['http://localhost', 'noctera-global.com', 'http://noctera-global.com', 'https://www.noctera-global.com'],
+      bodySizeLimit: '6mb'
 		},
 	},
   async headers() {

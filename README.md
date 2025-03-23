@@ -1,33 +1,32 @@
-# NT Tibia Account Manager
+# NocteraAAC - IN DEVELOPMENT
 
 ## Description
-NT Tibia Account Manager is a platform developed with Next.js for managing accounts in the Tibia game. 
-It offers advanced features such as a new purchasing system, two-factor authenticator (2FA), transaction history, email authentication, account recovery system (RK) and password recovery. These features aim to ensure security, transparency and convenience for players, allowing for effective and protected management of their accounts.
+Página web creada para mi servidor de Tibia, Juego MMORPG, versión 13.40, esta página fue creada con la intención de usar una tecnología mas modernas ya que comunmente las paginas de los servidores de Tibia usan PHP y Twig. Aprovechando el uso de tecnologías modernas, use Next.js y Tailwindcss para crear esta actualizacion de la página web y añadi algo que ningun servidor de Tibia tiene en su página web, un sistema de pase de batalla. Esta página está aún desarrollo y no está lista para su despliegue, en estos momentos esta pasando por una mejora de código para que sea más fácil de mantener y actualizar.
 
 
 ## Features
 - New Shopping (redesigned with a new api).
-- 2FA protection system (Famous Two Factor Authenticator).
+- 2FA protection system (Two Factor Authenticator).
 - History of donations / coins / vip time.
 - Email Authentication System.
 - New System of RK - Recovery Key
 - New System Recovery Password
+- New System Battlepass - Noctera Pass integrated with the game.
+- New UI.
 
-## Prerequisites:
-- Git [`Git-SCM`](https://git-scm.com/downloads)  
-- Node.js and npm installed on your machine [`NodeJs`](https://nodejs.org/en/download/current)  
-- Text Editor - Recommended [`VSCode`](https://code.visualstudio.com/)
-- Basic knowledge of JavaScript and React
-- MySQL
-
-## Getting Started Development Tutorial
-[`EN_US`](./tutorial-en_US.md)</br>
-[`PT_BR`](./tutorial-pt_BR.md)
-
-
-## Did you like the project and want to make a donation?
-[![PAYPAL](https://viatesting.files.wordpress.com/2020/03/paypal-donate-button.png 'PayPal')](https://www.paypal.com/donate/?business=QY9D9NP8GR7XW&no_recurring=0&item_name=Para+ajuda&currency_code=BRL)
 
 ### Direct support
-Mail: progamoltda@gmail.com</br>
-Discord: progamo
+Mail: jalomo.chavez18@outlook.com</br>
+Discord: .jalomo
+
+![Imagen de WhatsApp 2025-02-11 a las 21 14 36_c5285d45](https://github.com/user-attachments/assets/823b71c3-a8d1-4602-bc07-91131b03aec0)
+![image](https://github.com/user-attachments/assets/fd3a9d32-2428-4227-ab86-c66104c1286e)
+![Imagen de WhatsApp 2025-01-25 a las 20 48 12_9dcfbcb6](https://github.com/user-attachments/assets/098bba0b-155b-42ac-bf13-f1d08fc467bc)
+![Imagen de WhatsApp 2025-01-25 a las 20 52 04_21dd4f3d](https://github.com/user-attachments/assets/aaf59ba4-af07-4093-8b3a-95e40e2b5369)
+
+
+
+
+
+
+

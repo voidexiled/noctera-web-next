@@ -1,0 +1,18 @@
+[
+  {
+    "config": "db_version",
+    "value": "47"
+  },
+  {
+    "config": "motd_hash",
+    "value": "79e29e1dddbff39064fe5672bc8e67b63a2bccd0"
+  },
+  {
+    "config": "motd_num",
+    "value": "1"
+  },
+  {
+    "config": "players_record",
+    "value": "0"
+  }
+]

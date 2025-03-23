@@ -1,7 +1,7 @@
-import { readFileSync } from 'fs';
-import path, { dirname } from 'path';
+import { readFileSync } from "node:fs";
+import path, { dirname } from "node:path";
 
-interface ConfigLua<T> {
+export interface ConfigLua<T> {
 	[key: string]: T;
 }
 
@@ -14,25 +14,25 @@ export class readConfigLua {
 
 	constructor() {
 		try {
-			this.jsonString = readFileSync(`${configDirectory}/config.lua`, 'utf8');
+			this.jsonString = readFileSync(`${configDirectory}/config.lua`, "utf8");
 		} catch (error) {
-			console.log(error);
-			this.jsonString = '';
+			error;
+			this.jsonString = "";
 		}
 	}
 
 	private parseValue<T>(value: string): T | null {
-		const parsedValue = value?.replace(/["']/g, '').trim();
-		return parsedValue === '' ? null : (parsedValue as T);
+		const parsedValue = value?.replace(/["']/g, "").trim();
+		return parsedValue === "" ? null : (parsedValue as T);
 	}
 
 	public readLua<T>(): ConfigLua<T> {
-		const result = this.jsonString.split('\n').map((item: string) => item.split(' = '));
+		const result = this.jsonString.split("\n").map((item: string) => item.split(" = "));
 
 		const configLua: ConfigLua<T | null> = {};
 
 		result.forEach(([key, value]) => {
-			if (key !== '') {
+			if (key !== "") {
 				configLua[key] = this.parseValue<T>(value);
 			}
 		});

@@ -1,4 +1,4 @@
-import configLua from "@/hooks/configLua";
+import configLua from "@/hooks/useConfigLua";
 import { authOptions } from "@/lib/auth";
 import { MailProvider } from "@/lib/nodemailer";
 import { prisma } from "@/lib/prisma";
@@ -8,91 +8,112 @@ import { NextResponse } from "next/server";
 import { comment } from "postcss";
 import { ZodError, z } from "zod";
 
-
-const passwordUppercase = z.string().regex(/[A-Z]/, 'The password should contain at least 1 uppercase character');
-const passwordLowercase = z.string().regex(/[a-z]/, 'The password must contain at least one lowercase letter');
-const passwordDigit = z.string().regex(/\d/, 'The password must contain at least one numeric digit');
-const passwordSpecialChar = z.string().regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/, 'The password must contain at least one special character');
+const passwordUppercase = z
+	.string()
+	.regex(/[A-Z]/, "The password should contain at least 1 uppercase character");
+const passwordLowercase = z
+	.string()
+	.regex(/[a-z]/, "The password must contain at least one lowercase letter");
+const passwordDigit = z
+	.string()
+	.regex(/\d/, "The password must contain at least one numeric digit");
+const passwordSpecialChar = z
+	.string()
+	.regex(
+		/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
+		"The password must contain at least one special character",
+	);
 
 const UpdateEmailSchema = z.object({
-  lastName: z.string().optional().or(z.literal('')),
-  firstName: z.string().optional().or(z.literal('')),
-  gender: z.string().optional().or(z.literal('')),
-  phoneNumber: z.string().optional().or(z.literal('')),
-  address: z.object({
-    zipCode: z.string().optional().or(z.literal('')),
-    country: z.string().optional().or(z.literal('')),
-    state: z.string().optional().or(z.literal('')),
-    city: z.string().optional().or(z.literal('')),
-    street: z.string().optional().or(z.literal('')),
-    houseNumber: z.string().optional().or(z.literal('')),
-    comment: z.string().optional().or(z.literal('')),
-  }).nullable(),
-  password: z.string().min(8).and(passwordUppercase).and(passwordLowercase).and(passwordDigit).and(passwordSpecialChar),
-})
+	lastName: z.string().optional().or(z.literal("")),
+	firstName: z.string().optional().or(z.literal("")),
+	gender: z.string().optional().or(z.literal("")),
+	phoneNumber: z.string().optional().or(z.literal("")),
+	address: z
+		.object({
+			zipCode: z.string().optional().or(z.literal("")),
+			country: z.string().optional().or(z.literal("")),
+			state: z.string().optional().or(z.literal("")),
+			city: z.string().optional().or(z.literal("")),
+			street: z.string().optional().or(z.literal("")),
+			houseNumber: z.string().optional().or(z.literal("")),
+			comment: z.string().optional().or(z.literal("")),
+		})
+		.nullable(),
+	password: z
+		.string()
+		.min(8)
+		.and(passwordUppercase)
+		.and(passwordLowercase)
+		.and(passwordDigit)
+		.and(passwordSpecialChar),
+});
 
 const update = async (request: Request) => {
-  try {
-    const lua = configLua()
-    const emailProvider = new MailProvider()
+	try {
+		const lua = configLua();
+		const emailProvider = new MailProvider();
 
-    const body = UpdateEmailSchema.parse(await request.json())
+		const body = UpdateEmailSchema.parse(await request.json());
 
-    const session = await getServerSession(authOptions);
-    if (!session) return NextResponse.json({ message: 'Unauthorized1' }, { status: 401 });
+		const session = await getServerSession(authOptions);
+		if (!session) return NextResponse.json({ message: "Unauthorized1" }, { status: 401 });
 
-    const account = await prisma.accounts.findUnique({ where: { id: Number(session.user.id) } })
-    if (!account) return NextResponse.json({ message: 'Unauthorized2' }, { status: 401 });
-    if (!comparePassword(body.password, account.password)) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+		const account = await prisma.accounts.findUnique({
+			where: { id: Number(session.user.id) },
+		});
+		if (!account) return NextResponse.json({ message: "Unauthorized2" }, { status: 401 });
+		if (!comparePassword(body.password, account.password))
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    await prisma.accounts.update({
-      where: { id: account.id },
-      data: {
-        // profile: {
-        //   upsert: {
-        //     create: {
-        //       fisrt_name: body.firstName,
-        //       last_name: body.lastName,
-        //       phone_number: body.phoneNumber,
-        //       gender: body.gender,
-        //     },
-        //     update: {
-        //       fisrt_name: body.firstName,
-        //       last_name: body.lastName,
-        //       phone_number: body.phoneNumber,
-        //       gender: body.gender,
-        //     }
-        //   }
-        // },
-        // address: {
-        //   upsert: {
-        //     create: {
-        //       country: body.address?.country,
-        //       state_province: body.address?.state,
-        //       city: body.address?.city,
-        //       street: body.address?.street,
-        //       house_number: body.address?.houseNumber,
-        //       comment: body.address?.comment,
-        //       zip_code: body.address?.zipCode
-        //     },
-        //     update: {
-        //       country: body.address?.country,
-        //       state_province: body.address?.state,
-        //       city: body.address?.city,
-        //       street: body.address?.street,
-        //       house_number: body.address?.houseNumber,
-        //       comment: body.address?.comment,
-        //       zip_code: body.address?.zipCode
-        //     }
-        //   }
-        // }
-      }
-    })
+		await prisma.accounts.update({
+			where: { id: account.id },
+			data: {
+				// profile: {
+				//   upsert: {
+				//     create: {
+				//       fisrt_name: body.firstName,
+				//       last_name: body.lastName,
+				//       phone_number: body.phoneNumber,
+				//       gender: body.gender,
+				//     },
+				//     update: {
+				//       fisrt_name: body.firstName,
+				//       last_name: body.lastName,
+				//       phone_number: body.phoneNumber,
+				//       gender: body.gender,
+				//     }
+				//   }
+				// },
+				// address: {
+				//   upsert: {
+				//     create: {
+				//       country: body.address?.country,
+				//       state_province: body.address?.state,
+				//       city: body.address?.city,
+				//       street: body.address?.street,
+				//       house_number: body.address?.houseNumber,
+				//       comment: body.address?.comment,
+				//       zip_code: body.address?.zipCode
+				//     },
+				//     update: {
+				//       country: body.address?.country,
+				//       state_province: body.address?.state,
+				//       city: body.address?.city,
+				//       street: body.address?.street,
+				//       house_number: body.address?.houseNumber,
+				//       comment: body.address?.comment,
+				//       zip_code: body.address?.zipCode
+				//     }
+				//   }
+				// }
+			},
+		});
 
-    await emailProvider.SendMail({
-      to: account.email,
-      subject: lua['serverName'] + ' Reset email',
-      html: `
+		await emailProvider.SendMail({
+			to: account.email,
+			subject: `${lua.serverName} Reset email`,
+			html: `
       <div>Dear Tibia player,<br>
       &nbsp;&nbsp;&nbsp; <br>
       Thank you for requesting a change of your Tibia account's registration data.<br>
@@ -119,17 +140,17 @@ const update = async (request: Request) => {
       &nbsp; in order to receive a new account password.<br>
       <br>
       Kind regards,<br>
-      Your ${lua['serverName']} Team<br>
+      Your ${lua.serverName} Team<br>
       </div>
       `,
-    });
+		});
 
-    return NextResponse.json({}, { status: 200 });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
-    }
-  }
-}
+		return NextResponse.json({}, { status: 200 });
+	} catch (error) {
+		if (error instanceof ZodError) {
+			return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
+		}
+	}
+};
 
-export { update as PUT }
+export { update as PUT };

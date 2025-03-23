@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "account_id": 1,
+    "name": "Enemies",
+    "customizable": false
+  },
+  {
+    "id": 2,
+    "account_id": 1,
+    "name": "Friends",
+    "customizable": false
+  },
+  {
+    "id": 3,
+    "account_id": 1,
+    "name": "Trading Partner",
+    "customizable": false
+  }
+]

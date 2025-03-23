@@ -7,21 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model posts {
-  id         Int           @id @default(autoincrement())
-  account_id Int           @db.UnsignedInt
-  title      String        @db.VarChar(255)
-  published  Boolean       @default(true)
-  content    String        @db.LongText
-  cover      String?
-  slug       String?       @unique
-  category   CATEGORY_POST @default(BLOG)
-  createdAt  DateTime      @default(now()) @map("created_at")
-  updatedAt  DateTime?     @updatedAt @map("updated_at")
-  accounts   accounts      @relation(fields: [account_id], references: [id])
+model exchange_rates {
+  id              Int      @id @default(autoincrement())
+  base_currency   String   @db.VarChar(3)
+  target_currency String   @unique() @db.VarChar(3)
+  rate            Decimal  @default(0) @db.Decimal(30, 16)
+  updatedAt       DateTime @default(now()) @map("updated_at")
 
-  @@index([account_id], map: "wp_posts_account_id_fkey")
-  @@map("wp_posts")
+  @@index([base_currency, target_currency])
 }
 
 model social_medias {
@@ -34,7 +27,33 @@ model social_medias {
   updatedAt  DateTime? @updatedAt @map("updated_at")
   account    accounts  @relation(fields: [account_id], references: [id])
 
-  @@map("wp-social_medias")
+  @@map("wp_social_medias")
+}
+
+enum POST_TYPE {
+  INFO
+  UPDATE
+  ALERT
+  CRITICAL
+  EVENT
+}
+
+model posts {
+  id         Int           @id @default(autoincrement())
+  account_id Int           @db.UnsignedInt
+  title      String        @db.VarChar(255)
+  published  Boolean       @default(true)
+  content    String        @db.LongText
+  cover      String?
+  type       POST_TYPE     @default(INFO)
+  slug       String?       @unique
+  category   CATEGORY_POST @default(BLOG)
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime?     @updatedAt @map("updated_at")
+  accounts   accounts      @relation(fields: [account_id], references: [id])
+
+  @@index([account_id], map: "wp_posts_account_id_fkey")
+  @@map("wp_posts")
 }
 
 model products_categories {
@@ -43,6 +62,7 @@ model products_categories {
   desc     String?
   img_url  String?
   products products[]
+  orders   orders[]   @relation(map: "wp_products_orders_categories_fk")
 
   @@map("wp_products_category")
 }
@@ -65,20 +85,146 @@ model products {
 }
 
 model orders {
-  id           Int          @id @default(autoincrement())
-  account_id   Int
-  status       ORDER_STATUS @default(PROCESSING)
-  provider     String?      @db.VarChar(100)
-  currency     String
-  total_amount String
-  orderID      String
-  payerID      String?
-  paymentID    String?
-  description  String
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime?    @updatedAt @map("updated_at")
+  id                  Int          @id @default(autoincrement())
+  account_id          Int
+  status              ORDER_STATUS @default(PROCESSING)
+  provider            String?      @db.VarChar(100)
+  currency            String
+  total_amount        String
+  orderID             String       @unique
+  payerID             String?
+  paymentClientSecret String       @unique
+  description         String
+  product_amount      Int
+  product_category_id Int
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime?    @updatedAt @map("updated_at")
 
+  Categories products_categories @relation(fields: [product_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wp_products_orders_categories_fk")
+
+  @@index([orderID], map: "orderID")
   @@map("wp_products_orders")
+}
+
+model battlepass_seasons {
+  id                                Int                                 @id @default(autoincrement())
+  season_number                     String                              @unique @db.VarChar(255)
+  season_name                       String                              @db.VarChar(255)
+  date_start                        DateTime                            @db.DateTime(0)
+  date_end                          DateTime                            @db.DateTime(0)
+  background_img                    String                              @db.VarChar(255)
+  description                       String                              @db.Text
+  battlepass_seasons_rewards        battlepass_seasons_rewards[]
+  battlepass_seasons_tasks          battlepass_seasons_tasks[]
+  player_battlepass_progress        player_battlepass_progress[]
+  player_battlepass_rewards_claimed player_battlepass_rewards_claimed[]
+  player_battlepass_tasks           player_battlepass_tasks[]
+
+  @@map("battlepass_seasons")
+}
+
+model battlepass_seasons_rewards {
+  id                                Int                                 @id @default(autoincrement()) @db.UnsignedInt
+  season_id                         Int
+  level                             Int                                 @default(1)
+  reward_name                       String                              @db.VarChar(255)
+  reward_img                        String                              @db.VarChar(255)
+  reward_type                       BATTLEPASS_TYPE_REWARDS             @default(ITEM)
+  reward_amount                     Int                                 @default(1)
+  reward_value                      Int                                 @default(0)
+  reward_should_plus_amount         Boolean                             @default(false)
+  reward_required_access            BATTLEPASS_RANK_ACCESS              @default(FREE)
+  description                       String                              @db.Text
+  visible                           Boolean                             @default(true)
+  seasons                           battlepass_seasons                  @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "battlepass_seasons_rewards_seasons_fk")
+  player_battlepass_rewards_claimed player_battlepass_rewards_claimed[]
+
+  @@index([season_id], map: "season_id")
+  @@map("battlepass_seasons_rewards")
+}
+
+model battlepass_task_templates {
+  id              Int                          @id @default(autoincrement()) @db.UnsignedInt
+  name            String                       @db.VarChar(255) // Admin-friendly name
+  description     String                       @db.VarChar(255) // Template for player-facing description
+  task_img        String?                      @db.VarChar(255) // Optional default image
+  task_type       BATTLEPASS_TYPE_TASKS        @default(MONSTER_KILL)
+  period_type     BATTLEPASS_PERIOD_TYPE_TASKS @default(DAILY)
+  task_value      String                       @default("") @db.VarChar(255) // E.g., Monster ID, Item ID
+  task_amount     Int                          @default(1)
+  weight          Int                          @default(1000) // For weighted random selection
+  enabled         Boolean                      @default(true) // Toggle task template on/off
+  notes           String?                      @db.Text // Admin notes
+  min_rank_access BATTLEPASS_RANK_ACCESS       @default(FREE) // Minimum VIP rank to access task
+  createdAt       DateTime                     @default(now())
+  updatedAt       DateTime                     @updatedAt
+
+  @@map("battlepass_task_templates")
+}
+
+model battlepass_seasons_tasks {
+  id                         Int                          @id @default(autoincrement()) @db.UnsignedInt
+  season_id                  Int
+  task_name                  String                       @db.VarChar(255)
+  task_img                   String                       @db.VarChar(255)
+  task_type                  BATTLEPASS_TYPE_TASKS        @default(MONSTER_KILL)
+  period_type                BATTLEPASS_PERIOD_TYPE_TASKS @default(DAILY)
+  task_value                 String                       @default("") @db.VarChar(255)
+  task_amount                Int                          @default(1)
+  task_battlepass_exp_reward Int                          @default(0)
+  available_from             DateTime                     @db.DateTime(0)
+  battlepass_seasons         battlepass_seasons           @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "battlepass_seasons_tasks_seasons_fk")
+  player_battlepass_tasks    player_battlepass_tasks[]
+
+  @@index([season_id], map: "season_id")
+  @@map("battlepass_seasons_tasks")
+}
+
+model player_battlepass_rewards_claimed {
+  id         Int                        @id @default(autoincrement()) @db.UnsignedInt
+  season_id  Int
+  player_id  Int
+  reward_id  Int                        @db.UnsignedInt
+  claimed_at DateTime                   @db.DateTime(0)
+  players    players                    @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_rewards_claimed_players_fk")
+  rewards    battlepass_seasons_rewards @relation(fields: [reward_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_rewards_claimed_rewards_fk")
+  seasons    battlepass_seasons         @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_rewards_claimed_seasons_fk")
+
+  @@index([season_id], map: "season_id")
+  @@index([player_id], map: "player_battlepass_rewards_claimed_players_fk")
+  @@index([reward_id], map: "player_battlepass_rewards_claimed_rewards_fk")
+  @@map("player_battlepass_rewards_claimed")
+}
+
+model player_battlepass_progress {
+  id          Int                @id @default(autoincrement()) @db.UnsignedInt
+  season_id   Int
+  player_id   Int
+  current_exp Int                @db.UnsignedInt
+  seasons     battlepass_seasons @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "battlepass_seasons_tasks_seasons_fk1")
+  players     players            @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_progress_players_fk")
+
+  @@index([player_id], map: "player_id")
+  @@index([season_id], map: "battlepass_seasons_tasks_seasons_fk1")
+  @@map("player_battlepass_progress")
+}
+
+model player_battlepass_tasks {
+  id                       Int                      @id @default(autoincrement()) @db.UnsignedInt
+  player_id                Int
+  season_id                Int
+  task_id                  Int                      @db.UnsignedInt
+  current_amount           Int                      @default(0) @db.UnsignedInt
+  claimed                  Boolean                  @default(false)
+  finished                 Boolean                  @default(false)
+  players                  players                  @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_tasks_players_fk")
+  battlepass_seasons       battlepass_seasons       @relation(fields: [season_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_tasks_seasons_fk")
+  battlepass_seasons_tasks battlepass_seasons_tasks @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_battlepass_tasks_tasks_fk")
+
+  @@index([player_id], map: "player_id")
+  @@index([season_id], map: "player_battlepass_tasks_seasons_fk")
+  @@index([task_id], map: "player_battlepass_tasks_tasks_fk")
+  @@map("player_battlepass_tasks")
 }
 
 model account_ban_history {
@@ -155,49 +301,44 @@ model account_viplist {
 }
 
 model accounts {
-  id                     Int                      @id @default(autoincrement()) @db.UnsignedInt
-  name                   String?                  @unique(map: "accounts_unique") @db.VarChar(32)
-  password               String                   @db.Text
-  email                  String                   @default("") @db.VarChar(255)
-  created                Int                      @default(0)
-  rlname                 String                   @default("") @db.VarChar(255)
-  location               String                   @default("") @db.VarChar(255)
-  country                String                   @default("") @db.VarChar(3)
-  web_lastlogin          Int                      @default(0)
-  web_flags              Int                      @default(0)
-  email_hash             String                   @default("") @db.VarChar(32)
-  email_new              String                   @default("") @db.VarChar(255)
-  email_new_time         Int                      @default(0)
-  email_code             String                   @default("") @db.VarChar(255)
-  email_next             Int                      @default(0)
-  email_verified         Boolean                  @default(false)
-  phone                  String?                  @db.VarChar(15)
-  key                    String                   @default("") @db.VarChar(64)
-  premdays               Int                      @default(0)
-  premdays_purchased     Int                      @default(0)
-  lastday                Int                      @default(0) @db.UnsignedInt
-  type                   Int                      @default(1) @db.UnsignedTinyInt
-  coins                  Int                      @default(0) @db.UnsignedInt
-  coins_transferable     Int                      @default(0) @db.UnsignedInt
-  tournament_coins       Int                      @default(0) @db.UnsignedInt
-  creation               Int                      @default(0) @db.UnsignedInt
-  recruiter              Int?                     @default(0)
-  vote                   Int                      @default(0)
-  secret_status          Boolean                  @default(false)
-  secret                 String?                  @db.Char(16)
-  gamesecret             String?                  @db.Char(16)
-  authToken              String                   @default("") @db.VarChar(100)
-  account_ban_history    account_ban_history[]
-  account_bans           account_bans?
-  account_viplist        account_viplist[]
-  coins_transactions     coins_transactions[]
-  myaac_send_items       myaac_send_items[]
-  pagseguro_transactions pagseguro_transactions[]
-  players                players[]
-  store_history          store_history[]
-  social_medias          social_medias?
-  posts                  posts[]
-  tokens                 Tokens[]
+  id                  Int                   @id @default(autoincrement()) @db.UnsignedInt
+  name                String                @unique(map: "accounts_unique") @db.VarChar(32)
+  password            String                @db.Text
+  email               String                @default("") @db.VarChar(255)
+  premdays            Int                   @default(0)
+  premdays_purchased  Int                   @default(0)
+  lastday             Int                   @default(0) @db.UnsignedInt
+  type                Int                   @default(1) @db.UnsignedTinyInt
+  coins               Int                   @default(0) @db.UnsignedInt
+  coins_transferable  Int                   @default(0) @db.UnsignedInt
+  tournament_coins    Int                   @default(0) @db.UnsignedInt
+  creation            Int                   @default(0) @db.UnsignedInt
+  recruiter           Int?                  @default(0)
+  key                 String                @default("") @db.VarChar(64)
+  country             String                @default("") @db.VarChar(3)
+  email_verified      Boolean               @default(false)
+  secret_status       Boolean               @default(false)
+  secret              String?               @db.Char(16)
+  web_lastlogin       Int?                  @default(0) @db.UnsignedInt
+  rlname              String                @default("") @db.VarChar(255)
+  phone               String?               @db.VarChar(15)
+  authToken           String                @default("") @db.VarChar(100)
+  email_code          String                @default("") @db.VarChar(255)
+  email_hash          String                @default("") @db.VarChar(32)
+  email_new           String                @default("") @db.VarChar(255)
+  email_new_time      Int                   @default(0)
+  email_next          Int                   @default(0)
+  gamesecret          String?               @db.Char(16)
+  web_flags           Int                   @default(0)
+  account_ban_history account_ban_history[]
+  account_bans        account_bans?
+  account_viplist     account_viplist[]
+  coins_transactions  coins_transactions[]
+  players             players[]
+  store_history       store_history[]
+  posts               posts[]
+  social_medias       social_medias?
+  Tokens              Tokens[]
 }
 
 model Tokens {
@@ -215,9 +356,8 @@ model Tokens {
 }
 
 model boosted_boss {
-  id         Int     @id @default(autoincrement())
   boostname  String? @db.Text
-  date       String  @default("") @db.VarChar(250)
+  date       String  @id @default("") @db.VarChar(250)
   raceid     String  @default("") @db.VarChar(250)
   looktypeEx Int     @default(0)
   looktype   Int     @default(136)
@@ -230,9 +370,8 @@ model boosted_boss {
 }
 
 model boosted_creature {
-  id         Int     @id @default(autoincrement())
   boostname  String? @db.Text
-  date       String  @default("") @db.VarChar(250)
+  date       String  @id @default("") @db.VarChar(250)
   raceid     String  @default("") @db.VarChar(250)
   looktype   Int     @default(136)
   lookfeet   Int     @default(0)
@@ -458,339 +597,32 @@ model market_offers {
   @@index([sale, itemtype], map: "sale")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model myaac_account_actions {
-  account_id Int
-  ip         String @default("0.0.0.0") @db.VarChar(16)
-  ipv6       Bytes  @default(dbgenerated("('0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0')")) @db.Binary(16)
-  date       Int    @default(0)
-  action     String @default("") @db.VarChar(255)
+//TODO: IMPLEMENT THIS
+model character_market {
   id         Int    @id @default(autoincrement())
-
-  @@index([account_id], map: "account_id")
-}
-
-model myaac_admin_menu {
-  id       Int    @id @default(autoincrement())
-  name     String @default("") @db.VarChar(255)
-  page     String @default("") @db.VarChar(255)
-  ordering Int    @default(0)
-  flags    Int    @default(0)
-  enabled  Int    @default(1)
-}
-
-model myaac_bugtracker {
-  account String @db.VarChar(255)
-  type    Int    @default(0)
-  status  Int    @default(0)
-  text    String @db.Text
-  id      Int    @default(0)
-  subject String @default("") @db.VarChar(255)
-  reply   Int    @default(0)
-  who     Int    @default(0)
-  uid     Int    @id @default(autoincrement())
-  tag     Int    @default(0)
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model myaac_changelog {
-  id        Int     @id @default(autoincrement())
-  body      String  @default("") @db.VarChar(500)
-  type      Boolean @default(false)
-  where     Boolean @default(false)
-  date      Int     @default(0)
-  player_id Int     @default(0)
-  hidden    Boolean @default(false)
-}
-
-model myaac_charbazaar {
-  id          Int      @id @default(autoincrement())
-  account_old Int
-  account_new Int
-  player_id   Int
-  price       Int
-  date_end    DateTime @db.DateTime(0)
-  date_start  DateTime @db.DateTime(0)
-  bid_account Int
-  bid_price   Int
-  status      Int
-}
-
-model myaac_charbazaar_bid {
-  id         Int      @id @default(autoincrement())
+  world_id   Int    @default(1)
+  name       String @db.VarChar(40)
+  level      Int
+  vocation   Int    @default(1) @db.TinyInt
+  price      Int
+  player_id  Int
   account_id Int
-  auction_id Int
-  bid        Int
-  date       DateTime @default(now()) @db.Timestamp(0)
-}
-
-model myaac_config {
-  id    Int    @id @default(autoincrement())
-  name  String @unique(map: "name") @db.VarChar(30)
-  value String @db.VarChar(1000)
-}
-
-model myaac_faq {
-  id       Int     @id @default(autoincrement())
-  question String  @default("") @db.VarChar(255)
-  answer   String  @default("") @db.VarChar(1020)
-  ordering Int     @default(0)
-  hidden   Boolean @default(false)
-}
-
-model myaac_forum {
-  id            Int     @id @default(autoincrement())
-  first_post    Int     @default(0)
-  last_post     Int     @default(0)
-  section       Int     @default(0)
-  replies       Int     @default(0)
-  views         Int     @default(0)
-  author_aid    Int     @default(0)
-  author_guid   Int     @default(0)
-  post_text     String  @db.Text
-  post_topic    String  @default("") @db.VarChar(255)
-  post_smile    Boolean @default(false)
-  post_html     Boolean @default(false)
-  post_date     Int     @default(0)
-  last_edit_aid Int     @default(0)
-  edit_date     Int     @default(0)
-  post_ip       String  @default("0.0.0.0") @db.VarChar(32)
-  sticked       Boolean @default(false)
-  closed        Boolean @default(false)
-
-  @@index([section], map: "section")
-}
-
-model myaac_forum_boards {
-  id          Int     @id @default(autoincrement())
-  name        String  @db.VarChar(32)
-  description String  @default("") @db.VarChar(255)
-  ordering    Int     @default(0)
-  guild       Int     @default(0)
-  access      Int     @default(0)
-  closed      Boolean @default(false)
-  hidden      Boolean @default(false)
-}
-
-model myaac_gallery {
-  id       Int     @id @default(autoincrement())
-  comment  String  @default("") @db.VarChar(255)
-  image    String  @db.VarChar(255)
-  thumb    String  @db.VarChar(255)
-  author   String  @default("") @db.VarChar(50)
-  ordering Int     @default(0)
-  hidden   Boolean @default(false)
-}
-
-model myaac_menu {
-  id       Int     @id @default(autoincrement())
-  template String  @db.VarChar(255)
-  name     String  @db.VarChar(255)
-  link     String  @db.VarChar(255)
-  blank    Boolean @default(false)
-  color    String  @default("") @db.VarChar(6)
-  category Int     @default(1)
-  ordering Int     @default(0)
-  enabled  Int     @default(1)
-}
-
-model myaac_monsters {
-  id               Int     @id @default(autoincrement())
-  hidden           Boolean @default(false)
-  name             String  @db.VarChar(255)
-  mana             Int     @default(0)
-  exp              Int
-  health           Int
-  speed_lvl        Int     @default(1)
-  use_haste        Boolean
-  voices           String  @db.Text
-  immunities       String  @db.VarChar(255)
-  elements         String  @db.Text
-  summonable       Boolean
-  convinceable     Boolean
-  pushable         Boolean @default(false)
-  canpushitems     Boolean @default(false)
-  canwalkonenergy  Boolean @default(false)
-  canwalkonpoison  Boolean @default(false)
-  canwalkonfire    Boolean @default(false)
-  runonhealth      Boolean @default(false)
-  hostile          Boolean @default(false)
-  attackable       Boolean @default(false)
-  rewardboss       Boolean @default(false)
-  defense          Int     @default(0)
-  armor            Int     @default(0)
-  canpushcreatures Boolean @default(false)
-  race             String  @db.VarChar(255)
-  loot             String  @db.Text
-  summons          String  @db.Text
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model myaac_news {
-  id                 Int     @id @default(autoincrement())
-  title              String  @db.VarChar(100)
-  body               String  @db.Text
-  type               Boolean @default(false)
-  date               Int     @default(0)
-  category           Boolean @default(false)
-  player_id          Int     @default(0)
-  last_modified_by   Int     @default(0)
-  last_modified_date Int     @default(0)
-  comments           String  @default("") @db.VarChar(50)
-  article_text       String  @default("") @db.VarChar(300)
-  article_image      String  @default("") @db.VarChar(100)
-  hidden             Boolean @default(false)
-}
-
-model myaac_news_categories {
-  id          Int     @id @default(autoincrement())
-  name        String  @default("") @db.VarChar(50)
-  description String  @default("") @db.VarChar(50)
-  icon_id     Int     @default(0)
-  hidden      Boolean @default(false)
-}
-
-model myaac_notepad {
-  id         Int    @id @default(autoincrement())
-  account_id Int
-  content    String @db.Text
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model myaac_pages {
-  id             Int     @id @default(autoincrement())
-  name           String  @unique(map: "name") @db.VarChar(30)
-  title          String  @db.VarChar(30)
-  body           String  @db.LongText
-  date           Int     @default(0)
-  player_id      Int     @default(0)
-  php            Boolean @default(false)
-  enable_tinymce Boolean @default(true)
-  access         Int     @default(0) @db.TinyInt
-  hidden         Boolean @default(false)
-}
-
-model myaac_polls {
-  id          Int    @id
-  question    String @db.VarChar(255)
-  description String @db.VarChar(255)
-  end         Int
-  start       Int
-  answers     Int
-  votes_all   Int
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model myaac_polls_answers {
-  poll_id   Int
-  answer_id Int
-  answer    String @db.VarChar(255)
-  votes     Int
-  id        Int    @id @default(autoincrement())
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model myaac_send_items {
-  id               Int       @id @default(autoincrement())
-  transaction_code String    @db.VarChar(50)
-  item_id          String    @db.VarChar(20)
-  item_name        String    @db.VarChar(50)
-  item_count       Int       @default(1) @db.UnsignedInt
-  account_id       Int       @db.UnsignedInt
-  payment_method   String    @db.VarChar(50)
-  payment_status   String    @db.VarChar(50)
-  status           String    @default("0") @db.Char(1)
-  request          String?   @db.LongText
-  created_at       DateTime  @db.DateTime(0)
-  updated_at       DateTime? @db.DateTime(0)
-  accounts         accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "myaac_send_items_account_fk")
-
-  @@unique([transaction_code, payment_status], map: "transaction_code")
-  @@index([account_id], map: "myaac_send_items_account_fk")
-  @@index([payment_method], map: "payment_method")
-  @@index([payment_status], map: "payment_status")
-  @@index([status], map: "status")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model myaac_spells {
-  id            Int     @id @default(autoincrement())
-  spell         String  @default("") @db.VarChar(255)
-  name          String  @unique(map: "name") @db.VarChar(255)
-  words         String  @default("") @db.VarChar(255)
-  category      Boolean @default(false)
-  type          Boolean @default(false)
-  level         Int     @default(0)
-  maglevel      Int     @default(0)
-  mana          Int     @default(0)
-  soul          Int     @default(0) @db.TinyInt
-  conjure_id    Int     @default(0)
-  conjure_count Int     @default(0) @db.TinyInt
-  reagent       Int     @default(0)
-  item_id       Int     @default(0)
-  premium       Boolean @default(false)
-  vocations     String  @default("") @db.VarChar(100)
-  hidden        Boolean @default(false)
-}
-
-model myaac_videos {
-  id         Int     @id @default(autoincrement())
-  title      String  @default("") @db.VarChar(100)
-  youtube_id String  @db.VarChar(20)
-  author     String  @default("") @db.VarChar(50)
-  ordering   Int     @default(0)
-  hidden     Boolean @default(false)
-}
-
-model myaac_visitors {
-  ip        String @unique(map: "ip") @db.VarChar(45)
-  lastvisit Int    @default(0)
-  page      String @db.VarChar(2048)
-}
-
-model myaac_weapons {
-  id        Int    @id
-  level     Int    @default(0)
-  maglevel  Int    @default(0)
-  vocations String @default("") @db.VarChar(100)
-}
-
-model pagseguro_transactions {
-  id               Int       @id @default(autoincrement())
-  transaction_code String    @db.VarChar(50)
-  account_id       Int       @db.UnsignedInt
-  payment_method   String    @db.VarChar(50)
-  payment_status   String    @db.VarChar(50)
-  code             String    @db.VarChar(10)
-  coins_amount     Int
-  bought           Int?
-  delivered        String    @default("0") @db.Char(1)
-  in_double        String    @default("0") @db.Char(1)
-  request          String?   @db.LongText
-  created_at       DateTime  @db.DateTime(0)
-  updated_at       DateTime? @db.DateTime(0)
-  accounts         accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "pagseguro_transactions_account_fk")
-
-  @@unique([transaction_code, payment_status], map: "transaction_code")
-  @@index([coins_amount], map: "coins_amount")
-  @@index([delivered], map: "delivered")
-  @@index([account_id], map: "pagseguro_transactions_account_fk")
-  @@index([payment_method], map: "payment_method")
-  @@index([payment_status], map: "payment_status")
+  status     Int    @db.TinyInt
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model player_bosstiary {
+  id            Int   @id @default(autoincrement()) @db.UnsignedInt
   player_id     Int
   bossIdSlotOne Int   @default(0)
   bossIdSlotTwo Int   @default(0)
   removeTimes   Int   @default(1)
   tracker       Bytes @db.Blob
-  id            Int   @id @default(autoincrement())
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model player_charms {
+  id               Int      @id @default(autoincrement()) @db.UnsignedInt
   player_guid      Int
   charm_points     String?  @db.VarChar(250)
   charm_expansion  Boolean?
@@ -816,11 +648,11 @@ model player_charms {
   UsedRunesBit     String?  @db.VarChar(250)
   UnlockedRunesBit String?  @db.VarChar(250)
   tracker_list     Bytes?   @map("tracker list") @db.Blob
-  id               Int      @id @default(autoincrement())
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model player_deaths {
+  id                     Int     @id @default(autoincrement()) @db.UnsignedInt
   player_id              Int
   time                   BigInt  @default(0) @db.UnsignedBigInt
   level                  Int     @default(1)
@@ -830,7 +662,6 @@ model player_deaths {
   mostdamage_is_player   Boolean @default(false)
   unjustified            Boolean @default(false)
   mostdamage_unjustified Boolean @default(false)
-  id                     Int     @id @default(autoincrement())
   players                players @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "player_deaths_players_fk")
 
   @@index([killed_by], map: "killed_by")
@@ -898,11 +729,11 @@ model player_items {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model player_kills {
+  id        Int     @id @default(autoincrement()) @db.UnsignedInt
   player_id Int
   time      BigInt  @default(0) @db.UnsignedBigInt
   target    Int
   unavenged Boolean @default(false)
-  id        Int     @id @default(autoincrement())
 }
 
 model player_namelocks {
@@ -994,113 +825,113 @@ model player_wheeldata {
 }
 
 model players {
-  id                                                       Int                    @id @default(autoincrement())
-  name                                                     String                 @unique(map: "players_unique") @db.VarChar(255)
-  group_id                                                 Int                    @default(1)
-  account_id                                               Int                    @default(0) @db.UnsignedInt
-  level                                                    Int                    @default(1)
-  vocation                                                 Int                    @default(0)
-  health                                                   Int                    @default(150)
-  healthmax                                                Int                    @default(150)
-  experience                                               BigInt                 @default(0)
-  lookbody                                                 Int                    @default(0)
-  lookfeet                                                 Int                    @default(0)
-  lookhead                                                 Int                    @default(0)
-  looklegs                                                 Int                    @default(0)
-  looktype                                                 Int                    @default(136)
-  lookaddons                                               Int                    @default(0)
-  maglevel                                                 Int                    @default(0)
-  mana                                                     Int                    @default(0)
-  manamax                                                  Int                    @default(0)
-  manaspent                                                BigInt                 @default(0) @db.UnsignedBigInt
-  soul                                                     Int                    @default(0) @db.UnsignedInt
-  town_id                                                  Int                    @default(1)
-  posx                                                     Int                    @default(0)
-  posy                                                     Int                    @default(0)
-  posz                                                     Int                    @default(0)
-  conditions                                               Bytes                  @db.MediumBlob
-  cap                                                      Int                    @default(0)
-  sex                                                      Int                    @default(0)
-  pronoun                                                  Int                    @default(0)
-  lastlogin                                                BigInt                 @default(0) @db.UnsignedBigInt
-  lastip                                                   Int                    @default(0) @db.UnsignedInt
-  save                                                     Boolean                @default(true)
-  skull                                                    Int                    @default(0) @db.TinyInt
-  skulltime                                                BigInt                 @default(0)
-  lastlogout                                               BigInt                 @default(0) @db.UnsignedBigInt
-  blessings                                                Int                    @default(0) @db.TinyInt
-  blessings1                                               Int                    @default(0) @db.TinyInt
-  blessings2                                               Int                    @default(0) @db.TinyInt
-  blessings3                                               Int                    @default(0) @db.TinyInt
-  blessings4                                               Int                    @default(0) @db.TinyInt
-  blessings5                                               Int                    @default(0) @db.TinyInt
-  blessings6                                               Int                    @default(0) @db.TinyInt
-  blessings7                                               Int                    @default(0) @db.TinyInt
-  blessings8                                               Int                    @default(0) @db.TinyInt
-  onlinetime                                               Int                    @default(0)
-  deletion                                                 BigInt                 @default(0)
-  balance                                                  BigInt                 @default(0) @db.UnsignedBigInt
-  offlinetraining_time                                     Int                    @default(43200) @db.UnsignedSmallInt
-  offlinetraining_skill                                    Int                    @default(-1) @db.TinyInt
-  stamina                                                  Int                    @default(2520) @db.UnsignedSmallInt
-  skill_fist                                               Int                    @default(10) @db.UnsignedInt
-  skill_fist_tries                                         BigInt                 @default(0) @db.UnsignedBigInt
-  skill_club                                               Int                    @default(10) @db.UnsignedInt
-  skill_club_tries                                         BigInt                 @default(0) @db.UnsignedBigInt
-  skill_sword                                              Int                    @default(10) @db.UnsignedInt
-  skill_sword_tries                                        BigInt                 @default(0) @db.UnsignedBigInt
-  skill_axe                                                Int                    @default(10) @db.UnsignedInt
-  skill_axe_tries                                          BigInt                 @default(0) @db.UnsignedBigInt
-  skill_dist                                               Int                    @default(10) @db.UnsignedInt
-  skill_dist_tries                                         BigInt                 @default(0) @db.UnsignedBigInt
-  skill_shielding                                          Int                    @default(10) @db.UnsignedInt
-  skill_shielding_tries                                    BigInt                 @default(0) @db.UnsignedBigInt
-  skill_fishing                                            Int                    @default(10) @db.UnsignedInt
-  skill_fishing_tries                                      BigInt                 @default(0) @db.UnsignedBigInt
-  skill_critical_hit_chance                                Int                    @default(0) @db.UnsignedInt
-  skill_critical_hit_chance_tries                          BigInt                 @default(0) @db.UnsignedBigInt
-  skill_critical_hit_damage                                Int                    @default(0) @db.UnsignedInt
-  skill_critical_hit_damage_tries                          BigInt                 @default(0) @db.UnsignedBigInt
-  skill_life_leech_chance                                  Int                    @default(0) @db.UnsignedInt
-  skill_life_leech_chance_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_life_leech_amount                                  Int                    @default(0) @db.UnsignedInt
-  skill_life_leech_amount_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_mana_leech_chance                                  Int                    @default(0) @db.UnsignedInt
-  skill_mana_leech_chance_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_mana_leech_amount                                  Int                    @default(0) @db.UnsignedInt
-  skill_mana_leech_amount_tries                            BigInt                 @default(0) @db.UnsignedBigInt
-  skill_criticalhit_chance                                 BigInt                 @default(0) @db.UnsignedBigInt
-  skill_criticalhit_damage                                 BigInt                 @default(0) @db.UnsignedBigInt
-  skill_lifeleech_chance                                   BigInt                 @default(0) @db.UnsignedBigInt
-  skill_lifeleech_amount                                   BigInt                 @default(0) @db.UnsignedBigInt
-  skill_manaleech_chance                                   BigInt                 @default(0) @db.UnsignedBigInt
-  skill_manaleech_amount                                   BigInt                 @default(0) @db.UnsignedBigInt
-  manashield                                               Int                    @default(0) @db.UnsignedInt
-  max_manashield                                           Int                    @default(0) @db.UnsignedInt
-  xpboost_stamina                                          Int?                   @db.UnsignedSmallInt
-  xpboost_value                                            Int?                   @db.UnsignedTinyInt
-  marriage_status                                          BigInt                 @default(0) @db.UnsignedBigInt
-  marriage_spouse                                          Int                    @default(-1)
-  bonus_rerolls                                            BigInt                 @default(0)
-  prey_wildcard                                            BigInt                 @default(0)
-  task_points                                              BigInt                 @default(0)
-  quickloot_fallback                                       Boolean?               @default(false)
-  lookmountbody                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookmountfeet                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookmounthead                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookmountlegs                                            Int                    @default(0) @db.UnsignedTinyInt
-  lookfamiliarstype                                        Int                    @default(0) @db.UnsignedInt
-  isreward                                                 Boolean                @default(true)
-  istutorial                                               Boolean                @default(false)
-  ismain                                                   Boolean                @default(false)
-  forge_dusts                                              BigInt                 @default(0)
-  forge_dust_level                                         BigInt                 @default(100)
-  randomize_mount                                          Boolean                @default(false)
-  boss_points                                              Int                    @default(0)
-  created                                                  Int                    @default(0)
-  hidden                                                   Boolean                @default(false)
-  comment                                                  String                 @db.Text
-  cast_on                                                  Int                    @default(0) @db.TinyInt
+  id                                                       Int                                 @id @default(autoincrement())
+  name                                                     String                              @unique(map: "players_unique") @db.VarChar(255)
+  group_id                                                 Int                                 @default(1)
+  account_id                                               Int                                 @default(0) @db.UnsignedInt
+  level                                                    Int                                 @default(1)
+  vocation                                                 Int                                 @default(0)
+  health                                                   Int                                 @default(150)
+  healthmax                                                Int                                 @default(150)
+  experience                                               BigInt                              @default(0)
+  lookbody                                                 Int                                 @default(0)
+  lookfeet                                                 Int                                 @default(0)
+  lookhead                                                 Int                                 @default(0)
+  looklegs                                                 Int                                 @default(0)
+  looktype                                                 Int                                 @default(136)
+  lookaddons                                               Int                                 @default(0)
+  maglevel                                                 Int                                 @default(0)
+  mana                                                     Int                                 @default(0)
+  manamax                                                  Int                                 @default(0)
+  manaspent                                                BigInt                              @default(0) @db.UnsignedBigInt
+  soul                                                     Int                                 @default(0) @db.UnsignedInt
+  town_id                                                  Int                                 @default(1)
+  posx                                                     Int                                 @default(0)
+  posy                                                     Int                                 @default(0)
+  posz                                                     Int                                 @default(0)
+  conditions                                               Bytes                               @db.MediumBlob
+  cap                                                      Int                                 @default(0)
+  sex                                                      Int                                 @default(0)
+  pronoun                                                  Int                                 @default(0)
+  lastlogin                                                BigInt                              @default(0) @db.UnsignedBigInt
+  lastip                                                   Int                                 @default(0) @db.UnsignedInt
+  save                                                     Boolean                             @default(true)
+  skull                                                    Boolean                             @default(false)
+  skulltime                                                BigInt                              @default(0)
+  lastlogout                                               BigInt                              @default(0) @db.UnsignedBigInt
+  blessings                                                Int                                 @default(0) @db.TinyInt
+  blessings1                                               Int                                 @default(0) @db.TinyInt
+  blessings2                                               Int                                 @default(0) @db.TinyInt
+  blessings3                                               Int                                 @default(0) @db.TinyInt
+  blessings4                                               Int                                 @default(0) @db.TinyInt
+  blessings5                                               Int                                 @default(0) @db.TinyInt
+  blessings6                                               Int                                 @default(0) @db.TinyInt
+  blessings7                                               Int                                 @default(0) @db.TinyInt
+  blessings8                                               Int                                 @default(0) @db.TinyInt
+  onlinetime                                               Int                                 @default(0)
+  deletion                                                 BigInt                              @default(0)
+  balance                                                  BigInt                              @default(0) @db.UnsignedBigInt
+  offlinetraining_time                                     Int                                 @default(43200) @db.UnsignedSmallInt
+  offlinetraining_skill                                    Int                                 @default(-1) @db.TinyInt
+  stamina                                                  Int                                 @default(2520) @db.UnsignedSmallInt
+  skill_fist                                               Int                                 @default(10) @db.UnsignedInt
+  skill_fist_tries                                         BigInt                              @default(0) @db.UnsignedBigInt
+  skill_club                                               Int                                 @default(10) @db.UnsignedInt
+  skill_club_tries                                         BigInt                              @default(0) @db.UnsignedBigInt
+  skill_sword                                              Int                                 @default(10) @db.UnsignedInt
+  skill_sword_tries                                        BigInt                              @default(0) @db.UnsignedBigInt
+  skill_axe                                                Int                                 @default(10) @db.UnsignedInt
+  skill_axe_tries                                          BigInt                              @default(0) @db.UnsignedBigInt
+  skill_dist                                               Int                                 @default(10) @db.UnsignedInt
+  skill_dist_tries                                         BigInt                              @default(0) @db.UnsignedBigInt
+  skill_shielding                                          Int                                 @default(10) @db.UnsignedInt
+  skill_shielding_tries                                    BigInt                              @default(0) @db.UnsignedBigInt
+  skill_fishing                                            Int                                 @default(10) @db.UnsignedInt
+  skill_fishing_tries                                      BigInt                              @default(0) @db.UnsignedBigInt
+  skill_critical_hit_chance                                Int                                 @default(0) @db.UnsignedInt
+  skill_critical_hit_chance_tries                          BigInt                              @default(0) @db.UnsignedBigInt
+  skill_critical_hit_damage                                Int                                 @default(0) @db.UnsignedInt
+  skill_critical_hit_damage_tries                          BigInt                              @default(0) @db.UnsignedBigInt
+  skill_life_leech_chance                                  Int                                 @default(0) @db.UnsignedInt
+  skill_life_leech_chance_tries                            BigInt                              @default(0) @db.UnsignedBigInt
+  skill_life_leech_amount                                  Int                                 @default(0) @db.UnsignedInt
+  skill_life_leech_amount_tries                            BigInt                              @default(0) @db.UnsignedBigInt
+  skill_mana_leech_chance                                  Int                                 @default(0) @db.UnsignedInt
+  skill_mana_leech_chance_tries                            BigInt                              @default(0) @db.UnsignedBigInt
+  skill_mana_leech_amount                                  Int                                 @default(0) @db.UnsignedInt
+  skill_mana_leech_amount_tries                            BigInt                              @default(0) @db.UnsignedBigInt
+  skill_criticalhit_chance                                 BigInt                              @default(0) @db.UnsignedBigInt
+  skill_criticalhit_damage                                 BigInt                              @default(0) @db.UnsignedBigInt
+  skill_lifeleech_chance                                   BigInt                              @default(0) @db.UnsignedBigInt
+  skill_lifeleech_amount                                   BigInt                              @default(0) @db.UnsignedBigInt
+  skill_manaleech_chance                                   BigInt                              @default(0) @db.UnsignedBigInt
+  skill_manaleech_amount                                   BigInt                              @default(0) @db.UnsignedBigInt
+  manashield                                               Int                                 @default(0) @db.UnsignedInt
+  max_manashield                                           Int                                 @default(0) @db.UnsignedInt
+  xpboost_stamina                                          Int?                                @db.UnsignedSmallInt
+  xpboost_value                                            Int?                                @db.UnsignedTinyInt
+  marriage_status                                          BigInt                              @default(0) @db.UnsignedBigInt
+  marriage_spouse                                          Int                                 @default(-1)
+  bonus_rerolls                                            BigInt                              @default(0)
+  prey_wildcard                                            BigInt                              @default(0)
+  task_points                                              BigInt                              @default(0)
+  quickloot_fallback                                       Boolean?                            @default(false)
+  lookmountbody                                            Int                                 @default(0) @db.UnsignedTinyInt
+  lookmountfeet                                            Int                                 @default(0) @db.UnsignedTinyInt
+  lookmounthead                                            Int                                 @default(0) @db.UnsignedTinyInt
+  lookmountlegs                                            Int                                 @default(0) @db.UnsignedTinyInt
+  lookfamiliarstype                                        Int                                 @default(0) @db.UnsignedInt
+  isreward                                                 Boolean                             @default(true)
+  istutorial                                               Boolean                             @default(false)
+  forge_dusts                                              BigInt                              @default(0)
+  forge_dust_level                                         BigInt                              @default(100)
+  randomize_mount                                          Boolean                             @default(false)
+  boss_points                                              Int                                 @default(0)
+  battlepass_rank                                          BATTLEPASS_RANK_ACCESS              @default(FREE)
+  cast_on                                                  Int                                 @default(0) @db.TinyInt
+  comment                                                  String?                             @db.Text
+  hidden                                                   Boolean                             @default(false)
+  ismain                                                   Boolean                             @default(false)
   account_ban_history                                      account_ban_history[]
   account_bans                                             account_bans[]
   account_vipgrouplist                                     account_vipgrouplist[]
@@ -1113,18 +944,21 @@ model players {
   ip_bans                                                  ip_bans[]
   market_history                                           market_history[]
   market_offers                                            market_offers[]
+  player_battlepass_progress                               player_battlepass_progress[]
+  player_battlepass_rewards_claimed                        player_battlepass_rewards_claimed[]
+  player_battlepass_tasks                                  player_battlepass_tasks[]
   player_deaths                                            player_deaths[]
   player_depotitems                                        player_depotitems[]
   player_hirelings                                         player_hirelings[]
   player_inboxitems                                        player_inboxitems[]
   player_items                                             player_items[]
-  player_namelocks_player_namelocks_namelocked_byToplayers player_namelocks[]     @relation("player_namelocks_namelocked_byToplayers")
-  player_namelocks_player_namelocks_player_idToplayers     player_namelocks?      @relation("player_namelocks_player_idToplayers")
+  player_namelocks_player_namelocks_namelocked_byToplayers player_namelocks[]                  @relation("player_namelocks_namelocked_byToplayers")
+  player_namelocks_player_namelocks_player_idToplayers     player_namelocks?                   @relation("player_namelocks_player_idToplayers")
   player_rewards                                           player_rewards[]
   player_spells                                            player_spells[]
   player_storage                                           player_storage[]
   player_wheeldata                                         player_wheeldata?
-  accounts                                                 accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "players_account_fk")
+  accounts                                                 accounts                            @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "players_account_fk")
   roulette_plays                                           roulette_plays[]
 
   @@index([account_id], map: "account_id")
@@ -1135,18 +969,6 @@ model players_online {
   player_id Int @id
 }
 
-model character_market {
-  id         Int    @id @default(autoincrement())
-  world_id   Int    @default(1)
-  name       String @db.VarChar(40)
-  level      Int
-  vocation   Int    @default(1) @db.TinyInt
-  price      Int
-  player_id  Int
-  account_id Int
-  status     Int    @db.TinyInt
-}
-
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model roulette_plays {
   id           Int      @id @default(autoincrement()) @db.UnsignedInt
@@ -1154,28 +976,17 @@ model roulette_plays {
   uuid         String   @unique(map: "uuid") @db.VarChar(255)
   reward_id    Int
   reward_count Int
-  status       Int      @default(0) @db.TinyInt
+  status       Boolean  @default(false)
   created_at   DateTime @default(now()) @db.Timestamp(0)
-  updated_at   BigInt   @default(0)
+  updated_at   DateTime @default(now()) @db.Timestamp(0)
   players      players  @relation(fields: [player_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "roulette_plays_ibfk_1")
 
   @@index([player_id], map: "player_id")
 }
 
 model server_config {
-  config    String   @id @db.VarChar(50)
-  value     String   @default("") @db.VarChar(256)
-  timestamp DateTime @default(now()) @db.Timestamp(0)
-}
-
-model status {
-  id        Int    @id @default(autoincrement()) @db.SmallInt
-  status    String @db.Text
-  account   String @db.Text
-  points    String @db.Text
-  codigo    String @db.Text
-  chave     String @db.Text
-  processed Int    @default(0)
+  config String @id @db.VarChar(50)
+  value  String @default("") @db.VarChar(256)
 }
 
 model store_history {
@@ -1195,9 +1006,9 @@ model store_history {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model tile_store {
+  id       Int    @id @default(autoincrement()) @db.UnsignedInt
   house_id Int
   data     Bytes
-  id       Int    @id @default(autoincrement())
   houses   houses @relation(fields: [house_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tile_store_account_fk")
 
   @@index([house_id], map: "house_id")
@@ -1211,40 +1022,6 @@ model towns {
   posz Int    @default(0)
 }
 
-model z_ots_comunication {
-  id        Int    @id @default(autoincrement())
-  name      String @default("") @db.VarChar(255)
-  type      String @default("") @db.VarChar(255)
-  action    String @default("") @db.VarChar(255)
-  param1    String @default("") @db.VarChar(255)
-  param2    String @default("") @db.VarChar(255)
-  param3    String @default("") @db.VarChar(255)
-  param4    String @default("") @db.VarChar(255)
-  param5    String @default("") @db.VarChar(255)
-  param6    String @default("") @db.VarChar(255)
-  param7    String @default("") @db.VarChar(255)
-  delete_it Int    @default(1)
-}
-
-model z_polls {
-  id          Int    @id @default(autoincrement())
-  question    String @db.VarChar(255)
-  description String @db.VarChar(255)
-  end         Int    @default(0)
-  start       Int    @default(0)
-  answers     Int    @default(0)
-  votes_all   Int    @default(0)
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model z_polls_answers {
-  poll_id   Int
-  answer_id Int
-  answer    String @db.VarChar(255)
-  votes     Int    @default(0)
-  id        Int    @id @default(autoincrement())
-}
-
 enum ORDER_STATUS {
   PROCESSING
   PENDING
@@ -1256,4 +1033,39 @@ enum CATEGORY_POST {
   BLOG
   TICKER
   ROADMAP
+}
+
+enum BATTLEPASS_TYPE_REWARDS {
+  ITEM
+  MONEY
+  EXP
+  COINS
+  COINS_TRANSFERABLE
+  VIP_DAYS
+  OUTFIT
+  MOUNT
+  STORAGE
+}
+
+enum BATTLEPASS_TYPE_TASKS {
+  MONSTER_KILL
+  ITEM_GET
+  ITEM_USE
+  EXP
+  OFFER_MARKET
+  STORAGE
+}
+
+enum BATTLEPASS_RANK_ACCESS {
+  FREE
+  VIP_SILVER
+  VIP_GOLD
+  DIAMOND
+}
+
+enum BATTLEPASS_PERIOD_TYPE_TASKS {
+  DAILY
+  WEEKLY
+  MONTHLY
+  SEASONAL
 }
