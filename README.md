@@ -18,3 +18,15 @@ Página web creada para mi servidor de Tibia, Juego MMORPG, versión 13.40, esta
 ### Direct support
 Mail: jalomo.chavez18@outlook.com</br>
 Discord: .jalomo
+
+![Imagen de WhatsApp 2025-02-11 a las 21 14 36_c5285d45](https://github.com/user-attachments/assets/823b71c3-a8d1-4602-bc07-91131b03aec0)
+![image](https://github.com/user-attachments/assets/fd3a9d32-2428-4227-ab86-c66104c1286e)
+![Imagen de WhatsApp 2025-01-25 a las 20 48 12_9dcfbcb6](https://github.com/user-attachments/assets/098bba0b-155b-42ac-bf13-f1d08fc467bc)
+![Imagen de WhatsApp 2025-01-25 a las 20 52 04_21dd4f3d](https://github.com/user-attachments/assets/aaf59ba4-af07-4093-8b3a-95e40e2b5369)
+
+
+
+
+
+
+
