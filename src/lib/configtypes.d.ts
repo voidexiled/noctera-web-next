@@ -13,6 +13,10 @@ export type ConfigType = {
 	};
 	guilds: {
 		minimum_level_to_create: number;
+		permissive_invite_rank_level: number;
+		leader_rank_level: number;
+		member_rank_level: number;
+		coleader_rank_level: number;
 	};
 	pid: {
 		inventory: number;

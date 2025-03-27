@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "biome lint src",
     "format": "biome format --write src",
-    "check": "biome check ."
+    "check": "biome check .",
+    "animated:outfits": "",
+    "animated:items": ""
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed_old.ts"

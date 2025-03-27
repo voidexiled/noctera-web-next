@@ -12,7 +12,7 @@ import { GuildHeader } from "@/components/(community)/guilds/guild-page/guild-he
 import { InvitedTable } from "@/components/(community)/guilds/guild-page/guild-invited-table/InvitedTable";
 import { MembersTable } from "@/components/(community)/guilds/guild-page/guild-members-table/MembersTable";
 import { getGuildByName } from "@/services/guilds/GuildsService";
-import getUserGuildStatus from "../../../../../services/guilds/UserGuildStatusService";
+import getUserGuildStatus from "@/services/guilds/UserGuildStatusService";
 
 export default async function GuildDataPage(props: {
 	params: Promise<{ name: string }>;
@@ -29,13 +29,7 @@ export default async function GuildDataPage(props: {
 		<GuildLayout
 			header={<GuildHeader guild={guild} />}
 			body={<GuildBody guild={guild} ownerPlayer={guild.players} userStatus={userStatus} />}
-			membersTable={
-				<MembersTable
-					members={guild.guild_membership}
-					ranks={guild.guild_ranks}
-					userStatus={userStatus}
-				/>
-			}
+			membersTable={<MembersTable members={guild.guild_membership} ranks={guild.guild_ranks} userStatus={userStatus} />}
 			invitedTable={<InvitedTable guild={guild} userStatus={userStatus} />}
 		/>
 	);

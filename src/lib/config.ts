@@ -15,6 +15,10 @@ export const GlobalConfig: ConfigType = {
 	},
 	guilds: {
 		minimum_level_to_create: 100,
+		permissive_invite_rank_level: 2, // Check db for max level rank to avoid errors: default min 1 (member), 2 (co-lider), max 3 (leader)
+		member_rank_level: 1,
+		coleader_rank_level: 2,
+		leader_rank_level: 3,
 	},
 	pid: {
 		inventory: 103, // pid assignet to the inventory

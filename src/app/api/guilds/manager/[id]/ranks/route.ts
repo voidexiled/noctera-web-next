@@ -1,106 +1,155 @@
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
+import type {
+	GuildsManagerIdRanksDELETERequest,
+	GuildsManagerIdRanksDELETEResponse,
+	GuildsManagerIdRanksGETResponse,
+	GuildsManagerIdRanksPOSTRequest,
+	GuildsManagerIdRanksPOSTResponse,
+	GuildsManagerIdRanksPUTRequest,
+	GuildsManagerIdRanksPUTResponse,
+} from "@/app/api/types";
+import { ManageUserSession } from "@/lib/helpers/api";
+import { CreateOneGuildRanks, DeleteOneGuildRanks, UpdateOneGuildRanks } from "@/services/guilds/GuildRanksService";
+import { GetUniqueGuilds } from "@/services/guilds/GuildsService";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 
-const CreateRanksSchema = z.object({
-	guild_id: z.number(),
-	rank: z.string(),
-});
-const CreateRank = async (request: Request, { params }: { params: Params }) => {
+type Params = Promise<{ id: string }>;
+
+export async function POST(request: Request, params: Params) {
 	try {
-		const body = CreateRanksSchema.parse(await request.json());
-		const session = await getServerSession(authOptions);
-		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		const body: GuildsManagerIdRanksPOSTRequest = await request.json();
 
-		const guildId = (await params).id;
-		const findGuild = await prisma.guilds.findUnique({
-			where: { id: +guildId },
+		await ManageUserSession((session) => {
+			// ! Evaluate if can create a rank ( need to be leader of the guild )
+			return true;
 		});
-		if (!findGuild) return NextResponse.json({ message: "Guild not found." }, { status: 400 });
 
-		const rank_created = await prisma.guild_ranks.create({
+		const guildId = body.guild_id;
+
+		const foundGuild = await GetUniqueGuilds({
+			where: { id: +guildId },
+			select: { id: true, name: true },
+		});
+
+		if (!foundGuild) return NextResponse.json({ error: "Guild not found." }, { status: 400 });
+
+		const rank_created = await CreateOneGuildRanks({
 			data: {
 				level: 1,
 				name: body.rank,
 				guild_id: body.guild_id,
 			},
 		});
-		revalidatePath(`/guilds/${findGuild.name}`);
-		return NextResponse.json({ rank: rank_created }, { status: 200 });
+
+		if (!rank_created) return NextResponse.json({ error: "Error creating rank." }, { status: 400 });
+
+		const response: GuildsManagerIdRanksPOSTResponse = {
+			rank: rank_created.name,
+		};
+
+		revalidatePath(`/guilds/${foundGuild.name}`);
+		return NextResponse.json(response, { status: 200 });
 	} catch (error) {
-		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
-};
+}
 
-const UpdateRanksSchema = z.object({
-	guild_id: z.number(),
-	ranks: z.array(z.object({ id: z.number(), name: z.string(), level: z.number() })),
-});
-
-type Params = Promise<{ id: string }>;
-
-const updateRanks = async (request: Request, { params }: { params: Params }) => {
+export async function GET(request: Request, params: Params) {
 	try {
-		const { guild_id, ranks } = UpdateRanksSchema.parse(await request.json());
-		const session = await getServerSession(authOptions);
-		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		const bodyParams = await params;
+		const guildId = bodyParams.id;
 
-		const findGuild = await prisma.guilds.findUnique({
+		await ManageUserSession((session) => {
+			// ! Evaluate if can list the ranks of the guild
+			return true;
+		});
+
+		const foundGuild = await GetUniqueGuilds({
+			where: { id: +guildId },
+			include: {
+				guild_ranks: true,
+			},
+		});
+
+		if (!foundGuild) return NextResponse.json({ error: "Guild not found." }, { status: 400 });
+
+		const response: GuildsManagerIdRanksGETResponse = {
+			ranks: foundGuild.guild_ranks,
+		};
+
+		revalidatePath(`/guilds/${foundGuild.name}`);
+		return NextResponse.json(response, { status: 200 });
+	} catch (error) {
+		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+	}
+}
+
+export async function PUT(request: Request, params: Params) {
+	try {
+		const body: GuildsManagerIdRanksPUTRequest = await request.json();
+		const { guild_id, ranks } = body;
+		await ManageUserSession((session) => {
+			// ! Evaluate if can update the ranks of the guild
+			return true;
+		});
+
+		const foundGuild = await GetUniqueGuilds({
 			where: { id: guild_id },
 		});
-		if (!findGuild) return NextResponse.json({ message: "Guild not found." }, { status: 400 });
 
-		for (const rank of ranks) {
-			await prisma.guild_ranks.update({
+		if (!foundGuild) return NextResponse.json({ error: "Guild not found." }, { status: 400 });
+
+		ranks.map(async (rank) => {
+			await UpdateOneGuildRanks({
 				where: { id: rank.id },
 				data: rank,
 			});
-		}
-		revalidatePath(`/guilds/${findGuild.name}`);
-		return NextResponse.json({});
+		});
+
+		const response: GuildsManagerIdRanksPUTResponse = undefined;
+
+		revalidatePath(`/guilds/${foundGuild.name}`);
+		return NextResponse.json(response, { status: 200 });
 	} catch (error) {
-		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
-};
+}
 
-const DeleteRank = async (request: Request, { params }: { params: Params }) => {
+export async function DELETE(request: Request, params: Params) {
 	try {
-		const session = await getServerSession(authOptions);
-		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-		const guildId = (await params).id;
+		const bodyParams = await params;
+		const body: GuildsManagerIdRanksDELETERequest = await request.json();
 
-		const findGuild = await prisma.guilds.findUnique({
+		await ManageUserSession((session) => {
+			// ! Evaluate if can delete the ranks of the guild
+			return true;
+		});
+
+		const guildId = bodyParams.id;
+
+		const findGuild = await GetUniqueGuilds({
 			where: { id: +guildId },
 		});
-		if (!findGuild) return NextResponse.json({ message: "Guild not found." }, { status: 400 });
 
-		revalidatePath(`/guilds/${findGuild.name}`);
-		return NextResponse.json({});
-	} catch (error) {
-		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
-	}
-};
+		if (!findGuild) return NextResponse.json({ error: "Guild not found." }, { status: 400 });
 
-const ListRank = async (request: Request, { params }: { params: Params }) => {
-	try {
-		const session = await getServerSession(authOptions);
-		if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-		const guildId = (await params).id;
-
-		const findGuild = await prisma.guilds.findUnique({
-			where: { id: +guildId },
-			include: { guild_ranks: true },
+		const deletedRank = await DeleteOneGuildRanks({
+			where: { id: body.rank_id },
+			select: {
+				id: true,
+				name: true,
+			},
 		});
-		if (!findGuild) return NextResponse.json({ message: "Guild not found." }, { status: 400 });
+
+		if (!deletedRank) return NextResponse.json({ error: "Error deleting rank." }, { status: 400 });
+
+		const response: GuildsManagerIdRanksDELETEResponse = {
+			deleted_rank: deletedRank.name,
+		};
 
 		revalidatePath(`/guilds/${findGuild.name}`);
-		return NextResponse.json({ ranks: findGuild.guild_ranks });
+		return NextResponse.json(response, { status: 200 });
 	} catch (error) {
-		return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
-};
-
-export { ListRank as GET, CreateRank as POST, updateRanks as PUT, DeleteRank as DELETE };
+}

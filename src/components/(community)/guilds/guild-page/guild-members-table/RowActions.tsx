@@ -1,5 +1,12 @@
 "use client";
 
+import { API_ROUTES } from "@/app/api/routes";
+import type {
+	GuildsManagerIdKickPlayerIdDELETERequest,
+	GuildsManagerIdKickPlayerIdDELETEResponse,
+	GuildsManagerIdPlayerPlayerIdPUTRequest,
+	GuildsManagerIdPlayerPlayerIdPUTResponse,
+} from "@/app/api/types";
 import type {
 	KickGuildMemberRequest,
 	KickGuildMemberResponse,
@@ -20,6 +27,7 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { typedFetch } from "@/utils/typedFetch";
 import type { guild_membership, guild_ranks } from "@prisma/client";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
@@ -37,46 +45,39 @@ export const RowActions = ({ row, disabled, userStatus, ranks }: RowActionsProps
 	const isRowMyself = row.player_id === userStatus?.player_id;
 
 	async function kickPlayer(guild_id: number, player_id: number) {
-		const body: KickGuildMemberRequest = {
-			guild_id,
+		const body: GuildsManagerIdKickPlayerIdDELETERequest = {
+			id: guild_id,
 			player_id,
 		};
-		const res = await fetch(`/api/guilds/manager/${guild_id}/kick/${player_id}`, {
-			method: "DELETE",
-			body: JSON.stringify(body),
-		});
-		if (res.ok) {
-			const data: KickGuildMemberResponse = await res.json();
-			const successMessage = isRowMyself
-				? "You have left the guild"
-				: `${data?.player_name} has been kicked from the guild`;
+
+		const res = await typedFetch<GuildsManagerIdKickPlayerIdDELETERequest, GuildsManagerIdKickPlayerIdDELETEResponse>(
+			API_ROUTES.guilds.manager.id(guild_id).kick.playerId(player_id),
+			{
+				method: "DELETE",
+				body,
+			},
+		);
+		if (res.status === 200) {
+			const successMessage = isRowMyself ? "You have left the guild" : `${res.player_name} has been kicked from the guild`;
 			toast.success(successMessage);
+			return;
 		}
-		if (res.status === 400) {
-			toast.error("Error on kick player");
-		}
-		if (res.status === 401) {
-			toast.error("Unauthorized");
-		}
-		if (res.status === 403) {
-			toast.error("Forbidden");
-		}
-		if (res.status === 500) {
-			toast.error("Internal server error");
-		}
+		toast.error(res.error ? res.error : "Error on kick player");
 	}
 
 	async function updatePlayerRank(guild_id: number, player_id: number, rank_id: number) {
-		const body: UpdateGuildMemberRankRequest = {
-			rank_id,
-		};
-		const res = await fetch(`/api/guilds/manager/${guild_id}/player/${player_id}`, {
-			method: "PUT",
-			body: JSON.stringify(body),
-		});
-		if (res.ok) {
-			const data: UpdateGuildMemberRankResponse = await res.json();
-			toast.success(`${data?.player_name} rank has been updated to ${data?.rank_name}`);
+		const res = await typedFetch<GuildsManagerIdPlayerPlayerIdPUTRequest, GuildsManagerIdPlayerPlayerIdPUTResponse>(
+			API_ROUTES.guilds.manager.id(guild_id).player.playerId(player_id),
+			{
+				method: "PUT",
+				body: {
+					rank_id,
+				},
+			},
+		);
+
+		if (res.status === 200) {
+			toast.success(`${res.player_name} rank has been updated to ${res.rank_name}`);
 		}
 		if (res.status === 400) {
 			toast.error("Error on update player rank");
@@ -112,11 +113,7 @@ export const RowActions = ({ row, disabled, userStatus, ranks }: RowActionsProps
 							>
 								{ranks.map((rank) => {
 									return (
-										<DropdownMenuRadioItem
-											key={rank.id}
-											value={rank.id.toString()}
-											className="hover:text-card-foreground"
-										>
+										<DropdownMenuRadioItem key={rank.id} value={rank.id.toString()} className="hover:text-card-foreground">
 											<IconiFy icon={`game-icons:rank-${rank.level}`} className="mr-1.5 h-6 w-6" />
 											{rank.name}
 										</DropdownMenuRadioItem>
@@ -127,12 +124,7 @@ export const RowActions = ({ row, disabled, userStatus, ranks }: RowActionsProps
 					</DropdownMenuSub>
 				)}
 				{hasLeaderAccess && <DropdownMenuItem>Change nick</DropdownMenuItem>}
-				{isOwner ||
-					(isRowMyself && (
-						<DropdownMenuItem onClick={() => kickPlayer(row.guild_id, row.player_id)}>
-							Kick
-						</DropdownMenuItem>
-					))}
+				{isOwner || (isRowMyself && <DropdownMenuItem onClick={() => kickPlayer(row.guild_id, row.player_id)}>Kick</DropdownMenuItem>)}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);

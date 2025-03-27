@@ -214,3 +214,89 @@ export type GuildManagerDELETEResponse = {
 	guild_id: number;
 	guild_name: string;
 };
+
+export type GuildsManagerIdJoinPlayerIdPATCHRequest = {
+	id: string;
+	player_id: number;
+};
+
+export type GuildsManagerIdJoinPlayerIdPATCHResponse = {
+	guild_name?: string;
+};
+
+export type GuildsManagerIdKickPlayerIdDELETERequest = {
+	id: number;
+	player_id: number;
+};
+
+export type GuildsManagerIdKickPlayerIdDELETEResponse = {
+	player_id: number;
+	player_name: string;
+};
+
+export type GuildsManagerIdPlayerPlayerIdPUTRequest = {
+	rank_id: number;
+};
+
+export type GuildsManagerIdPlayerPlayerIdPUTRequestParams = {
+	id: number;
+	player_id: number;
+};
+
+export type GuildsManagerIdPlayerPlayerIdPUTResponse = {
+	player_name: string;
+	rank_name: string;
+};
+
+export type GuildsManagerIdPlayerPlayerIdPOSTRequestParams = {
+	id: number;
+	player_id: number;
+};
+
+export type GuildsManagerIdPlayerPlayerIdPOSTRequest = {
+	rank_id: number;
+};
+
+export type GuildsManagerIdPlayerPlayerIdPOSTResponse = {
+	player_id: number;
+	player_name: string;
+};
+
+export type GuildsManagerIdPlayerPlayerIdGETRequest = {
+	id: string;
+	name: string;
+};
+
+export type GuildsManagerIdPlayerPlayerIdGETResponse = {
+	players: players;
+};
+
+export type GuildsManagerIdRanksPOSTRequest = {
+	guild_id: number;
+	rank: string;
+};
+
+export type GuildsManagerIdRanksPOSTResponse = {
+	rank: string;
+};
+
+export type GuildsManagerIdRanksGETRequest = undefined;
+
+export type GuildsManagerIdRanksGETResponse = {
+	ranks: guild_ranks[];
+};
+
+export type GuildsManagerIdRanksPUTRequest = {
+	guild_id: number;
+	ranks: Omit<guild_ranks, "guild_id">[];
+};
+
+export type GuildsManagerIdRanksPUTResponse = undefined;
+
+export type GuildsManagerIdRanksDELETERequest = {
+	rank_id: number;
+};
+
+export type GuildsManagerIdRanksDELETEResponse = {
+	deleted_rank: string;
+};

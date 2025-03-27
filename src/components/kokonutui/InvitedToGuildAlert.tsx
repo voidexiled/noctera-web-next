@@ -1,5 +1,8 @@
 "use client";
+import { API_ROUTES } from "@/app/api/routes";
+import type { GuildsManagerIdJoinPlayerIdPATCHRequest, GuildsManagerIdJoinPlayerIdPATCHResponse } from "@/app/api/types";
 import { cn } from "@/lib/utils";
+import { typedFetch } from "@/utils/typedFetch";
 import { Check, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,14 +18,7 @@ type InvitedToGuildAlertProps = {
 	invitedAt: number;
 };
 
-export default function InvitedToGuildAlert({
-	characterName,
-	guildName,
-	guildLogo,
-	guildId,
-	playerId,
-	invitedAt,
-}: InvitedToGuildAlertProps) {
+export default function InvitedToGuildAlert({ characterName, guildName, guildLogo, guildId, playerId, invitedAt }: InvitedToGuildAlertProps) {
 	const router = useRouter();
 	const nowDate = new Date();
 	const dateDiff = nowDate.getTime() - invitedAt * 1000;
@@ -36,9 +32,12 @@ export default function InvitedToGuildAlert({
 	async function JoinInGuild() {
 		const res = await toast
 			.promise(
-				fetch(`/api/guilds/manager/${guildId}/join/${playerId}`, {
-					method: "PATCH",
-				}),
+				typedFetch<GuildsManagerIdJoinPlayerIdPATCHRequest, GuildsManagerIdJoinPlayerIdPATCHResponse>(
+					API_ROUTES.guilds.manager.id(guildId).join.playerId(playerId),
+					{
+						method: "PATCH",
+					},
+				),
 				{
 					loading: `${characterName} - Joining to ${guildName}`,
 					error: `${characterName} - Error joining to guild`,
@@ -47,7 +46,7 @@ export default function InvitedToGuildAlert({
 			)
 			.unwrap();
 
-		if (res.ok) {
+		if (res.status === 200) {
 			router.refresh();
 			return;
 		}
@@ -58,13 +57,7 @@ export default function InvitedToGuildAlert({
 			<div className="relative border bg-background p-4 shadow-[0_1px_6px_0_rgba(0,0,0,0.02)]">
 				<div className="flex items-center gap-4">
 					<div className="relative h-10 w-10 shrink-0">
-						<Image
-							src={`/guilds/${guildLogo}`}
-							alt="Sarah Chen"
-							sizes="40px"
-							fill
-							className="rounded-full border bg-card object-cover"
-						/>
+						<Image src={`/guilds/${guildLogo}`} alt="Sarah Chen" sizes="40px" fill className="rounded-full border bg-card object-cover" />
 					</div>
 
 					<div className="min-w-0 flex-1">
@@ -75,10 +68,7 @@ export default function InvitedToGuildAlert({
 								</p>
 								<p className="mt-0.5 text-[13px] text-zinc-400">
 									Hello, you have received an invitation from{" "}
-									<Link
-										className="font-medium text-blue-300 underline"
-										href={`/guilds/${guildName}`}
-									>
+									<Link className="font-medium text-blue-300 underline" href={`/guilds/${guildName}`}>
 										{guildName}
 									</Link>{" "}
 									to join the guild.
@@ -111,16 +101,11 @@ export default function InvitedToGuildAlert({
 				<div className="mt-2 ml-14">
 					<p className="text-[12px] text-zinc-400 dark:text-zinc-500">
 						Invited {(() => {
-							if (dateDiffInYears > 0)
-								return `${dateDiffInYears} year${dateDiffInYears > 1 ? "s" : ""}`;
-							if (dateDiffInMonths > 0)
-								return `${dateDiffInMonths} month${dateDiffInMonths > 1 ? "s" : ""}`;
-							if (dateDiffInWeeks > 0)
-								return `${dateDiffInWeeks} week${dateDiffInWeeks > 1 ? "s" : ""}`;
-							if (dateDiffInDays > 0)
-								return `${dateDiffInDays} day${dateDiffInDays > 1 ? "s" : ""}`;
-							if (dateDiffInHours > 0)
-								return `${dateDiffInHours} hour${dateDiffInHours > 1 ? "s" : ""}`;
+							if (dateDiffInYears > 0) return `${dateDiffInYears} year${dateDiffInYears > 1 ? "s" : ""}`;
+							if (dateDiffInMonths > 0) return `${dateDiffInMonths} month${dateDiffInMonths > 1 ? "s" : ""}`;
+							if (dateDiffInWeeks > 0) return `${dateDiffInWeeks} week${dateDiffInWeeks > 1 ? "s" : ""}`;
+							if (dateDiffInDays > 0) return `${dateDiffInDays} day${dateDiffInDays > 1 ? "s" : ""}`;
+							if (dateDiffInHours > 0) return `${dateDiffInHours} hour${dateDiffInHours > 1 ? "s" : ""}`;
 							return `${dateDiffInMinutes} minute${dateDiffInMinutes > 1 ? "s" : ""}`;
 						})()} ago
 					</p>

@@ -109,7 +109,7 @@ export const API_ROUTES = {
 				},
 				ranks: {
 					_: `/api/guilds/manager/${id}/ranks`, // Delete is unused, need to delete it?. all the others need to review
-					rankId: (rankId: string | number) => `/api/guilds/manager/${id}/ranks/${rankId}`, // ? need to review
+					// rankId: (rankId: string | number) => `/api/guilds/manager/${id}/ranks/${rankId}`, // ? need to review // ! Now is deleted
 				},
 			}),
 			players: {

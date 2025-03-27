@@ -4,7 +4,7 @@ import { GlobalConfig } from "@/lib/config";
 import { prisma } from "@/lib/prisma";
 import { GetAccountUnique } from "@/services/accounts/AccountsService";
 import { CreateGuildMembership } from "@/services/guilds/GuildsMembershipService";
-import { CreateGuild, GetFirstGuild } from "@/services/guilds/GuildsService";
+import { CreateOneGuild, GetFirstGuilds } from "@/services/guilds/GuildsService";
 import dayjs from "dayjs";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
 		if (!acc) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-		const findGuild = await GetFirstGuild({
+		const findGuild = await GetFirstGuilds({
 			where: { name: guild_name },
 		});
 		if (findGuild) return NextResponse.json({ error: "Guild already exist" }, { status: 400 });
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 		if (currentPlayer.level < 8) return NextResponse.json({ error: "Insufficient player level" }, { status: 400 });
 
 		// Create the guild
-		const guild = await CreateGuild({
+		const guild = await CreateOneGuild({
 			data: {
 				name: guild_name,
 				ownerid: player_id,

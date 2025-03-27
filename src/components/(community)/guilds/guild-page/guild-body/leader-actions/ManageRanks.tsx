@@ -1,5 +1,14 @@
 "use client";
 
+import { API_ROUTES } from "@/app/api/routes";
+import type {
+	GuildsManagerIdRanksDELETERequest,
+	GuildsManagerIdRanksDELETEResponse,
+	GuildsManagerIdRanksGETRequest,
+	GuildsManagerIdRanksGETResponse,
+	GuildsManagerIdRanksPUTRequest,
+	GuildsManagerIdRanksPUTResponse,
+} from "@/app/api/types";
 import CreateNewRankForm from "@/components/(community)/guilds/guild-page/guild-body/leader-actions/CreateNewRankForm";
 import { IconiFy } from "@/components/common/Iconify";
 import { FormProvider, RHFSelect, RHFTextField } from "@/components/common/hook-form";
@@ -7,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { typedFetch } from "@/utils/typedFetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { guild_membership, guild_ranks, guilds } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -17,9 +27,7 @@ import { z } from "zod";
 
 const FormSchema = z.object({
 	guild_id: z.number(),
-	ranks: z.array(
-		z.object({ id: z.number(), guild_id: z.number(), name: z.string(), level: z.number() }),
-	),
+	ranks: z.array(z.object({ id: z.number(), guild_id: z.number(), name: z.string(), level: z.number() })),
 });
 
 type ItemFormValues = z.infer<typeof FormSchema>;
@@ -51,13 +59,15 @@ export const ManageRanks = ({ guild }: ManageRanksProps) => {
 
 	async function onSubmit(formData: ItemFormValues) {
 		try {
-			const res = await fetch(`/api/guilds/manager/${guild.id}/ranks`, {
+			const res = await typedFetch<GuildsManagerIdRanksPUTRequest, GuildsManagerIdRanksPUTResponse>(API_ROUTES.guilds.manager.id(guild.id).ranks._, {
 				method: "PUT",
-				body: JSON.stringify(formData),
+				body: formData,
 			});
-			if (res.ok) {
+
+			if (res.status === 200) {
 				toast.success("Guild has been updated.");
 			}
+
 			router.refresh();
 			document.getElementById("closeDialog")?.click();
 		} catch (e) {
@@ -68,11 +78,17 @@ export const ManageRanks = ({ guild }: ManageRanksProps) => {
 
 	async function onDelete(id: number) {
 		try {
-			const res = await fetch(`/api/guilds/manager/${guild.id}/ranks/${id}`, {
-				method: "DELETE",
-			});
-			console.log(res);
-			if (res.ok) {
+			const res = await typedFetch<GuildsManagerIdRanksDELETERequest, GuildsManagerIdRanksDELETEResponse>(
+				API_ROUTES.guilds.manager.id(guild.id).ranks._,
+				{
+					method: "DELETE",
+					body: {
+						rank_id: id,
+					},
+				},
+			);
+			// console.log(res);
+			if (res.status === 200) {
 				const deletedRankName = watch("ranks").find((rank) => rank.id === id)?.name;
 				toast.success(`Rank ${deletedRankName} has been deleted`);
 				router.refresh();
@@ -93,11 +109,11 @@ export const ManageRanks = ({ guild }: ManageRanksProps) => {
 	}
 
 	const reloadRanks = async () => {
-		const res = await fetch(`/api/guilds/manager/${guild.id}/ranks`);
-		const dataResponse: {
-			ranks: guild_ranks[];
-		} = await res.json();
-		setValue("ranks", dataResponse.ranks);
+		const res = await typedFetch<GuildsManagerIdRanksGETRequest, GuildsManagerIdRanksGETResponse>(API_ROUTES.guilds.manager.id(guild.id).ranks._, {
+			method: "GET",
+		});
+
+		setValue("ranks", res.ranks);
 	};
 
 	useEffect(() => {
@@ -135,9 +151,7 @@ export const ManageRanks = ({ guild }: ManageRanksProps) => {
 												<RHFSelect
 													placeholder="Select a rank"
 													name={`ranks.${index}.level`}
-													onValueChange={(value) =>
-														setValue(`ranks.${index}.level`, Number.parseInt(value))
-													}
+													onValueChange={(value) => setValue(`ranks.${index}.level`, Number.parseInt(value))}
 													defaultValue={`${rank.level}`}
 													options={[
 														{ value: "3", label: "Leader" },

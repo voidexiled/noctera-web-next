@@ -1,5 +1,5 @@
 import type { accounts, guild_membership, guilds, players, posts } from "@prisma/client";
-
+import type { Prisma } from "@prisma/client";
 export type GuildsTableType = guilds & {
 	owner_name: string;
 	members_amount: number;
@@ -43,10 +43,19 @@ export type UserGuildStatus = {
 	player_id: number;
 } | null;
 
-export type MemberRelationWithPlayersAndRanks = guild_membership & {
-	players: players;
-	guild_ranks: guild_ranks;
-};
+export type MemberRelationWithPlayersAndRanks = Prisma.guild_membershipGetPayload<{
+	include: {
+		players: {
+			select: {
+				id: true;
+				name: true;
+				vocation: true;
+				level: true;
+			};
+		};
+		guild_ranks: true;
+	};
+}>;
 
 export type GuildWithInvitations = guilds & {
 	guild_invites: guild_invites[];

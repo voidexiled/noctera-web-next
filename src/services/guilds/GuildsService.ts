@@ -64,7 +64,7 @@ export async function GetManyGuilds<T extends Prisma.guildsFindManyArgs>(args: T
 	}
 }
 
-export async function CreateGuild<T extends Prisma.guildsCreateArgs>(args: T): Promise<Prisma.guildsGetPayload<T>> {
+export async function CreateOneGuild<T extends Prisma.guildsCreateArgs>(args: T): Promise<Prisma.guildsGetPayload<T>> {
 	try {
 		const guild = await prisma.guilds.create(args);
 		return guild as Prisma.guildsGetPayload<T>;
@@ -75,13 +75,35 @@ export async function CreateGuild<T extends Prisma.guildsCreateArgs>(args: T): P
 	}
 }
 
-export async function GetFirstGuild<T extends Prisma.accountsFindFirstArgs>(args: T): Promise<Prisma.accountsGetPayload<T>> {
+export async function GetFirstGuilds<T extends Prisma.guildsFindFirstArgs>(args: T): Promise<Prisma.guildsGetPayload<T>> {
 	try {
-		const guild = await prisma.accounts.findFirst(args);
-		return guild as Prisma.accountsGetPayload<T>;
+		const guild = await prisma.guilds.findFirst(args);
+		return guild as Prisma.guildsGetPayload<T>;
 	} catch (e) {
 		const error: Error = e as Error;
 		console.error("Error al obtener el primer guild:", error);
+		throw error;
+	}
+}
+
+export async function GetUniqueGuilds<T extends Prisma.guildsFindUniqueArgs>(args: T): Promise<Prisma.guildsGetPayload<T>> {
+	try {
+		const guild = await prisma.guilds.findUnique(args);
+		return guild as Prisma.guildsGetPayload<T>;
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error("Error al obtener el guild único:", error);
+		throw error;
+	}
+}
+
+export async function DeleteOneGuilds<T extends Prisma.guildsDeleteArgs>(args: T): Promise<Prisma.guildsGetPayload<T>> {
+	try {
+		const guild = await prisma.guilds.delete(args);
+		return guild as Prisma.guildsGetPayload<T>;
+	} catch (e) {
+		const error: Error = e as Error;
+		console.error("Error al eliminar el guild:", error);
 		throw error;
 	}
 }

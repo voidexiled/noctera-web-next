@@ -1,7 +1,12 @@
 "use client";
 
 import { API_ROUTES } from "@/app/api/routes";
-import type { GuildsCharactersNameGETRequest, GuildsCharactersNameGETResponse } from "@/app/api/types";
+import type {
+	GuildsCharactersNameGETRequest,
+	GuildsCharactersNameGETResponse,
+	GuildsManagerIdPlayerPlayerIdPOSTRequest,
+	GuildsManagerIdPlayerPlayerIdPOSTResponse,
+} from "@/app/api/types";
 import type { Character } from "@/components/(community)/characters/types/characters";
 import type { InvitePlayerToGuildErrorResponse, InvitePlayerToGuildResponse } from "@/components/(community)/guilds/types/guilds";
 import { IconiFy } from "@/components/common/Iconify";
@@ -52,23 +57,24 @@ export const InvitePlayerButton = ({ guild_id }: InvitePlayerProps) => {
 	}, [searchTerm]);
 
 	async function invitePlayer(player_id: number) {
-		const res = await fetch(`/api/guilds/manager/${guild_id}/player/${player_id}`, {
-			method: "POST",
-		});
+		const res = await typedFetch<GuildsManagerIdPlayerPlayerIdPOSTRequest, GuildsManagerIdPlayerPlayerIdPOSTResponse>(
+			API_ROUTES.guilds.manager.id(guild_id).player.playerId(player_id),
+			{
+				method: "POST",
+			},
+		);
 
-		if (res.ok) {
-			const dataResponse: InvitePlayerToGuildResponse = await res.json();
-			toast.success(`Invitation to join the guild sent to ${dataResponse.player_name}`);
+		if (res.status === 200) {
+			toast.success(`Invitation to join the guild sent to ${res.player_name}`);
 			router.refresh();
 			return;
 		}
-		if (res.status === 400) {
-			const data: InvitePlayerToGuildErrorResponse = await res.json();
-			if (data.message) toast.error(data.message);
+		if (res.error) {
+			toast.error(res.message);
+			return;
 		}
-		if (res.status === 500) {
-			toast.error(`A error ocurred while sending invitation to ${player_id}`);
-		}
+
+		toast.error(`A error ocurred while sending invitation to ${player_id}`);
 	}
 
 	return (

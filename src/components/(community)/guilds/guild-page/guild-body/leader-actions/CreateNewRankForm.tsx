@@ -1,6 +1,9 @@
 "use client";
+import { API_ROUTES } from "@/app/api/routes";
+import type { GuildsManagerIdRanksPOSTRequest, GuildsManagerIdRanksPOSTResponse } from "@/app/api/types";
 import { FormProvider, RHFTextField } from "@/components/common/hook-form";
 import { Button } from "@/components/ui/button";
+import { typedFetch } from "@/utils/typedFetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -37,15 +40,13 @@ export default function CreateNewRankForm({ guild_id, onSuccessAction }: CreateN
 
 	async function onSubmit(formData: ItemFormValues) {
 		try {
-			const res = await fetch(`/api/guilds/manager/${guild_id}/ranks`, {
+			const res = await typedFetch<GuildsManagerIdRanksPOSTRequest, GuildsManagerIdRanksPOSTResponse>(API_ROUTES.guilds.manager.id(guild_id).ranks._, {
 				method: "POST",
-				body: JSON.stringify(formData),
+				body: formData,
 			});
-			if (res.ok) {
-				const data: {
-					rank: string;
-				} = await res.json();
-				toast.success(`Rank ${formData.rank} created successfully`);
+
+			if (res.status === 200) {
+				toast.success(`Rank ${res.rank} created successfully`);
 				onSuccessAction();
 			}
 			// document.getElementById('closeDialog')?.click();
@@ -57,11 +58,7 @@ export default function CreateNewRankForm({ guild_id, onSuccessAction }: CreateN
 	}
 
 	return (
-		<FormProvider
-			methods={methods}
-			onSubmit={handleSubmit(onSubmit)}
-			className="flex flex-row items-end "
-		>
+		<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)} className="flex flex-row items-end ">
 			<RHFTextField name="rank" label="Create new Rank" />
 			<Button disabled={isSubmitting} size={"default"}>
 				Create
